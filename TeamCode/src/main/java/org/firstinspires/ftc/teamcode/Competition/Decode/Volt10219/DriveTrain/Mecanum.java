@@ -18,10 +18,10 @@ public class Mecanum {
     public DcMotor centerEncoder;
 
     //Declare rest of mecahnisms
-    public DcMotor ballIntake;
-    public DcMotor ballLaunch;
+    //public DcMotor ballIntake;
+    //public DcMotor ballLaunch;
 
-    public Servo ballPush;
+    //public Servo ballPush;
 
     public LinearOpMode LinearOp = null;
 

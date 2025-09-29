@@ -3,8 +3,10 @@ package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Tel
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.Range;
 
+
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Robot.DecodeBot;
 
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Volt TeleOp")
 public class TeleOp extends OpMode {
     double leftStickYVal;
     double leftStickXVal;
