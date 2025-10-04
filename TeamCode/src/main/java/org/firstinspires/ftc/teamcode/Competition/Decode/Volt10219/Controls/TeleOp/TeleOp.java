@@ -50,14 +50,25 @@ public class TeleOp extends OpMode {
         rightStickXVal = gamepad1.right_stick_x;
         rightStickXVal = Range.clip(rightStickXVal, -1, 1);
 
+        //Field Centric
         flSpeed = leftStickYVal+leftStickXVal+rightStickXVal;
         flSpeed = Range.clip(flSpeed, -1, 1);
         frSpeed = leftStickYVal-leftStickXVal-rightStickXVal;
-        flSpeed = Range.clip(flSpeed, -1, 1);
+        frSpeed = Range.clip(frSpeed, -1, 1);
         rlSpeed = leftStickYVal-leftStickXVal+rightStickXVal;
         rlSpeed = Range.clip(rlSpeed, -1, 1);
         rrSpeed = leftStickYVal+leftStickXVal-rightStickXVal;
         rrSpeed = Range.clip(rrSpeed, -1, 1);
+
+        //Robot Centric - Andrea prefers
+//        flSpeed = leftStickYVal + rightStickXVal + leftStickXVal;    // Vertical + Rotation + Staffing
+//        flSpeed = Range.clip(flSpeed, -1, 1);
+//        frSpeed = leftStickYVal - rightStickXVal - leftStickXVal;   // Vertical - Rotation - Strafing(sign in front is the way the motor is turning in relation to the others)
+//        frSpeed = Range.clip(frSpeed, -1, 1);
+//        rlSpeed = leftStickYVal - rightStickXVal + leftStickXVal;
+//        rlSpeed = Range.clip(rlSpeed, -1, 1);
+//        rrSpeed = leftStickYVal + rightStickXVal - leftStickXVal;
+//        rrSpeed = Range.clip(rrSpeed, -1, 1);
 
         if (flSpeed <= powerThreshold && flSpeed >= -powerThreshold){
             flSpeed = 0;
