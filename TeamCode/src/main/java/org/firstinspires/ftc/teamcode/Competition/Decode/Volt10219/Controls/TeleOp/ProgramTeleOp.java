@@ -1,13 +1,14 @@
 package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 
-
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Robot.DecodeBot;
+import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Robot.ProgramBot;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Volt TeleOp")
-public class TeleOp extends OpMode {
+@TeleOp(name = "Decode Program TeleOp")
+public class ProgramTeleOp extends OpMode {
     double leftStickYVal;
     double leftStickXVal;
     double rightStickYVal;
@@ -16,12 +17,13 @@ public class TeleOp extends OpMode {
     double powerThreshold = 0;
     double speedMultiply = 1;
 
+
     double flSpeed;
     double frSpeed;
     double rlSpeed;
     double rrSpeed;
 
-    public DecodeBot Bot = new DecodeBot();
+    public ProgramBot Bot = new ProgramBot();
 
     @Override
     public void init(){
@@ -36,8 +38,6 @@ public class TeleOp extends OpMode {
     public void loop(){
         speedControl();
         drive();
-        launcherControl();
-        intakeControl();
         telemetryOutput();
     }
 
@@ -51,24 +51,24 @@ public class TeleOp extends OpMode {
         rightStickXVal = Range.clip(rightStickXVal, -1, 1);
 
         //Field Centric
-//        flSpeed = leftStickYVal+leftStickXVal+rightStickXVal;
-//        flSpeed = Range.clip(flSpeed, -1, 1);
-//        frSpeed = leftStickYVal-leftStickXVal-rightStickXVal;
-//        frSpeed = Range.clip(frSpeed, -1, 1);
-//        rlSpeed = leftStickYVal-leftStickXVal+rightStickXVal;
-//        rlSpeed = Range.clip(rlSpeed, -1, 1);
-//        rrSpeed = leftStickYVal+leftStickXVal-rightStickXVal;
-//        rrSpeed = Range.clip(rrSpeed, -1, 1);
+        flSpeed = leftStickYVal+leftStickXVal+rightStickXVal;
+        flSpeed = Range.clip(flSpeed, -1, 1);
+        frSpeed = leftStickYVal-leftStickXVal-rightStickXVal;
+        frSpeed = Range.clip(frSpeed, -1, 1);
+        rlSpeed = leftStickYVal-leftStickXVal+rightStickXVal;
+        rlSpeed = Range.clip(rlSpeed, -1, 1);
+        rrSpeed = leftStickYVal+leftStickXVal-rightStickXVal;
+        rrSpeed = Range.clip(rrSpeed, -1, 1);
 
         //Robot Centric - Andrea prefers
-        flSpeed = leftStickYVal + rightStickXVal + leftStickXVal;    // Vertical + Rotation + Staffing
-        flSpeed = Range.clip(flSpeed, -1, 1);
-        frSpeed = leftStickYVal - rightStickXVal - leftStickXVal;   // Vertical - Rotation - Strafing(sign in front is the way the motor is turning in relation to the others)
-        frSpeed = Range.clip(frSpeed, -1, 1);
-        rlSpeed = leftStickYVal - rightStickXVal + leftStickXVal;
-        rlSpeed = Range.clip(rlSpeed, -1, 1);
-        rrSpeed = leftStickYVal + rightStickXVal - leftStickXVal;
-        rrSpeed = Range.clip(rrSpeed, -1, 1);
+//        flSpeed = leftStickYVal + rightStickXVal + leftStickXVal;    // Vertical + Rotation + Staffing
+//        flSpeed = Range.clip(flSpeed, -1, 1);
+//        frSpeed = leftStickYVal - rightStickXVal - leftStickXVal;   // Vertical - Rotation - Strafing(sign in front is the way the motor is turning in relation to the others)
+//        frSpeed = Range.clip(frSpeed, -1, 1);
+//        rlSpeed = leftStickYVal - rightStickXVal + leftStickXVal;
+//        rlSpeed = Range.clip(rlSpeed, -1, 1);
+//        rrSpeed = leftStickYVal + rightStickXVal - leftStickXVal;
+//        rrSpeed = Range.clip(rrSpeed, -1, 1);
 
         if (flSpeed <= powerThreshold && flSpeed >= -powerThreshold){
             flSpeed = 0;
@@ -99,32 +99,6 @@ public class TeleOp extends OpMode {
         }
     }
 
-    public void launcherControl(){
-        if(gamepad2.a){
-            Bot.ballLaunchHigher();
-        }
-        if(gamepad2.b){
-            Bot.ballLaunchHigher();
-        }
-    }
-
-    public void intakeControl(){
-        if(gamepad2.y){
-            Bot.ballOuttake();
-        }
-        if(gamepad2.x){
-            Bot.ballIntake();
-        }
-    }
-
-//    public void stateControl(){
-//
-//    }
-//
-//    public enum launchState{
-//        LAUNCH_START,
-//
-//    }
 
     public void speedControl(){
         if(gamepad1.dpad_up){

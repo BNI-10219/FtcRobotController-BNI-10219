@@ -17,9 +17,10 @@ public class Mecanum {
     public DcMotor leftEncoder;
     public DcMotor centerEncoder;
 
-    //Declare rest of mecahnisms
-    //public DcMotor ballIntake;
-    //public DcMotor ballLaunch;
+    //Declare rest of mechanisms
+    public DcMotor ballIntake;
+    public DcMotor ballLaunchOne;
+    public DcMotor ballLaunchTwo;
 
     //public Servo ballPush;
 
@@ -182,4 +183,6 @@ public class Mecanum {
         rlMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rrMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
+
+
 }
