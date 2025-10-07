@@ -18,7 +18,7 @@ public class ProgramBot extends Mecanum {
 
     public void initRobot(HardwareMap hwBot) {
 
-        flMotor = hwBot.dcMotor.get("front_Left_motor"); // CH Port 0
+        flMotor = hwBot.dcMotor.get("front_left_motor"); // CH Port 0
         frMotor = hwBot.dcMotor.get("front_right_motor"); // CH Port 1
         rlMotor = hwBot.dcMotor.get("rear_left_motor"); // CH Port 2
         rrMotor = hwBot.dcMotor.get("rear_right_motor"); // CH Port 3
@@ -36,9 +36,6 @@ public class ProgramBot extends Mecanum {
         rlMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rrMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        //ballPush = hwBot.servo.get("ball_push");
-        //ballPush.setDirection(Servo.Direction.FORWARD);
-
         //IMU for Control Hub
         RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
         RevHubOrientationOnRobot.UsbFacingDirection usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.LEFT;
@@ -47,34 +44,5 @@ public class ProgramBot extends Mecanum {
         imu = hwBot.get(IMU.class, "imu");
         imu.initialize(new IMU.Parameters(orientationOnRobot));
         //init mechanisms
-    }
-
-    public void ballIntake() {
-        ballIntake.setPower(1);
-    }
-
-    public void ballOuttake() {
-        ballIntake.setPower(0);
-    }
-
-    public void ballLaunch() {
-        ballLaunchOne.setPower(1);
-        ballLaunchTwo.setPower(1);
-    }
-
-    public void ballWithdraw() {
-        ballLaunchOne.setPower(0);
-        ballLaunchTwo.setPower(0);
-    }
-
-    public void ballLaunch(double speed, double rotations) {
-        double ticks = rotations * TICKS_PER_ROTATION;
-        setMotorRunModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        setMotorRunModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        while ((Math.abs(ballLaunchOne.getCurrentPosition())) < ticks && ((Math.abs(ballLaunchTwo.getCurrentPosition()) < ticks) && LinearOp.opModeIsActive())) {
-            {
-                ballLaunch();
-            }
-        }
     }
 }
