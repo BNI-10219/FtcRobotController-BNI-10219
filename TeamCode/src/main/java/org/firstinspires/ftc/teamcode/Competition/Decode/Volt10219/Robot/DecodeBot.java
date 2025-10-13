@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Robot;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -39,21 +40,29 @@ public class DecodeBot extends Mecanum {
         rrMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         ballIntake = hwBot.dcMotor.get("ball_intake");
-        ballLaunchOne = hwBot.dcMotor.get("ball_launch_one");
-        ballLaunchTwo = hwBot.dcMotor.get("ball_launch_two");
-
         ballIntake.setDirection(DcMotor.Direction.FORWARD);
-        ballLaunchOne.setDirection(DcMotor.Direction.FORWARD);
-        ballLaunchTwo.setDirection(DcMotor.Direction.FORWARD);
-
         ballIntake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
+
+//        ballIntakeOne = hwBot.get(CRServo.class, "intake_one");
+//        ballIntakeOne.setDirection(CRServo.Direction.FORWARD);
+//
+//        ballIntakeTwo = hwBot.get(CRServo.class, "intake_two");
+//        ballIntakeTwo.setDirection(DcMotorSimple.Direction.FORWARD);
+
+
+
+        ballLaunchOne = hwBot.dcMotor.get("ball_launch_one");
+        ballLaunchOne.setDirection(DcMotor.Direction.FORWARD);
         ballLaunchOne.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        ballLaunchTwo = hwBot.dcMotor.get("ball_launch_two");
+        ballLaunchTwo.setDirection(DcMotor.Direction.FORWARD);
         ballLaunchTwo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
 
-        //ballPush = hwBot.servo.get("ball_push");
-        //ballPush.setDirection(Servo.Direction.FORWARD);
 
         //IMU for Control Hub
         RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
@@ -67,10 +76,16 @@ public class DecodeBot extends Mecanum {
 
     public void ballIntake() {
         ballIntake.setPower(0.5);
+
+//        ballIntakeOne.setPower(1);
+//        ballIntakeTwo.setPower(1);
     }
 
     public void ballOuttake() {
-        ballIntake.setPower(0);
+        //ballIntake.setPower(0);
+
+        ballIntakeOne.setPower(-1);
+        ballIntakeTwo.setPower(-1);
     }
 
     public void ballLaunchHigher() {

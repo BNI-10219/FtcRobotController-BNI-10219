@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Robot;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
@@ -36,6 +38,15 @@ public class ProgramBot extends Mecanum {
         rlMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rrMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+
+        ballIntakeOne = hwBot.get(CRServo.class, "intake_one");
+        ballIntakeOne.setDirection(CRServo.Direction.FORWARD);
+
+        ballIntakeTwo = hwBot.get(CRServo.class, "intake_two");
+        ballIntakeTwo.setDirection(DcMotorSimple.Direction.FORWARD);
+
+
+
         //IMU for Control Hub
         RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
         RevHubOrientationOnRobot.UsbFacingDirection usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.LEFT;
@@ -44,5 +55,19 @@ public class ProgramBot extends Mecanum {
         imu = hwBot.get(IMU.class, "imu");
         imu.initialize(new IMU.Parameters(orientationOnRobot));
         //init mechanisms
+    }
+
+    public void ballIntake() {
+        //ballIntake.setPower(0.5);
+
+        ballIntakeOne.setPower(1);
+        ballIntakeTwo.setPower(1);
+    }
+
+    public void ballOuttake() {
+        //ballIntake.setPower(0.5);
+
+        ballIntakeOne.setPower(-1);
+        ballIntakeTwo.setPower(-1);
     }
 }

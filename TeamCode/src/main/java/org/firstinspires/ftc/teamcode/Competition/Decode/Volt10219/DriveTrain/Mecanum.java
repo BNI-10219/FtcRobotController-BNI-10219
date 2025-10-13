@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.DriveTrain;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -19,8 +20,13 @@ public class Mecanum {
 
     //Declare rest of mechanisms
     public DcMotor ballIntake;
+
+    public CRServo ballIntakeOne = null;
+    public CRServo ballIntakeTwo = null;
     public DcMotor ballLaunchOne;
     public DcMotor ballLaunchTwo;
+
+
 
     //public Servo ballPush;
 

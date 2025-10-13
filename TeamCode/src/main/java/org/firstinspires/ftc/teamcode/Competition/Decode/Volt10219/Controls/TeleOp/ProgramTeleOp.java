@@ -41,6 +41,7 @@ public class ProgramTeleOp extends OpMode {
         //drive();
         telemetryOutput();
         fieldCentricDrive();
+        intakeControl();
     }
 
     public void fieldCentricDrive(){
@@ -148,6 +149,14 @@ public class ProgramTeleOp extends OpMode {
         }
     }
 
+    public void intakeControl(){
+        if(gamepad2.y){
+            Bot.ballOuttake();
+        }
+        if(gamepad2.x){
+            Bot.ballIntake();
+        }
+    }
 
     public void speedControl(){
         if(gamepad1.dpad_up){
