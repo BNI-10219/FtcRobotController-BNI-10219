@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.TeleOp;
 
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.Range;
@@ -8,6 +10,8 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Robot.DecodeBot;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Volt TeleOp")
 public class TeleOp extends OpMode {
@@ -26,14 +30,25 @@ public class TeleOp extends OpMode {
 
     public DecodeBot Bot = new DecodeBot();
 
+    private Limelight3A limelight;
+
+
     @Override
     public void init(){
         Bot.initRobot(hardwareMap);
+
+        limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        telemetry.setMsTransmissionInterval(11);
+        limelight.pipelineSwitch(0);
+
     }
 
     public void init_loop(){}
 
-    public void start(){}
+
+    public void start(){
+        limelight.start();
+    }
 
     @Override
     public void loop(){
@@ -43,6 +58,18 @@ public class TeleOp extends OpMode {
         intakeControl();
         telemetryOutput();
         fieldCentricDrive();
+        camera();
+    }
+
+    public void camera(){
+        LLResult result = limelight.getLatestResult();
+        telemetry.addData("LL Result: ", result);
+        //Fiducial results is a list - if the list size(number of AT seen) is 1 - show what tag it is
+        if (result.getFiducialResults().size() == 1){
+            telemetry.addData("Tags", result.getFiducialResults().get(0).getFiducialId());
+        }
+        telemetry.update();
+
     }
 
     public void fieldCentricDrive(){
