@@ -1,12 +1,9 @@
 package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Robot;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.DriveTrain.Mecanum;
 
@@ -75,31 +72,25 @@ public class DecodeBot extends Mecanum {
     }
 
     public void ballIntake() {
-        ballIntake.setPower(0.5);
+        ballIntake.setPower(-0.5);
 
-//        ballIntakeOne.setPower(1);
-//        ballIntakeTwo.setPower(1);
     }
 
-    public void ballOuttake() {
+    public void ballLaunch() {
         //ballIntake.setPower(0);
 
-        ballIntakeOne.setPower(-1);
-        ballIntakeTwo.setPower(-1);
+        ballLaunchTwo.setPower(0.5);
+        ballLaunchOne.setPower(0.5);
     }
 
-    public void ballLaunchHigher() {
-        ballLaunchOne.setPower(1);
-        ballLaunchTwo.setPower(1);
-    }
-    public void ballLaunchLower() {
-        ballLaunchOne.setPower(1);
-        ballLaunchTwo.setPower(1);
-    }
-
-    public void ballWithdraw() {
-        ballLaunchOne.setPower(0);
+    public void ballLaunchStop(){
         ballLaunchTwo.setPower(0);
+        ballLaunchOne.setPower(0);
+    }
+
+
+    public void ballIntakeStop() {
+        ballIntake.setPower(0);
     }
 
 //    public void ballLaunch(double speed, double rotations) {

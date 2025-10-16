@@ -3,15 +3,11 @@ package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Tel
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.Range;
 
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Robot.DecodeBot;
-import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Volt TeleOp")
 public class TeleOp extends OpMode {
@@ -23,6 +19,10 @@ public class TeleOp extends OpMode {
     double powerThreshold = 0;
     double speedMultiply = 1;
 
+    double targetTX = 7.415;
+    double targetTY = -0.9535;
+    double llTolerance = 0.2;
+
     double flSpeed;
     double frSpeed;
     double rlSpeed;
@@ -30,6 +30,7 @@ public class TeleOp extends OpMode {
 
     public DecodeBot Bot = new DecodeBot();
 
+    private boolean autoPosition = false;
     private Limelight3A limelight;
 
 
@@ -58,21 +59,57 @@ public class TeleOp extends OpMode {
         intakeControl();
         telemetryOutput();
         fieldCentricDrive();
-        camera();
+        autoPositioning();
     }
 
-    public void camera(){
-        LLResult result = limelight.getLatestResult();
-        telemetry.addData("LL Result: ", result);
-        //Fiducial results is a list - if the list size(number of AT seen) is 1 - show what tag it is
-        if (result.getFiducialResults().size() == 1){
-            telemetry.addData("Tags", result.getFiducialResults().get(0).getFiducialId());
+    public void autoPositioning(){
+       autoPosition = gamepad1.a;
+       if (!autoPosition){
+           return;
+       }
+       LLResult result = limelight.getLatestResult();
+       double txDifference = result.getTx() - targetTX;
+       double taDifference = result.getTy() - targetTY;
+
+       if (autoPosition){
+           if (result.getTx() < 0 - llTolerance){
+               Bot.strafeRight(1);
+
+           }
+           else if (result.getTx() > 0 + llTolerance){
+               Bot.strafeLeft(1);
+           }
+           else if((result.getTx()> 0 - llTolerance) && (result.getTx() < 0 + llTolerance)){
+               Bot.stopMotors();
+           }
+
+           if (result.getTa() < 0 - llTolerance){
+               Bot.driveForward(1);
+           }
+           else if (result.getTa() > 0 - llTolerance){
+               Bot.stopMotors();
+           }
+
         }
-        telemetry.update();
+
+
+       telemetry.addData("Tx Difference: ", txDifference);
+       telemetry.addData("Ta Difference: ", taDifference);
+       telemetry.addData("LL Ta:", result.getTa() );
+       telemetry.addData("LL Tx: ", result.getTx());
+       telemetry.update();
+
 
     }
 
     public void fieldCentricDrive(){
+
+        //if autoPosition is true, it's gonna ignore the rest of the code
+        if (autoPosition){
+            return;
+        }
+
+
         double y;
         double x;
         double rx;
@@ -177,20 +214,20 @@ public class TeleOp extends OpMode {
     }
 
     public void launcherControl(){
-        if(gamepad2.a){
-            Bot.ballLaunchHigher();
-        }
         if(gamepad2.b){
-            Bot.ballLaunchHigher();
+            Bot.ballIntakeStop();
         }
     }
 
     public void intakeControl(){
         if(gamepad2.y){
-            Bot.ballOuttake();
+            Bot.ballLaunch();
         }
         if(gamepad2.x){
             Bot.ballIntake();
+        }
+        if(gamepad2.dpad_up){
+            Bot.ballLaunchStop();
         }
     }
 

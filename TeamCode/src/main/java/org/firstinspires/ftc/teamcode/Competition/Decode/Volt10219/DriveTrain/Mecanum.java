@@ -57,7 +57,7 @@ public class Mecanum {
         imu.resetYaw();
     }
 
-    public void setMotors(){
+    public void stopMotors(){
         flMotor.setPower(0);
         frMotor.setPower(0);
         rlMotor.setPower(0);

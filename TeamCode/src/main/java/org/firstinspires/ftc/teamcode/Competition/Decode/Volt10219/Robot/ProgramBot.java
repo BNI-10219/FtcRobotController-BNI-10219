@@ -40,7 +40,7 @@ public class ProgramBot extends Mecanum {
 
 
         ballIntakeOne = hwBot.get(CRServo.class, "intake_one");
-        ballIntakeOne.setDirection(CRServo.Direction.FORWARD);
+        ballIntakeOne.setDirection(CRServo.Direction.REVERSE);
 
         ballIntakeTwo = hwBot.get(CRServo.class, "intake_two");
         ballIntakeTwo.setDirection(DcMotorSimple.Direction.FORWARD);
