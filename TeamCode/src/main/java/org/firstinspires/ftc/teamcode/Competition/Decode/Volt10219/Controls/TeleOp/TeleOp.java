@@ -19,9 +19,11 @@ public class TeleOp extends OpMode {
     double powerThreshold = 0;
     double speedMultiply = 1;
 
-    double targetTX = 7.415;
-    double targetTY = -0.9535;
-    double llTolerance = 0.2;
+
+    double targetTX = 23;
+    double targetTA = 3;
+    double llTolerance = 1.25;
+
 
     double flSpeed;
     double frSpeed;
@@ -69,29 +71,28 @@ public class TeleOp extends OpMode {
        }
        LLResult result = limelight.getLatestResult();
        double txDifference = result.getTx() - targetTX;
-       double taDifference = result.getTy() - targetTY;
+       double taDifference = result.getTy() - targetTA;
 
        if (autoPosition){
-           if (result.getTx() < 0 - llTolerance){
+           if (txDifference < 0 - llTolerance){
                Bot.strafeRight(1);
 
            }
-           else if (result.getTx() > 0 + llTolerance){
+           else if (txDifference > 0 + llTolerance){
                Bot.strafeLeft(1);
            }
-           else if((result.getTx()> 0 - llTolerance) && (result.getTx() < 0 + llTolerance)){
+           else if((txDifference> 0 - llTolerance) && (txDifference < 0 + llTolerance)){
                Bot.stopMotors();
            }
 
-           if (result.getTa() < 0 - llTolerance){
-               Bot.driveForward(1);
+           if (taDifference > 0 + llTolerance){
+               Bot.driveForward(0.5);
            }
-           else if (result.getTa() > 0 - llTolerance){
+           else if (taDifference < 0 + llTolerance){
                Bot.stopMotors();
            }
 
         }
-
 
        telemetry.addData("Tx Difference: ", txDifference);
        telemetry.addData("Ta Difference: ", taDifference);
@@ -99,17 +100,9 @@ public class TeleOp extends OpMode {
        telemetry.addData("LL Tx: ", result.getTx());
        telemetry.update();
 
-
     }
 
     public void fieldCentricDrive(){
-
-        //if autoPosition is true, it's gonna ignore the rest of the code
-        if (autoPosition){
-            return;
-        }
-
-
         double y;
         double x;
         double rx;
@@ -153,6 +146,7 @@ public class TeleOp extends OpMode {
         Bot.frMotor.setPower(frPower);
         Bot.rlMotor.setPower(rlPower);
         Bot.rrMotor.setPower(rrPower);
+
 
     }
     public void drive(){
@@ -213,21 +207,45 @@ public class TeleOp extends OpMode {
         }
     }
 
-    public void launcherControl(){
-        if(gamepad2.b){
-            Bot.ballIntakeStop();
-        }
-    }
+    //Old Intake
+//    public void intakeControl(){
+//        if(gamepad2.b){
+//            Bot.ballIntakeStop();
+//        }
+//        if(gamepad2.x){
+//            Bot.ballIntake();
+//        }
+//    }
 
+    public void launcherControl(){
+        if(gamepad2.dpad_up){
+            Bot.ballLaunchV();
+        }
+
+        if(gamepad2.dpad_down){
+            Bot.ballLaunchStop();
+        }
+        if(gamepad2.dpad_left){
+            Bot.ballLaunchMidV();
+        }
+        if(gamepad2.dpad_right){
+            Bot.ballLaunchBackField();
+        }
+
+
+    }
     public void intakeControl(){
         if(gamepad2.y){
-            Bot.ballLaunch();
+            Bot.ballOuttake();
         }
         if(gamepad2.x){
             Bot.ballIntake();
         }
-        if(gamepad2.dpad_up){
-            Bot.ballLaunchStop();
+        if(gamepad2.a){
+            Bot.intakeStop();
+        }
+        if(gamepad2.b){
+            Bot.ballIntakeHalf();
         }
     }
 

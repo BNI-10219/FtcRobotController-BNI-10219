@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Competition.Z20242025IntoTheDeep.Blue17241.Sensors;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -10,7 +11,7 @@ import org.firstinspires.ftc.teamcode.Competition.Z20242025IntoTheDeep.Blue17241
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-//@Disabled
+@Disabled
 @TeleOp (name = "RGB Light Color Sensor Tester")
 public class TesterRGBLightSensor extends OpMode{
 

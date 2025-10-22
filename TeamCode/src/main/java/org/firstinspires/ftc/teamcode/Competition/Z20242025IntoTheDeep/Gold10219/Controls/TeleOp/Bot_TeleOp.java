@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Competition.Z20242025IntoTheDeep.Gold1021
 //import com.pedropathing.follower.Follower;
 //import com.pedropathing.localization.Pose;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -19,6 +20,7 @@ import org.firstinspires.ftc.teamcode.Competition.Z20242025IntoTheDeep.Gold10219
 
 import java.util.concurrent.TimeUnit;
 
+@Disabled
 @TeleOp(name = "A - Into the Deep", group = "competition")
 public class Bot_TeleOp extends OpMode {
 

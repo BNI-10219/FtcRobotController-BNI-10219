@@ -1,17 +1,24 @@
 package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Robot;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.DriveTrain.Mecanum;
 
 public class DecodeBot extends Mecanum {
     public HardwareMap hwBot = null;
 
-    //servos and mechanisms\
 
+    public double velocity = 500;
+    public double velocity_low = 200;
+    public double velocity_med = 1200;
+    public double velocity_high = 2300;
 
     public DecodeBot() {
     }
@@ -36,29 +43,21 @@ public class DecodeBot extends Mecanum {
         rlMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rrMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        ballIntake = hwBot.dcMotor.get("ball_intake");
-        ballIntake.setDirection(DcMotor.Direction.FORWARD);
-        ballIntake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        ballIntakeOne = hwBot.get(CRServo.class, "intake_one");
+        ballIntakeOne.setDirection(CRServo.Direction.FORWARD);
 
+        ballIntakeTwo = hwBot.get(CRServo.class, "intake_two");
+        ballIntakeTwo.setDirection(CRServo.Direction.REVERSE);
 
+        ballLaunchOne = hwBot.get(DcMotorEx.class, "ball_launch_one");
+        ballLaunchOne.setDirection(DcMotorSimple.Direction.FORWARD);
+        ballLaunchOne.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        ballLaunchOne.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-//        ballIntakeOne = hwBot.get(CRServo.class, "intake_one");
-//        ballIntakeOne.setDirection(CRServo.Direction.FORWARD);
-//
-//        ballIntakeTwo = hwBot.get(CRServo.class, "intake_two");
-//        ballIntakeTwo.setDirection(DcMotorSimple.Direction.FORWARD);
-
-
-
-        ballLaunchOne = hwBot.dcMotor.get("ball_launch_one");
-        ballLaunchOne.setDirection(DcMotor.Direction.FORWARD);
-        ballLaunchOne.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        ballLaunchTwo = hwBot.dcMotor.get("ball_launch_two");
-        ballLaunchTwo.setDirection(DcMotor.Direction.FORWARD);
-        ballLaunchTwo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-
+        ballLaunchTwo = hwBot.get(DcMotorEx.class, "ball_launch_two");
+        ballLaunchTwo.setDirection(DcMotorSimple.Direction.FORWARD);
+        ballLaunchTwo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        ballLaunchTwo.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
         //IMU for Control Hub
@@ -71,16 +70,56 @@ public class DecodeBot extends Mecanum {
         //init mechanisms
     }
 
-    public void ballIntake() {
-        ballIntake.setPower(-0.5);
+    public void ballOuttake() {
+        //ballIntake.setPower(0.5);
 
+        ballIntakeOne.setPower(-1);
+        ballIntakeTwo.setPower(-1);
     }
 
-    public void ballLaunch() {
-        //ballIntake.setPower(0);
+    public void ballIntake() {
+        ballIntakeOne.setPower(1);
+        ballIntakeTwo.setPower(1);
+    }
+    public void ballIntakeHalf() {
+        ballIntakeOne.setPower(0.5);
+        ballIntakeTwo.setPower(0.5);
+    }
 
-        ballLaunchTwo.setPower(0.5);
-        ballLaunchOne.setPower(0.5);
+    public void intakeStop(){
+        ballIntakeOne.setPower(0);
+        ballIntakeTwo.setPower(0);
+    }
+
+
+    public void ballLaunchV() {
+        velocity = velocity_med;
+        velocity = Range.clip(velocity, 0, 5000);
+        ballLaunchOne.setVelocity(velocity);
+        ballLaunchTwo.setVelocity(velocity);
+
+//        ballLaunchTwo.setPower(0.425);
+//        ballLaunchOne.setPower(0.425);
+    }
+
+    public void ballLaunchMidV(){
+        velocity = velocity_low;
+        velocity = Range.clip(velocity, 0, 5000);
+        ballLaunchOne.setVelocity(velocity);
+        ballLaunchTwo.setVelocity(velocity);
+
+//        ballLaunchTwo.setPower(0.225);
+//        ballLaunchOne.setPower(0.225);
+    }
+
+    public void ballLaunchBackField(){
+        velocity = velocity_high;
+        velocity = Range.clip(velocity, 0, 5000);
+        ballLaunchOne.setVelocity(velocity);
+        ballLaunchTwo.setVelocity(velocity);
+
+//        ballLaunchTwo.setPower(0.625);
+//        ballLaunchOne.setPower(0.625);
     }
 
     public void ballLaunchStop(){
@@ -89,9 +128,9 @@ public class DecodeBot extends Mecanum {
     }
 
 
-    public void ballIntakeStop() {
-        ballIntake.setPower(0);
-    }
+//    public void ballIntakeStop() {
+//        ballIntake.setPower(0);
+//    }
 
 //    public void ballLaunch(double speed, double rotations) {
 //        double ticks = rotations * TICKS_PER_ROTATION;

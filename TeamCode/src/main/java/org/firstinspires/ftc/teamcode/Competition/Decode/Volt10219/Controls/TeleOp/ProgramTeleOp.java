@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.TeleOp;
 
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
@@ -18,6 +20,10 @@ public class ProgramTeleOp extends OpMode {
     double powerThreshold = 0;
     double speedMultiply = 1;
 
+    double targetTX = 0;
+    double targetTA = 20;
+    double txTolerance = 9;
+    double taTolerance = 4;
 
     double flSpeed;
     double frSpeed;
@@ -26,14 +32,22 @@ public class ProgramTeleOp extends OpMode {
 
     public ProgramBot Bot = new ProgramBot();
 
+    private boolean autoPosition = false;
+    private Limelight3A limelight;
+
     @Override
     public void init(){
         Bot.initRobot(hardwareMap);
+        limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        telemetry.setMsTransmissionInterval(11);
+        limelight.pipelineSwitch(0);
     }
 
     public void init_loop(){}
 
-    public void start(){}
+    public void start(){
+        limelight.start();
+    }
 
     @Override
     public void loop(){
@@ -42,6 +56,50 @@ public class ProgramTeleOp extends OpMode {
         telemetryOutput();
         fieldCentricDrive();
         intakeControl();
+        autoPositioning();
+    }
+
+    public void autoPositioning(){
+        autoPosition = gamepad1.a;
+        if (!autoPosition){return;}
+
+        LLResult result = limelight.getLatestResult();
+
+        if (result == null || !result.isValid()) {
+            telemetry.addLine("No valid LL target");
+            Bot.stopMotors();
+            telemetry.update();
+            return;
+        }
+
+        double txDifference = result.getTx() - targetTX;
+        double taDifference = result.getTa() - targetTA;
+
+        telemetry.addData("Tx Difference: ", txDifference);
+        telemetry.addData("Ta Difference: ", taDifference);
+        telemetry.addData("LL Ta:", result.getTa() );
+        telemetry.addData("LL Tx: ", result.getTx());
+        telemetry.update();
+
+
+
+        if (autoPosition){
+            if (txDifference <  -txTolerance){
+                Bot.strafeRight(.5);
+            }
+            else if (txDifference > txTolerance){
+                Bot.strafeLeft(.5);
+            }
+            else if (taDifference > taTolerance){
+                Bot.driveForward(0.2);
+            }
+            else if (taDifference < -taTolerance){
+                Bot.driveBack(.3);
+            }
+            else {
+                Bot.stopMotors();
+            }
+        }
     }
 
     public void fieldCentricDrive(){

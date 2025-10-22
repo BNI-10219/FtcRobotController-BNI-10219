@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Competition.Z20242025IntoTheDeep.Blue17241.ZOutreach;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
@@ -7,7 +8,7 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.Competition.Z20242025IntoTheDeep.Blue17241.ZOutreach.IMBot.IMBot;
 
 
-//@Disabled
+@Disabled
 @TeleOp( name = "Tank Drive")
 
 public class TeleOpTankDrive extends OpMode {

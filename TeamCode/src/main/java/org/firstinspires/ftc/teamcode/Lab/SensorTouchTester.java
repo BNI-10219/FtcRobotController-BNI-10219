@@ -47,6 +47,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
+@Disabled
 @TeleOp(name = "Sensor Touch Tester", group = "Lab")
 //@Disabled
 public class SensorTouchTester extends LinearOpMode {

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Competition.Z20242025IntoTheDeep.Blue17241.Controls.Tester.Pinpoint;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -13,6 +14,7 @@ import org.firstinspires.ftc.teamcode.Competition.Z20242025IntoTheDeep.Blue17241
 
 import java.util.Locale;
 
+@Disabled
 @TeleOp (name = "Tester:TeleOp Odometry", group = "Testers")
 public class TesterPinpointTeleOp extends OpMode {
 
