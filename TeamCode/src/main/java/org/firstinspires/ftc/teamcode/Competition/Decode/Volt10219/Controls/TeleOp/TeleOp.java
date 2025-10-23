@@ -218,40 +218,40 @@ public class TeleOp extends OpMode {
 //    }
 
     public void launcherControl(){
-        if(gamepad2.dpad_up){
+        if(gamepad2.x){
             Bot.ballLaunchV();
         }
 
-        if(gamepad2.dpad_down){
+        if(gamepad2.y){
             Bot.ballLaunchStop();
         }
-        if(gamepad2.dpad_left){
+        if(gamepad2.right_bumper){
             Bot.ballLaunchMidV();
         }
-        if(gamepad2.dpad_right){
+        if(gamepad2.right_trigger > 0.001){
             Bot.ballLaunchBackField();
         }
 
 
     }
     public void intakeControl(){
-        if(gamepad2.y){
+        if(gamepad2.dpad_left){
             Bot.ballOuttake();
         }
-        if(gamepad2.x){
+        if(gamepad2.dpad_right){
             Bot.ballIntake();
         }
-        if(gamepad2.a){
+        if(gamepad2.b){
             Bot.intakeStop();
         }
-        if(gamepad2.b){
+        if(gamepad2.a){
             Bot.ballIntakeHalf();
         }
 
-        if(gamepad1.a){
+        if(gamepad1.b){
             Bot.artifactPushReset();
         }
-        if(gamepad1.b){
+        if(gamepad1.dpad_down){
             Bot.artifactPushIntake();
         }
     }
@@ -276,6 +276,9 @@ public class TeleOp extends OpMode {
     }
 
     public void telemetryOutput(){
+        telemetry.addData("Launcher One: " + Bot.ballLaunchOne.);
+        telemetry.addData(Bot.ballLaunchOne.getVelocity());
+        telemetry.addData(Bot.ballLaunchTwo.getVelocity());
         telemetry.update();
     }
 }
