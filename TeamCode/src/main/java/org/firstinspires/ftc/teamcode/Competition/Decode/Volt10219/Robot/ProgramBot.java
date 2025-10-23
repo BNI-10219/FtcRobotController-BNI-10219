@@ -20,7 +20,7 @@ public class ProgramBot extends Mecanum {
 
     public void initRobot(HardwareMap hwBot) {
 
-        flMotor = hwBot.dcMotor.get("front_left_motor"); // CH Port 0
+        flMotor = hwBot.dcMotor.get("front_Left_motor"); // CH Port 0
         frMotor = hwBot.dcMotor.get("front_right_motor"); // CH Port 1
         rlMotor = hwBot.dcMotor.get("rear_left_motor"); // CH Port 2
         rrMotor = hwBot.dcMotor.get("rear_right_motor"); // CH Port 3

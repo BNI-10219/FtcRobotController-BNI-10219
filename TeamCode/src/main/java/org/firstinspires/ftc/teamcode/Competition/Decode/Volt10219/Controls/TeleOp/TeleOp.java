@@ -247,6 +247,13 @@ public class TeleOp extends OpMode {
         if(gamepad2.b){
             Bot.ballIntakeHalf();
         }
+
+        if(gamepad1.a){
+            Bot.artifactPushReset();
+        }
+        if(gamepad1.b){
+            Bot.artifactPushIntake();
+        }
     }
 
 //    public void stateControl(){

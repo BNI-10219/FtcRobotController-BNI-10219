@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.DriveTrain.Mecanum;
@@ -59,6 +60,8 @@ public class DecodeBot extends Mecanum {
         ballLaunchTwo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         ballLaunchTwo.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        artifactPush = hwBot.servo.get("artifact_push");
+        artifactPush.setDirection(Servo.Direction.FORWARD);
 
         //IMU for Control Hub
         RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
@@ -127,6 +130,13 @@ public class DecodeBot extends Mecanum {
         ballLaunchOne.setPower(0);
     }
 
+
+    public void artifactPushReset(){
+        artifactPush.setPosition(0);
+    }
+    public void artifactPushIntake(){
+        artifactPush.setPosition(0.5);
+    }
 
 //    public void ballIntakeStop() {
 //        ballIntake.setPower(0);

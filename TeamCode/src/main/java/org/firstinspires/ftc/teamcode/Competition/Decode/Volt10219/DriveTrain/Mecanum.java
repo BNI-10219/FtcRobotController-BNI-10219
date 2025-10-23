@@ -24,6 +24,8 @@ public class Mecanum {
 
     public CRServo ballIntakeOne = null;
     public CRServo ballIntakeTwo = null;
+
+    public Servo artifactPush = null;
     public DcMotorEx ballLaunchOne = null;
     public DcMotorEx ballLaunchTwo = null;
 
