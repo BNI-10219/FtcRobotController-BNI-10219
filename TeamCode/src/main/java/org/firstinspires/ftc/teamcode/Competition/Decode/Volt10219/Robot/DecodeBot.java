@@ -130,27 +130,15 @@ public class DecodeBot extends Mecanum {
         ballLaunchOne.setPower(0);
     }
 
-
     public void artifactPushReset(){
-        artifactPush.setPosition(0);
+        artifactPush.setPosition(0.95);
     }
     public void artifactPushIntake(){
-        artifactPush.setPosition(0.5);
+        artifactPush.setPosition(0.4825);
+    }
+    public void artifactPushTwo(){
+        artifactPush.setPosition(0.625);
     }
 
-//    public void ballIntakeStop() {
-//        ballIntake.setPower(0);
-//    }
-
-//    public void ballLaunch(double speed, double rotations) {
-//        double ticks = rotations * TICKS_PER_ROTATION;
-//        setMotorRunModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        setMotorRunModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//        while ((Math.abs(ballLaunchOne.getCurrentPosition())) < ticks && ((Math.abs(ballLaunchTwo.getCurrentPosition()) < ticks) && LinearOp.opModeIsActive())) {
-//            {
-//                ballLaunch();
-//            }
-//        }
-//    }
 
 }

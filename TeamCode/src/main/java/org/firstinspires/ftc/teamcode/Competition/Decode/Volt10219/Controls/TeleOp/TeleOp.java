@@ -59,13 +59,14 @@ public class TeleOp extends OpMode {
         //drive();
         launcherControl();
         intakeControl();
+        artifactPushControl();
         telemetryOutput();
         fieldCentricDrive();
         autoPositioning();
     }
 
     public void autoPositioning(){
-       autoPosition = gamepad1.a;
+       autoPosition = gamepad1.dpad_down;
        if (!autoPosition){
            return;
        }
@@ -247,12 +248,18 @@ public class TeleOp extends OpMode {
         if(gamepad2.a){
             Bot.ballIntakeHalf();
         }
+    }
+
+    public void artifactPushControl(){
 
         if(gamepad1.b){
             Bot.artifactPushReset();
         }
-        if(gamepad1.dpad_down){
+        if(gamepad1.a){
             Bot.artifactPushIntake();
+        }
+        if(gamepad1.y){
+            Bot.artifactPushTwo();
         }
     }
 
@@ -266,19 +273,18 @@ public class TeleOp extends OpMode {
 //    }
 
     public void speedControl(){
-        if(gamepad1.dpad_up){
+        if(gamepad1.left_bumper){
             speedMultiply = 1;
         }
-        else if(gamepad1.dpad_down){
+        else if(gamepad1.left_trigger>0.1){
             speedMultiply = .5;
         }
 
     }
 
     public void telemetryOutput(){
-        telemetry.addData("Launcher One: " + Bot.ballLaunchOne.);
-        telemetry.addData(Bot.ballLaunchOne.getVelocity());
-        telemetry.addData(Bot.ballLaunchTwo.getVelocity());
+        telemetry.addData("Launcher One: ", Math.abs(Bot.ballLaunchOne.getVelocity()));
+        telemetry.addData("Launcher Two: ", Bot.ballLaunchTwo.getVelocity());
         telemetry.update();
     }
 }

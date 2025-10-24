@@ -3,12 +3,13 @@ package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Aut
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Robot.DecodeBot;
 
 
-public abstract class AutoMain extends LinearOpMode {
+public abstract class AutoMain extends OpMode {
     public DecodeBot Bot = new DecodeBot();
 
     private Limelight3A limelight;
@@ -81,6 +82,11 @@ public abstract class AutoMain extends LinearOpMode {
         telemetry.addData("LL Ta:", result.getTa() );
         telemetry.addData("LL Tx: ", result.getTx());
         telemetry.update();
+
+    }
+
+    //autoPositioning(); - call in whichever state I want it to be in
+    public void loop(){
 
     }
 
