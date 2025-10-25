@@ -237,10 +237,10 @@ public class TeleOp extends OpMode {
 
     }
     public void intakeControl(){
-        if(gamepad2.dpad_left){
+        if(gamepad2.dpad_right){
             Bot.ballOuttake();
         }
-        if(gamepad2.dpad_right){
+        if(gamepad2.dpad_left){
             Bot.ballIntake();
         }
         if(gamepad2.b){

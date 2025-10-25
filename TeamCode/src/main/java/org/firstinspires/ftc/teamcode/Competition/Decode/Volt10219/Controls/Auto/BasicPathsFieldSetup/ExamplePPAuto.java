@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Blue.Paths;
+package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.BasicPathsFieldSetup;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
 
 @Autonomous(name = "Example Auto", group = "Examples")
-public abstract class BasicLLwPPBlue extends BlueAlliance {
+public class ExamplePPAuto extends BlueAlliance {
     private Follower follower;
     private Timer pathTimer, actionTimer, opmodeTimer;
     private int pathState;
@@ -145,19 +145,6 @@ public abstract class BasicLLwPPBlue extends BlueAlliance {
         pathState = pState;
         pathTimer.resetTimer();
     }
-    /** This is the main loop of the OpMode, it will run repeatedly after clicking "Play". **/
-    @Override
-    public void loop() {
-        // These loop the movements of the robot, these must be called continuously in order to work
-        follower.update();
-        autonomousPathUpdate();
-        // Feedback to Driver Hub for debugging
-        telemetry.addData("path state", pathState);
-        telemetry.addData("x", follower.getPose().getX());
-        telemetry.addData("y", follower.getPose().getY());
-        telemetry.addData("heading", follower.getPose().getHeading());
-        telemetry.update();
-    }
     /** This method is called once at the init of the OpMode. **/
     @Override
     public void init() {
@@ -177,6 +164,19 @@ public abstract class BasicLLwPPBlue extends BlueAlliance {
     public void start() {
         opmodeTimer.resetTimer();
         setPathState(0);
+    }
+    /** This is the main loop of the OpMode, it will run repeatedly after clicking "Play". **/
+    @Override
+    public void loop() {
+        // These loop the movements of the robot, these must be called continuously in order to work
+        follower.update();
+        autonomousPathUpdate();
+        // Feedback to Driver Hub for debugging
+        telemetry.addData("path state", pathState);
+        telemetry.addData("x", follower.getPose().getX());
+        telemetry.addData("y", follower.getPose().getY());
+        telemetry.addData("heading", follower.getPose().getHeading());
+        telemetry.update();
     }
     /** We do not use this because everything should automatically disable **/
     @Override
