@@ -325,6 +325,7 @@ class ForwardVelocityTuner extends OpMode {
     public static double DISTANCE = 24;
     public static double RECORD_NUMBER = 10;
 
+    double startY;
     private boolean end;
 
     @Override
@@ -350,6 +351,7 @@ class ForwardVelocityTuner extends OpMode {
         for (int i = 0; i < RECORD_NUMBER; i++) {
             velocities.add(0.0);
         }
+        startY = Tuning.follower.getPose().getY();
         Tuning.follower.startTeleopDrive(true);
         Tuning.follower.update();
         end = false;
@@ -363,7 +365,7 @@ class ForwardVelocityTuner extends OpMode {
      */
     @Override
     public void loop() {
-        if (gamepad1.bWasPressed()) {
+        if (gamepad1.b) {
             Tuning.stopRobot();
             requestOpModeStop();
 
@@ -379,8 +381,8 @@ class ForwardVelocityTuner extends OpMode {
                 Tuning.stopRobot();
             } else {
                 Tuning.follower.setTeleOpDrive(1,0,0,true);
-                //double currentVelocity = Math.abs(follower.getVelocity().getXComponent());
-                double currentVelocity = Math.abs(Tuning.follower.poseTracker.getLocalizer().getVelocity().getX());
+                double currentVelocity = Math.abs(Tuning.follower.getVelocity().getXComponent());
+                //double currentVelocity = Math.abs(Tuning.follower.poseTracker.getLocalizer().getVelocity().getX());
                 velocities.add(currentVelocity);
                 velocities.remove(0);
             }
@@ -434,6 +436,8 @@ class LateralVelocityTuner extends OpMode {
 
     private boolean end;
 
+    double startY;
+
     @Override
     public void init() {}
 
@@ -459,6 +463,7 @@ class LateralVelocityTuner extends OpMode {
         for (int i = 0; i < RECORD_NUMBER; i++) {
             velocities.add(0.0);
         }
+        startY = Tuning.follower.getPose().getY();
         Tuning.follower.startTeleopDrive(true);
         Tuning.follower.update();
     }
@@ -471,7 +476,7 @@ class LateralVelocityTuner extends OpMode {
      */
     @Override
     public void loop() {
-        if (gamepad1.bWasPressed()) {
+        if (gamepad1.b) {
             Tuning.stopRobot();
             requestOpModeStop();
         }
@@ -480,12 +485,12 @@ class LateralVelocityTuner extends OpMode {
         Tuning.drawCurrentAndHistory();
 
         if (!end) {
-            if (Math.abs(Tuning.follower.getPose().getY()) > DISTANCE) {
+            if (Math.abs(Tuning.follower.getPose().getY()-startY) >= DISTANCE) {
                 end = true;
                 Tuning.stopRobot();
             } else {
                 Tuning.follower.setTeleOpDrive(0,1,0,true);
-                double currentVelocity = Math.abs(Tuning.follower.getVelocity().dot(new Vector(1, Math.PI / 2)));
+                double currentVelocity = Math.abs(Tuning.follower.getVelocity().getXComponent());
                 velocities.add(currentVelocity);
                 velocities.remove(0);
             }
