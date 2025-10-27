@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.BasicPathsFieldSetup;
+package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.ProgramPedro.Tester;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
@@ -8,10 +8,11 @@ import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Blue.BlueAlliance;
+import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.ProgramPedro.AutoMainProgram;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
 
-@Autonomous(name = "Field Coordinate Testing", group = "Examples")
-public class FieldCoordinates extends BlueAlliance {
+@Autonomous(name = "Field Coordinate Testing Program", group = "Examples")
+public class FieldCoordinatesProgram extends AutoMainProgram {
 
     Follower follower;
 
@@ -48,8 +49,8 @@ public class FieldCoordinates extends BlueAlliance {
                 if(!follower.isBusy()) {
                     follower.followPath(xTest);
                     setPathState(2);
-                    break;
                 }
+                break;
             case 2:
                 if(!follower.isBusy()){
                     setPathState(-1);

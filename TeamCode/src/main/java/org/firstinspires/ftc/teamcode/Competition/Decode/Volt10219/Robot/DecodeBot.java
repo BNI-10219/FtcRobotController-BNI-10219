@@ -31,10 +31,10 @@ public class DecodeBot extends Mecanum {
         rlMotor = hwBot.dcMotor.get("rear_left_motor"); // CH Port 2
         rrMotor = hwBot.dcMotor.get("rear_right_motor"); // CH Port 3
 
-        flMotor.setDirection(DcMotor.Direction.REVERSE);
-        frMotor.setDirection(DcMotor.Direction.FORWARD);
-        rlMotor.setDirection(DcMotor.Direction.REVERSE);
-        rrMotor.setDirection(DcMotor.Direction.FORWARD);
+        flMotor.setDirection(DcMotor.Direction.FORWARD);
+        frMotor.setDirection(DcMotor.Direction.REVERSE);
+        rlMotor.setDirection(DcMotor.Direction.FORWARD);
+        rrMotor.setDirection(DcMotor.Direction.REVERSE);
 
         setMotorRunModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         setMotorRunModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
