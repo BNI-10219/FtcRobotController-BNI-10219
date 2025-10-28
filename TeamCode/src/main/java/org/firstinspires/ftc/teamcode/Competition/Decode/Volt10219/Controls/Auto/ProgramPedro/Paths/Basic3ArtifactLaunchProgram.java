@@ -21,8 +21,8 @@ public class Basic3ArtifactLaunchProgram extends AutoMainProgram {
     private int pathState;
 
     private final Pose startPose = new Pose(9, 66, Math.toDegrees(180));
-    private final Pose launchPose = new Pose(18, 66, Math.toDegrees(180));
-    private final Pose anglePose = new Pose(18, 66, Math.toDegrees(90));
+    private final Pose launchPose = new Pose(18, 66, Math.toDegrees(90));
+    //private final Pose anglePose = new Pose(18, 66, Math.toDegrees(90));
 
     private PathChain driveToPos, angle;
 
@@ -32,10 +32,10 @@ public class Basic3ArtifactLaunchProgram extends AutoMainProgram {
                 .setLinearHeadingInterpolation(startPose.getHeading(), launchPose.getHeading())
                 .build();
 
-        angle = follower.pathBuilder()
-                .addPath(new BezierCurve(launchPose, anglePose))
-                .setLinearHeadingInterpolation(launchPose.getHeading(), anglePose.getHeading())
-                .build();
+//        angle = follower.pathBuilder()
+//                .addPath(new BezierCurve(launchPose, anglePose))
+//                .setLinearHeadingInterpolation(launchPose.getHeading(), anglePose.getHeading())
+//                .build();
     }
 
 
@@ -49,8 +49,8 @@ public class Basic3ArtifactLaunchProgram extends AutoMainProgram {
                 if(!follower.isBusy()) {
                     follower.followPath(angle);
                     setPathState(2);
-                    break;
                 }
+                break;
             case 2:
                 if(!follower.isBusy()){
                     setPathState(-1);

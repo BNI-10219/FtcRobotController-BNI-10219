@@ -20,8 +20,8 @@ public class Basic3ArtifactLaunch extends BlueAlliance {
     private int pathState;
 
     private final Pose startPose = new Pose(9, 66, Math.toDegrees(180));
-    private final Pose launchPose = new Pose(18, 66, Math.toDegrees(180));
-    private final Pose anglePose = new Pose(18, 66, Math.toDegrees(-25));
+    private final Pose launchPose = new Pose(18, 66, Math.toDegrees(9));
+    //private final Pose anglePose = new Pose(18, 66, Math.toDegrees(-25));
 
     private PathChain driveToPos, angle;
 
@@ -31,10 +31,10 @@ public class Basic3ArtifactLaunch extends BlueAlliance {
                 .setLinearHeadingInterpolation(startPose.getHeading(), launchPose.getHeading())
                 .build();
 
-        angle = follower.pathBuilder()
-                .addPath(new BezierCurve(launchPose, anglePose))
-                .setLinearHeadingInterpolation(launchPose.getHeading(), anglePose.getHeading())
-                .build();
+//        angle = follower.pathBuilder()
+//                .addPath(new BezierCurve(launchPose, anglePose))
+//                .setLinearHeadingInterpolation(launchPose.getHeading(), anglePose.getHeading())
+//                .build();
     }
 
 
@@ -47,9 +47,9 @@ public class Basic3ArtifactLaunch extends BlueAlliance {
             case 1:
                 if(!follower.isBusy()) {
                     follower.followPath(angle);
-                    setPathState(2);
-                    break;
+                    setPathState(-1);
                 }
+                break;
             case 2:
                 if(!follower.isBusy()){
                     setPathState(-1);
