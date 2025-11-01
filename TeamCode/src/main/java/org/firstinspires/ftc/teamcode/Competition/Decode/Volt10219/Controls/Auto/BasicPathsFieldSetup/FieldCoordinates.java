@@ -19,9 +19,9 @@ public class FieldCoordinates extends BlueAlliance {
 
     private int pathState;
 
-    private final Pose startPose = new Pose(0, 72, Math.toDegrees(0));
-    private final Pose ytestPose = new Pose(72, 72, Math.toDegrees(0));
-    private final Pose xtestPose = new Pose(72, 98, Math.toDegrees(0));
+    private final Pose startPose = new Pose(0, 72, Math.toRadians(0));
+    private final Pose ytestPose = new Pose(72, 72, Math.toRadians(0));
+    private final Pose xtestPose = new Pose(72, 98, Math.toRadians(0));
 
     private PathChain yTest, xTest;
 

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.ProgramPedro.Tester;
+package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.ZProgramPedro.Tester;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
@@ -7,8 +7,7 @@ import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Blue.BlueAlliance;
-import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.ProgramPedro.AutoMainProgram;
+import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.ZProgramPedro.AutoMainProgram;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
 
 @Autonomous(name = "Field Coordinate Testing Program", group = "Examples")
@@ -20,13 +19,13 @@ public class FieldCoordinatesProgram extends AutoMainProgram {
 
     private int pathState;
 
-    private final Pose startPose = new Pose(0, 72, Math.toDegrees(0));
-    private final Pose ytestPose = new Pose(72, 72, Math.toDegrees(0));
-    private final Pose xtestPose = new Pose(72, 98, Math.toDegrees(0));
+    private final Pose startPose = new Pose(56, 8, Math.toDegrees(0));//0, 72
+    private final Pose ytestPose = new Pose(90, 90, Math.toDegrees(90));//72, 72
+    private final Pose xtestPose = new Pose(50, 40, Math.toDegrees(50));//72, 98
 
     private PathChain yTest, xTest;
 
-    public void buildPaths(){
+    private void buildPaths(){
         yTest = follower.pathBuilder()
                 .addPath(new BezierCurve(startPose, ytestPose))
                 .setLinearHeadingInterpolation(startPose.getHeading(), ytestPose.getHeading())
@@ -39,7 +38,7 @@ public class FieldCoordinatesProgram extends AutoMainProgram {
     }
 
 
-    public void pathStates(){
+    private void pathStates(){
         switch(pathState){
             case 0:
                 follower.followPath(yTest);
@@ -60,7 +59,7 @@ public class FieldCoordinatesProgram extends AutoMainProgram {
 
     }
 
-    public void setPathState(int pState){
+    private void setPathState(int pState){
         pathState = pState;
         pathTimer.resetTimer();
     }

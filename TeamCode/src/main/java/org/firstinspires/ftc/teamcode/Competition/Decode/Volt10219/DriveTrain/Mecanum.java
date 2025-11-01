@@ -82,17 +82,18 @@ public class Mecanum {
     }
 
     public void turnLeft(double speed){
-        flMotor.setPower(-speed);
-        frMotor.setPower(speed);
-        rlMotor.setPower(-speed);
-        rrMotor.setPower(speed);
-    }
-
-    public void turnRight(double speed){
         flMotor.setPower(speed);
         frMotor.setPower(-speed);
         rlMotor.setPower(speed);
         rrMotor.setPower(-speed);
+    }
+
+    public void turnRight(double speed){
+        flMotor.setPower(-speed);
+        frMotor.setPower(speed);
+        rlMotor.setPower(-speed);
+        rrMotor.setPower(speed);
+
     }
 
     public void strafeLeft(double speed){

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Blue.Paths;
+package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Blue.Paths.Audience;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
