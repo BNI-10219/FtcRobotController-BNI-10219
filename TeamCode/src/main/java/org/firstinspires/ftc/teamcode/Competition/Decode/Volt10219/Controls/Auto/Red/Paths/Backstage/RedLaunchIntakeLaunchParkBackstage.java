@@ -10,6 +10,7 @@ import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.RedAlliance;
+import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Robot.DecodeBot;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
 
 @Autonomous(name = "Red Launch Intake Launch Park Backstage")
@@ -18,6 +19,8 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
     Follower follower;
 
     private PathState pathState = PathState.READY;
+
+    public DecodeBot Bot = new DecodeBot();
 
     private Timer pathTimer, opmodeTimer;
 
