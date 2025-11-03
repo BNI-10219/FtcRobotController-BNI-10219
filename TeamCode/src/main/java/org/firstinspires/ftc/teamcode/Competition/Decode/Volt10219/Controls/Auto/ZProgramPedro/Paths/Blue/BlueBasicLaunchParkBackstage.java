@@ -16,9 +16,10 @@ public class BlueBasicLaunchParkBackstage extends AutoMainProgram {
 
     private PathState pathState = PathState.READY;
 
-    private final Pose startPose = new Pose(117, 131, Math.toDegrees(-143));
-    private final Pose launch = new Pose(85, 84, Math.toDegrees(45));
-    private final Pose park = new Pose(90, 40, Math.toDegrees(90));
+    private final Pose startPose = new Pose(120, 132, Math.toRadians(315));//-135
+//    private final Pose launch = new Pose(72, 12, Math.toRadians(-45));//-135 //72-12- -45 = X up
+    private final Pose launch = new Pose(84, 84, Math.toRadians(315));//-135 //72-12- -45 = X up
+    //private final Pose park = new Pose(36, 108, Math.toDegrees(180));//90
 
     private PathChain launchPath, parkPath;
 
@@ -28,10 +29,10 @@ public class BlueBasicLaunchParkBackstage extends AutoMainProgram {
                 .setLinearHeadingInterpolation(startPose.getHeading(), launch.getHeading())
                 .build();
 
-        parkPath = follower.pathBuilder()
-                .addPath(new BezierCurve(launch, park))
-                .setLinearHeadingInterpolation(launch.getHeading(), park.getHeading())
-                .build();
+//        parkPath = follower.pathBuilder()
+//                .addPath(new BezierCurve(launch, park))
+//                .setLinearHeadingInterpolation(launch.getHeading(), park.getHeading())
+//                .build();
     }
 
     public enum PathState{

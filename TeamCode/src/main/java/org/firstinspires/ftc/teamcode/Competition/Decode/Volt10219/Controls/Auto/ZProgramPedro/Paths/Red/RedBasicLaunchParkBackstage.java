@@ -22,9 +22,9 @@ public class RedBasicLaunchParkBackstage extends AutoMainProgram {
 //    private final Pose launch = new Pose(84, 60, Math.toDegrees(135));
 //    private final Pose park = new Pose(36, 36, Math.toDegrees(-90));
 
-    private final Pose startPose = new Pose(20, 132, Math.toDegrees(-45));
-    private final Pose launch = new Pose(60, 84, Math.toDegrees(135));
-    private final Pose park = new Pose(48, 34, Math.toDegrees(180));
+    private final Pose startPose = new Pose(20, 132, Math.toRadians(-45));
+    private final Pose launch = new Pose(60, 84, Math.toRadians(135));
+    private final Pose park = new Pose(48, 34, Math.toRadians(180));
 
     private PathChain launchPath, parkPath;
 

@@ -18,9 +18,9 @@ public class BlueBasicLaunchParkAudience extends AutoMainProgram {
 
     private PathState pathState = PathState.READY;
 
-    private final Pose startPose = new Pose(100, 8, Math.toDegrees(90));//test out angles
-    private final Pose launch = new Pose(85, 84, Math.toDegrees(45));
-    private final Pose park = new Pose(108, 36, Math.toDegrees(0));
+    private final Pose startPose = new Pose(100, 8, Math.toRadians(90));//test out angles
+    private final Pose launch = new Pose(85, 84, Math.toRadians(45));
+    private final Pose park = new Pose(108, 36, Math.toRadians(0));
 
     private PathChain launchPath, parkPath;
 

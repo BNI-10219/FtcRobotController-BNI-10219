@@ -289,16 +289,19 @@ public class TeleOp extends OpMode {
     }
 
     public void artifactPushControl(){
-        if(gamepad1.b){
-            Bot.artifactPushReset();
+        if(gamepad1.b ){
+            Bot.artifactPushTwo();
         }
 
         if(gamepad1.a){
-            Bot.artifactPushTwo();
+            Bot.artifactPushReset();
         }
-        else{
+        if(gamepad1.y){
             Bot.artifactPushIntake();
         }
+//        else{
+//            Bot.artifactPushIntake();
+//        }
     }
 
 //    public void stateControl(){

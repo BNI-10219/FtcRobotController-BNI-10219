@@ -19,9 +19,9 @@ public class FieldCoordinatesProgram extends AutoMainProgram {
 
     private int pathState;
 
-    private final Pose startPose = new Pose(100, 8, Math.toDegrees(90));//   56, 8,0 0, 72
-    private final Pose ytestPose = new Pose(85, 81, Math.toDegrees(45));//90, 90, 90 72, 72
-    private final Pose xtestPose = new Pose(90, 40, Math.toDegrees(0));// 50,40,50 72, 98
+    private final Pose startPose = new Pose(0, 0, Math.toRadians(45));//   56, 8,0 0, 72
+    private final Pose ytestPose = new Pose(70, 0, Math.toRadians(45));//90, 90, 90 72, 72
+//    private final Pose xtestPose = new Pose(72, 72, Math.toRadians(0));// 50,40,50 72, 98
 
     private PathChain yTest, xTest;
 
@@ -31,10 +31,10 @@ public class FieldCoordinatesProgram extends AutoMainProgram {
                 .setLinearHeadingInterpolation(startPose.getHeading(), ytestPose.getHeading())
                 .build();
 
-        xTest = follower.pathBuilder()
-                .addPath(new BezierCurve(ytestPose, xtestPose))
-                .setLinearHeadingInterpolation(ytestPose.getHeading(), xtestPose.getHeading())
-                .build();
+//        xTest = follower.pathBuilder()
+//                .addPath(new BezierCurve(ytestPose, xtestPose))
+//                .setLinearHeadingInterpolation(ytestPose.getHeading(), xtestPose.getHeading())
+//                .build();
     }
 
 
@@ -72,6 +72,8 @@ public class FieldCoordinatesProgram extends AutoMainProgram {
         follower = Constants.createFollower(hardwareMap);
         buildPaths();
         follower.setStartingPose(startPose);
+        telemetry.addData("Heading: ", follower.getHeading());
+        telemetry.update();
     }
 
     public void init_loop() {}
