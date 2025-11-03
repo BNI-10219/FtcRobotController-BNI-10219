@@ -2,9 +2,8 @@ package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Aut
 
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Robot.DecodeBot;
 
@@ -13,6 +12,8 @@ public abstract class AutoMain extends OpMode {
     public DecodeBot Bot = new DecodeBot();
 
     private Limelight3A limelight;
+
+    private ElapsedTime launchTimer;
 
     private boolean autoPosition = false;
 
@@ -41,6 +42,15 @@ public abstract class AutoMain extends OpMode {
         }
         telemetry.update();
 
+    }
+
+    public void launchV(){
+        Bot.ballLaunchOne.setVelocity(1000);//untested
+        Bot.ballLaunchTwo.setVelocity(1000);
+        if(launchTimer.time() > 1000){
+            Bot.ballOuttake();
+            Bot.artifactPushDown();
+        }
     }
 
 

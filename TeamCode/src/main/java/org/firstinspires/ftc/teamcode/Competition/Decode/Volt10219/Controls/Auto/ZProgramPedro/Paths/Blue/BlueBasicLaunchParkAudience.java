@@ -3,14 +3,17 @@ package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Aut
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.Pose;
+import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.ZProgramPedro.AutoMainProgram;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.ZProgramPedro.Tester.AngleCoordinatesProgram;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
 
+@Disabled
 @Autonomous(name = "Blue Basic Launch Park Audience", group = "Blue")
 public class BlueBasicLaunchParkAudience extends AutoMainProgram {
 
@@ -18,17 +21,17 @@ public class BlueBasicLaunchParkAudience extends AutoMainProgram {
 
     private PathState pathState = PathState.READY;
 
-    private final Pose startPose = new Pose(100, 8, Math.toRadians(90));//test out angles
-    private final Pose launch = new Pose(85, 84, Math.toRadians(45));
-    private final Pose park = new Pose(108, 36, Math.toRadians(0));
+    private final Pose startPose = new Pose(48, 8, Math.toRadians(90));//-135
+    //    private final Pose launch = new Pose(72, 12, Math.toRadians(-45));//-135 //72-12- -45 = X up
+    private final Pose launch = new Pose(60, 84, Math.toRadians(305));//-135 //72-12- -45 = X up
+    private final Pose park = new Pose(60, 36, Math.toDegrees(180));
 
-    private PathChain launchPath, parkPath;
+    private Path launchPath;
+    private PathChain parkPath;
 
     private void buildPaths(){
-        launchPath = follower.pathBuilder()
-                .addPath(new BezierCurve(startPose, launch))
-                .setLinearHeadingInterpolation(startPose.getHeading(), launch.getHeading())
-                .build();
+        launchPath = new Path(new BezierCurve(startPose, launch));
+        launchPath.setLinearHeadingInterpolation(startPose.getHeading(), launch.getHeading());
 
         parkPath = follower.pathBuilder()
                 .addPath(new BezierCurve(launch, park))

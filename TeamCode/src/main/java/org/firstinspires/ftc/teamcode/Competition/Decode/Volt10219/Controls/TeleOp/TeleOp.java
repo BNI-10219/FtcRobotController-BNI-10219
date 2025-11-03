@@ -10,8 +10,6 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Robot.DecodeBot;
 
-import java.util.Timer;
-
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Volt TeleOp")
 public class TeleOp extends OpMode {
     double leftStickYVal;
@@ -290,14 +288,14 @@ public class TeleOp extends OpMode {
 
     public void artifactPushControl(){
         if(gamepad1.b ){
-            Bot.artifactPushTwo();
+            Bot.artifactPushMiddle();
         }
 
         if(gamepad1.a){
-            Bot.artifactPushReset();
+            Bot.artifactPushDown();
         }
         if(gamepad1.y){
-            Bot.artifactPushIntake();
+            Bot.artifactPushUp();
         }
 //        else{
 //            Bot.artifactPushIntake();

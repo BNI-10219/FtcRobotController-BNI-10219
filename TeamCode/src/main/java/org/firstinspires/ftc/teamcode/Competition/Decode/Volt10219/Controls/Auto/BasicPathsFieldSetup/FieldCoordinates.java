@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Aut
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.Pose;
+import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -19,17 +20,17 @@ public class FieldCoordinates extends BlueAlliance {
 
     private int pathState;
 
-    private final Pose startPose = new Pose(0, 72, Math.toRadians(0));
-    private final Pose ytestPose = new Pose(72, 72, Math.toRadians(0));
-    private final Pose xtestPose = new Pose(72, 98, Math.toRadians(0));
+    public final Pose startPose = new Pose(100, 8, Math.toRadians(90));     // Red Far Launch Zone start
+    public final Pose ytestPose = new Pose(72, 72, Math.toRadians(45));    // Red goal scoring pose
+    public final Pose xtestPose = new Pose(120, 48, Math.toRadians(0));
 
-    private PathChain yTest, xTest;
+    private Path ytest;
+    private PathChain xTest;
 
     public void buildPaths(){
-        yTest = follower.pathBuilder()
-                .addPath(new BezierCurve(startPose, ytestPose))
-                .setLinearHeadingInterpolation(startPose.getHeading(), ytestPose.getHeading())
-                .build();
+        ytest = new Path(new BezierCurve(startPose, ytestPose));
+        ytest.setLinearHeadingInterpolation(startPose.getHeading(), ytestPose.getHeading());
+
 
         xTest = follower.pathBuilder()
                 .addPath(new BezierCurve(ytestPose, xtestPose))
@@ -41,7 +42,7 @@ public class FieldCoordinates extends BlueAlliance {
     public void pathStates(){
         switch(pathState){
             case 0:
-                follower.followPath(yTest);
+                follower.followPath(ytest);
                 setPathState(1);
                 break;
             case 1:
@@ -49,11 +50,10 @@ public class FieldCoordinates extends BlueAlliance {
                     follower.followPath(xTest);
                     setPathState(2);
                     break;
+                    // Removed Break
                 }
+                //break;
             case 2:
-                if(!follower.isBusy()){
-                    setPathState(-1);
-                }
                 break;
         }
 

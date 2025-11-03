@@ -130,13 +130,13 @@ public class DecodeBot extends Mecanum {
         ballLaunchOne.setPower(0);
     }
 
-    public void artifactPushReset(){
+    public void artifactPushDown(){
         artifactPush.setPosition(0.95);
     }
-    public void artifactPushIntake(){
+    public void artifactPushUp(){
         artifactPush.setPosition(0.4825);
     }
-    public void artifactPushTwo(){
+    public void artifactPushMiddle(){
         artifactPush.setPosition(0.55);
     }
 

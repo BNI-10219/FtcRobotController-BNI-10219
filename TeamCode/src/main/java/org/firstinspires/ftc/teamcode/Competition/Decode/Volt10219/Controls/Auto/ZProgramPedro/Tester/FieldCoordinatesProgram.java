@@ -6,10 +6,11 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.ZProgramPedro.AutoMainProgram;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
-
+@Disabled
 @Autonomous(name = "Field Coordinate Testing Program", group = "Examples")
 public class FieldCoordinatesProgram extends AutoMainProgram {
 
@@ -19,9 +20,10 @@ public class FieldCoordinatesProgram extends AutoMainProgram {
 
     private int pathState;
 
-    private final Pose startPose = new Pose(0, 0, Math.toRadians(45));//   56, 8,0 0, 72
-    private final Pose ytestPose = new Pose(70, 0, Math.toRadians(45));//90, 90, 90 72, 72
-//    private final Pose xtestPose = new Pose(72, 72, Math.toRadians(0));// 50,40,50 72, 98
+    private final Pose startPose = new Pose(100, 8, Math.toRadians(90));//-135
+    //    private final Pose launch = new Pose(72, 12, Math.toRadians(-45));//-135 //72-12- -45 = X up
+    private final Pose ytestPose = new Pose(85, 81, Math.toRadians(45));//-135 //72-12- -45 = X up
+    private final Pose xtestPose = new Pose(90, 40, Math.toRadians(0));
 
     private PathChain yTest, xTest;
 
@@ -31,10 +33,10 @@ public class FieldCoordinatesProgram extends AutoMainProgram {
                 .setLinearHeadingInterpolation(startPose.getHeading(), ytestPose.getHeading())
                 .build();
 
-//        xTest = follower.pathBuilder()
-//                .addPath(new BezierCurve(ytestPose, xtestPose))
-//                .setLinearHeadingInterpolation(ytestPose.getHeading(), xtestPose.getHeading())
-//                .build();
+        xTest = follower.pathBuilder()
+                .addPath(new BezierCurve(ytestPose, xtestPose))
+                .setLinearHeadingInterpolation(ytestPose.getHeading(), xtestPose.getHeading())
+                .build();
     }
 
 

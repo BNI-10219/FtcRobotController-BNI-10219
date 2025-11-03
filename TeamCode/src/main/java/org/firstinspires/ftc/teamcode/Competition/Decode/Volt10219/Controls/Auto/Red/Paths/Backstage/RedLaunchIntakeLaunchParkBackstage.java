@@ -4,14 +4,13 @@ package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Aut
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.Pose;
+import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.RedAlliance;
-import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.ZProgramPedro.Tester.AngleCoordinatesProgram;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
-import org.firstinspires.ftc.teamcode.Competition.Z20220223PowerPlay.controls.Autonomus.Test.GyroDriveTest.TagDetection;
 
 @Autonomous(name = "Red Launch Intake Launch Park Backstage")
 public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
@@ -22,14 +21,16 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
 
     private Timer pathTimer, opmodeTimer;
 
-    private final Pose startPose = new Pose(132, 108, Math.toRadians(-135));
-    private final Pose launch = new Pose(84, 84, Math.toRadians(-135));
-    private final Pose intake = new Pose(36, 104, Math.toRadians(90));
+    private final Pose startPose = new Pose(120, 132, Math.toRadians(215));
+    private final Pose launch = new Pose(84, 84, Math.toRadians(225));
+    private final Pose intake = new Pose(108, 36, Math.toRadians(0));
     private final Pose intakePickup = new Pose(36, 128, Math.toRadians(90));
-    private final Pose launchTwoPull = new Pose(72, 48);
-    private final Pose park = new Pose(36, 108, Math.toRadians(90));
+    private final Pose launchTwoPull = new Pose(72, 48, 157);
+    private final Pose launchTwo = new Pose(84, 84, 225);
+    private final Pose park = new Pose(108, 36, Math.toRadians(0));
 
-    private PathChain launchOne, intakePath, intakePickupPath, launchTwo, parkPath;
+    private Path launchOne;
+    private PathChain intakePath, intakePickupPath, launchTwoPath, parkPath;
 
     private enum PathState {
         LAUNCHONE,
@@ -41,10 +42,9 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
     }
 
     private void buildPaths() {
-        launchOne = follower.pathBuilder()
-                .addPath(new BezierCurve(startPose, launch))
-                .setLinearHeadingInterpolation(startPose.getHeading(), launch.getHeading())
-                .build();
+        launchOne = new Path(new BezierCurve(startPose, launch));
+        launchOne.setLinearHeadingInterpolation(startPose.getHeading(), launch.getHeading());
+
         intakePath = follower.pathBuilder()
                 .addPath(new BezierCurve(launch, intake))
                 .setLinearHeadingInterpolation(launch.getHeading(), intake.getHeading())
@@ -53,12 +53,12 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
                 .addPath(new BezierCurve(intake, intakePickup))
                 .setLinearHeadingInterpolation(intake.getHeading(), intakePickup.getHeading())
                 .build();
-        launchTwo = follower.pathBuilder()
-                .addPath(new BezierCurve(intakePickup, launchTwoPull, launch))
+        launchTwoPath = follower.pathBuilder()
+                .addPath(new BezierCurve(intakePickup, launchTwoPull, launchTwo))
                 .setLinearHeadingInterpolation(intakePickup.getHeading(), launch.getHeading())
                 .build();
         parkPath = follower.pathBuilder()
-                .addPath(new BezierCurve(launch, park))
+                .addPath(new BezierCurve(launchTwo, park))
                 .setLinearHeadingInterpolation(launch.getHeading(), park.getHeading())
                 .build();
 
@@ -68,6 +68,7 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
         switch (pathState) {
             case LAUNCHONE:
                 follower.followPath(launchOne);
+                //launchV();
                 pathState = PathState.INTAKE;
                 break;
             case INTAKE:
@@ -77,14 +78,13 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
                 }
                 break;
             case INTAKEPICKUP:
-                if (!follower.isBusy()) {
-                    follower.followPath(intakePickupPath);
-                    pathState = PathState.LAUNCHTWO;
-                }
+                Bot.driveForward(.25, 1);
+                pathState = PathState.LAUNCHTWO;
                 break;
             case LAUNCHTWO:
                 if (!follower.isBusy()) {
-                    follower.followPath(launchTwo);
+                    follower.followPath(launchTwoPath);
+                    //launchV();
                     pathState = PathState.PARK;
                 }
                 break;
@@ -106,6 +106,7 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
         follower = Constants.createFollower(hardwareMap);
         buildPaths();
         follower.setStartingPose(startPose);
+        follower.getHeading();
     }
 
 
