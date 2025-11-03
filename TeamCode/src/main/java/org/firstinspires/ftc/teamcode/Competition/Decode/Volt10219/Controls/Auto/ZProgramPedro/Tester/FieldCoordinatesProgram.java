@@ -19,9 +19,9 @@ public class FieldCoordinatesProgram extends AutoMainProgram {
 
     private int pathState;
 
-    private final Pose startPose = new Pose(56, 8, Math.toDegrees(0));//0, 72
-    private final Pose ytestPose = new Pose(90, 90, Math.toDegrees(90));//72, 72
-    private final Pose xtestPose = new Pose(50, 40, Math.toDegrees(50));//72, 98
+    private final Pose startPose = new Pose(100, 8, Math.toDegrees(90));//   56, 8,0 0, 72
+    private final Pose ytestPose = new Pose(85, 81, Math.toDegrees(45));//90, 90, 90 72, 72
+    private final Pose xtestPose = new Pose(90, 40, Math.toDegrees(0));// 50,40,50 72, 98
 
     private PathChain yTest, xTest;
 

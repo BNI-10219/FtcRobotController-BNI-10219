@@ -130,9 +130,6 @@ public class TeleOp extends OpMode {
         if(gamepad1.options){
             Bot.imu.resetYaw();
         }
-        if (gamepad1.options) {
-            Bot.imu.resetYaw();
-        }
 
         double botHeading = Bot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
@@ -292,15 +289,15 @@ public class TeleOp extends OpMode {
     }
 
     public void artifactPushControl(){
-
         if(gamepad1.b){
             Bot.artifactPushReset();
         }
+
         if(gamepad1.a){
-            Bot.artifactPushIntake();
-        }
-        if(gamepad1.y){
             Bot.artifactPushTwo();
+        }
+        else{
+            Bot.artifactPushIntake();
         }
     }
 

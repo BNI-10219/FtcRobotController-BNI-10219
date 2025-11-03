@@ -16,7 +16,6 @@ public class Basic3ArtifactLaunchProgram extends AutoMainProgram {
     Follower follower;
     private Timer pathTimer, opmodeTimer;
 
-
     private PathState pathState = PathState.READY;
 
     private final Pose startPose = new Pose(120, 132, Math.toRadians(-45));

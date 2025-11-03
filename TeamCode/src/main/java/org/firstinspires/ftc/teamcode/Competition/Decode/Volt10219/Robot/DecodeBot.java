@@ -17,9 +17,9 @@ public class DecodeBot extends Mecanum {
 
 
     public double velocity = 500;
-    public double velocity_low = 200;
-    public double velocity_med = 1200;
-    public double velocity_high = 2300;
+    public double velocity_low = 1021;
+    public double velocity_med = 936;
+    public double velocity_high = 1016;//2300
 
     public DecodeBot() {
     }
@@ -51,7 +51,7 @@ public class DecodeBot extends Mecanum {
         ballIntakeTwo.setDirection(CRServo.Direction.REVERSE);
 
         ballLaunchOne = hwBot.get(DcMotorEx.class, "ball_launch_one");
-        ballLaunchOne.setDirection(DcMotorSimple.Direction.FORWARD);
+        ballLaunchOne.setDirection(DcMotorSimple.Direction.REVERSE);
         ballLaunchOne.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         ballLaunchOne.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -137,7 +137,7 @@ public class DecodeBot extends Mecanum {
         artifactPush.setPosition(0.4825);
     }
     public void artifactPushTwo(){
-        artifactPush.setPosition(0.625);
+        artifactPush.setPosition(0.55);
     }
 
 
