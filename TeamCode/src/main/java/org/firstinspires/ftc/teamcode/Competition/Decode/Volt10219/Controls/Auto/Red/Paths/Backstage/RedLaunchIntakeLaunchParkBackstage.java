@@ -89,25 +89,24 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
 
         switch(pathState){
             case DRIVETOLAUNCH:
-                follower.followPath(launchOne);
+                follower.followPath(launchOne, true);
                 pathState = PathState.LAUNCH;
-                intakeTimer.resetTimer();
+                pathTimer.resetTimer();
                 break;
             case LAUNCH:
                 launchState = LaunchState.OUTTAKE;
                 switch(launchState) {
                     case OUTTAKE:
                         Bot.ballLaunchV();
-                        if(!follower.isBusy()){
+                        if(!follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3){
                             Bot.ballOuttake();
                             Bot.artifactPushDown();
+                            intakeTimer.resetTimer();
                             launchState = LaunchState.WAIT;
-                            break;
                         }
-
                         break;
                     case WAIT:
-                        if (waitTimer.getElapsedTimeSeconds() > 1) {
+                        if (waitTimer.getElapsedTimeSeconds() > 3) {
                             intakeTimer.resetTimer();
                             Bot.intakeStop();
                             launchState = LaunchState.INTAKEONE;
