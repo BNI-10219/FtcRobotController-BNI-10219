@@ -84,7 +84,7 @@ public class RedLaunchIntakeLaunchParkBackstageAcker extends RedAlliance {
         launchZone = LaunchZone.NONE;
     }
 
-    public enum LaunchState {OUTTAKE, INTAKEONE, WAITONE, INTAKETWO, WAITTWO, INTAKETHREE, WAIT, READY}
+    public enum LaunchState {OUTTAKE, INTAKEONE, WAITONE, INTAKETWO, WAITTWO, INTAKETHREE, WAIT, READY, IDLE}
     public enum PathState{DRIVETOLAUNCH, LAUNCH, INTAKE, PICKUP, LAUNCHPOSTWO, LAUNCHTWO, PARK, READY, WAIT;}
     @Override
     public void loop() {
@@ -114,26 +114,20 @@ public class RedLaunchIntakeLaunchParkBackstageAcker extends RedAlliance {
                 break;
 
             case LAUNCH:
-                if(!follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3 ){
-                    launchState = LaunchState.OUTTAKE;
-                }
+
+               if (launchState == LaunchState.READY || launchState == LaunchState.IDLE ) {
+                   launchState = LaunchState.OUTTAKE;
+               }
 
                 if (scoringDone) {
                     waitTimer.resetTimer();
-                    pathState = PathState.READY;
-                }
-                break;
-
-            case WAIT:
-                if(waitTimer.getElapsedTimeSeconds()> 5000){
-                    pathState = PathState.INTAKE;
-                    break;
+                    pathState = PathState.PARK;
                 }
                 break;
 
             case PARK:
+                follower.followPath(parkPath);
                 if(!follower.isBusy()) {
-                    follower.followPath(parkPath);
                     pathState = PathState.READY;
                 }
                 break;
@@ -170,6 +164,8 @@ public class RedLaunchIntakeLaunchParkBackstageAcker extends RedAlliance {
                     launchState = LaunchState.READY;
                     scoringDone = true;
                 }
+                break;
+            case IDLE:
                 break;
 
         }
