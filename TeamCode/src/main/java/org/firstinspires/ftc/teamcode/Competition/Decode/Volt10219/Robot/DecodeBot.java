@@ -84,6 +84,11 @@ public class DecodeBot extends Mecanum {
         ballIntakeOne.setPower(1);
         ballIntakeTwo.setPower(1);
     }
+
+    public void launchSetVelocity(double velocity){
+        ballLaunchOne.setVelocity(velocity);
+        ballLaunchTwo.setVelocity(velocity);
+    }
     public void ballIntakeHalf() {
         ballIntakeOne.setPower(0.5);
         ballIntakeTwo.setPower(0.5);
@@ -96,10 +101,10 @@ public class DecodeBot extends Mecanum {
 
 
     public void ballLaunchV() {
-        velocity = velocity_med;
-        velocity = Range.clip(velocity, 0, 5000);
-        ballLaunchOne.setVelocity(velocity);
-        ballLaunchTwo.setVelocity(velocity);
+        //velocity = velocity_med;
+        //velocity = Range.clip(velocity, 0, 5000);
+        ballLaunchOne.setVelocity(velocity_med);
+        ballLaunchTwo.setVelocity(velocity_med);
 
 //        ballLaunchTwo.setPower(0.425);
 //        ballLaunchOne.setPower(0.425);

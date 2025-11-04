@@ -17,6 +17,11 @@ public abstract class AutoMain extends OpMode {
 
     private boolean autoPosition = false;
 
+    public double targetVelocity = 0;
+
+    public int maxShots = 4;
+    public int shotsFired = 0;
+
     double targetTX = 23;
     double targetTA = 3;
     double llTolerance = 1.25;
@@ -44,15 +49,44 @@ public abstract class AutoMain extends OpMode {
 
     }
 
-    public void launchV(){
-        Bot.ballLaunchOne.setVelocity(1000);//untested
-        Bot.ballLaunchTwo.setVelocity(1000);
-        if(launchTimer.time() > 1000){
-            Bot.ballOuttake();
-            Bot.artifactPushDown();
-        }
+    public enum LaunchZone{MIDV, V, BACK, NONE}
+    public LaunchZone launchZone = LaunchZone.V;
+public void startFlyWheel(){
+    if(launchZone == LaunchZone.MIDV){
+        targetVelocity = 1021;
+    }
+    else if(launchZone == LaunchZone.V){
+        targetVelocity = 936;
+    }
+    else if(launchZone == LaunchZone.BACK){
+        targetVelocity = 1016;
+    }
+    else if(launchZone == LaunchZone.NONE){
+        targetVelocity = 0;
     }
 
+    Bot.ballLaunchOne.setVelocity(targetVelocity);
+    Bot.ballLaunchTwo.setVelocity(targetVelocity);
+}
+
+
+    public static class ScoringSession {
+        boolean active = false;
+        int targetShots = 0;
+        int shotsFiredAtStart = 0;
+        double timeLimitSec = 0;
+        double startedAtSec = 0;
+        LaunchZone zone = LaunchZone.NONE;
+    }
+
+    protected ScoringSession scoring = new ScoringSession();
+public void startScoring(LaunchZone zone, int shots, double time, double nowSec){
+    scoring.zone = zone;
+    scoring.targetShots = shots;
+    scoring.shotsFiredAtStart = shotsFired;
+    scoring.timeLimitSec = time;
+    scoring.startedAtSec = nowSec;
+}
 
 
     public void autoPositioning(){
@@ -99,6 +133,4 @@ public abstract class AutoMain extends OpMode {
     public void loop(){
 
     }
-
-
 }

@@ -8,6 +8,7 @@ import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.RedAlliance;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Robot.DecodeBot;
@@ -20,29 +21,18 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
 
     private PathState pathState = PathState.READY;
 
-    public DecodeBot Bot = new DecodeBot();
-
-    private Timer pathTimer, opmodeTimer;
+    private Timer opmodeTimer;
+    private ElapsedTime intakeTimer;
 
     private final Pose startPose = new Pose(120, 132, Math.toRadians(215));
     private final Pose launch = new Pose(84, 84, Math.toRadians(225));
     private final Pose intake = new Pose(108, 36, Math.toRadians(0));
     private final Pose intakePickup = new Pose(36, 128, Math.toRadians(90));
     private final Pose launchTwoPull = new Pose(72, 48, 157);
-    private final Pose launchTwo = new Pose(84, 84, 225);
     private final Pose park = new Pose(108, 36, Math.toRadians(0));
 
     private Path launchOne;
     private PathChain intakePath, intakePickupPath, launchTwoPath, parkPath;
-
-    private enum PathState {
-        LAUNCHONE,
-        INTAKE,
-        INTAKEPICKUP,
-        LAUNCHTWO,
-        PARK,
-        READY;
-    }
 
     private void buildPaths() {
         launchOne = new Path(new BezierCurve(startPose, launch));
@@ -57,53 +47,20 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
                 .setLinearHeadingInterpolation(intake.getHeading(), intakePickup.getHeading())
                 .build();
         launchTwoPath = follower.pathBuilder()
-                .addPath(new BezierCurve(intakePickup, launchTwoPull, launchTwo))
+                .addPath(new BezierCurve(intakePickup, launchTwoPull, launch))
                 .setLinearHeadingInterpolation(intakePickup.getHeading(), launch.getHeading())
                 .build();
         parkPath = follower.pathBuilder()
-                .addPath(new BezierCurve(launchTwo, park))
+                .addPath(new BezierCurve(launch, park))
                 .setLinearHeadingInterpolation(launch.getHeading(), park.getHeading())
                 .build();
 
     }
 
-    public void pathState() {
-        switch (pathState) {
-            case LAUNCHONE:
-                follower.followPath(launchOne);
-                //launchV();
-                pathState = PathState.INTAKE;
-                break;
-            case INTAKE:
-                if (!follower.isBusy()) {
-                    follower.followPath(intakePath);
-                    pathState = PathState.INTAKEPICKUP;
-                }
-                break;
-            case INTAKEPICKUP:
-                Bot.driveForward(.25, 1);
-                pathState = PathState.LAUNCHTWO;
-                break;
-            case LAUNCHTWO:
-                if (!follower.isBusy()) {
-                    follower.followPath(launchTwoPath);
-                    //launchV();
-                    pathState = PathState.PARK;
-                }
-                break;
-            case PARK:
-                if (!follower.isBusy()) {
-                    follower.followPath(parkPath);
-                    pathState = PathState.READY;
-                }
-                break;
-            case READY:
-                break;
-        }
-    }
     @Override
     public void init() {
-        pathTimer = new Timer();
+        intakeTimer = new ElapsedTime();
+        intakeTimer.reset();
         opmodeTimer = new Timer();
         opmodeTimer.resetTimer();
         follower = Constants.createFollower(hardwareMap);
@@ -117,14 +74,97 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
 
     public void start() {
         opmodeTimer.resetTimer();
-        pathState = PathState.LAUNCHONE;
+        pathState = PathState.DRIVETOLAUNCH;
+        launchZone = LaunchZone.NONE;
     }
 
+    public enum PathState{DRIVETOLAUNCH, LAUNCH, INTAKE, PICKUP, LAUNCHPOSTWO, LAUNCHTWO, PARK, READY;}
     @Override
     public void loop() {
+
+        switch(pathState){
+            case DRIVETOLAUNCH:
+                follower.followPath(launchOne);
+                pathState = PathState.LAUNCH;
+                break;
+            case LAUNCH:
+                if(follower.isBusy()) {
+                    launchZone = LaunchZone.V;
+                    Bot.ballOuttake();
+                    if (intakeTimer.time() > 100) {
+                        Bot.intakeStop();
+                    }
+                    startFlyWheel();
+                }
+                if(!follower.isBusy()){
+                    Bot.ballIntake();
+                    intakeTimer.reset();
+                    if(intakeTimer.time()>100){
+                        Bot.intakeStop();
+                    }
+                    Bot.ballIntake();
+                    intakeTimer.reset();
+                    if(intakeTimer.time() > 100){
+                        Bot.artifactPushDown();
+                    }
+                    pathState = PathState.INTAKE;
+                }
+                break;
+            case INTAKE:
+                if(!follower.isBusy()) {
+                    follower.followPath(intakePath);
+                    pathState = PathState.PICKUP;
+                }
+                break;
+            case PICKUP:
+                if(!follower.isBusy()){
+                    follower.followPath(intakePickupPath);
+                    pathState = PathState.LAUNCHPOSTWO;
+                }
+                break;
+            case LAUNCHPOSTWO:
+                if(!follower.isBusy()){
+                    follower.followPath(launchTwoPath);
+                    pathState = PathState.LAUNCHTWO;
+                }
+                break;
+            case LAUNCHTWO:
+                if(follower.isBusy()){
+                    launchZone = LaunchZone.V;
+                    Bot.ballOuttake();
+                    intakeTimer.reset();
+                    if(intakeTimer.time()> 100){
+                        Bot.intakeStop();
+                    }
+                    startFlyWheel();
+                }
+                if(!follower.isBusy()){
+                    Bot.ballIntake();
+                    intakeTimer.reset();
+                    if(intakeTimer.time()>100){
+                        Bot.intakeStop();
+                    }
+                    Bot.ballIntake();
+                    intakeTimer.reset();
+                    if(intakeTimer.time() > 100){
+                        Bot.artifactPushDown();
+                    }
+                    pathState = PathState.PARK;
+                }
+                break;
+            case PARK:
+                if(!follower.isBusy()) {
+                    follower.followPath(parkPath);
+                    pathState = PathState.READY;
+                }
+                break;
+            case READY:
+                break;
+        }
+
+
         // These loop the movements of the robot, these must be called continuously in order to work
         follower.update();
-        pathState();
         // Feedback to Driver Hub for debugging
         telemetry.addData("path state", pathState);
         telemetry.addData("x", follower.getPose().getX());

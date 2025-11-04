@@ -115,7 +115,7 @@ public class Mecanum {
         setMotorRunModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         setMotorRunModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        while ((Math.abs(flMotor.getCurrentPosition()) < ticks && LinearOp.opModeIsActive())){
+        while ((Math.abs(flMotor.getCurrentPosition()) < ticks)){
             driveForward(speed);
             LinearOp.telemetry.addData("FL Motor Ticks: ", flMotor.getCurrentPosition());
             LinearOp.telemetry.update();
@@ -127,7 +127,7 @@ public class Mecanum {
         setMotorRunModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         setMotorRunModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        while ((Math.abs(flMotor.getCurrentPosition()) < ticks && LinearOp.opModeIsActive())){
+        while ((Math.abs(flMotor.getCurrentPosition()) < ticks)){
             driveBack(speed);
             LinearOp.telemetry.addData("FL Motor Ticks:", flMotor.getCurrentPosition());
             LinearOp.telemetry.update();
