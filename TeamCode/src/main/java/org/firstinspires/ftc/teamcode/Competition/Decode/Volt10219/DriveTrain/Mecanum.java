@@ -16,6 +16,20 @@ public class Mecanum {
     public DcMotor rlMotor;
     public DcMotor rrMotor;
 
+    public DcMotor leftEncoder;
+    public DcMotor centerEncoder;
+
+    //Declare rest of mechanisms
+    //public DcMotor ballIntake;
+
+    public CRServo ballIntakeOne = null;
+    public CRServo ballIntakeTwo = null;
+
+    public Servo artifactPush = null;
+    public DcMotorEx ballLaunchOne = null;
+    public DcMotorEx ballLaunchTwo = null;
+
+
 
     //public Servo ballPush;
 

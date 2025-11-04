@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.RedAlliance;
-import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Robot.DecodeBot;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
 
 @Autonomous(name = "Red Launch Intake Launch Park Backstage")
@@ -20,9 +19,10 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
     Follower follower;
 
     private PathState pathState = PathState.READY;
+    private LaunchState launchState = LaunchState.READY;
 
     private Timer opmodeTimer;
-    private ElapsedTime intakeTimer;
+    private ElapsedTime intakeTimer, waitTimer;
 
     private final Pose startPose = new Pose(120, 132, Math.toRadians(215));
     private final Pose launch = new Pose(84, 84, Math.toRadians(225));
@@ -62,6 +62,8 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
         Bot.initRobot(hardwareMap);
         intakeTimer = new ElapsedTime();
         intakeTimer.reset();
+        waitTimer = new ElapsedTime();
+        waitTimer.reset();
         opmodeTimer = new Timer();
         opmodeTimer.resetTimer();
         follower = Constants.createFollower(hardwareMap);
@@ -79,6 +81,7 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
         launchZone = LaunchZone.NONE;
     }
 
+    public enum LaunchState {OUTTAKE, INTAKEONE, WAITONE, INTAKETWO, WAITTWO, INTAKETHREE, WAIT, READY}
     public enum PathState{DRIVETOLAUNCH, LAUNCH, INTAKE, PICKUP, LAUNCHPOSTWO, LAUNCHTWO, PARK, READY;}
     @Override
     public void loop() {
@@ -87,34 +90,68 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
             case DRIVETOLAUNCH:
                 follower.followPath(launchOne);
                 pathState = PathState.LAUNCH;
+                intakeTimer.reset();
                 break;
             case LAUNCH:
-                if(follower.isBusy()) {
-                    launchZone = LaunchZone.V;
-                    Bot.ballOuttake();
-                    if (intakeTimer.time() > 100) {
-                        Bot.intakeStop();
-                    }
-                    startFlyWheel();
+                switch(launchState) {
+                    case OUTTAKE:
+                        Bot.ballOuttake();
+                        if (intakeTimer.time() > 500) {
+                            Bot.intakeStop();
+                            Bot.ballLaunchV();
+                            launchState = LaunchState.WAIT;
+                        }
+                        break;
+                    case WAIT:
+                        if (waitTimer.time() > 1000) {
+                            intakeTimer.reset();
+                            launchState = LaunchState.INTAKEONE;
+                        }
+                        break;
+                    case INTAKEONE:
+                        Bot.ballIntake();
+                        if (intakeTimer.time() > 1000) {
+                            Bot.intakeStop();
+                            waitTimer.reset();
+                            launchState = LaunchState.WAITONE;
+                        }
+                        break;
+                    case WAITONE:
+                        if (waitTimer.time() > 1000) {
+                            intakeTimer.reset();
+                            launchState = LaunchState.INTAKETWO;
+                        }
+                        break;
+                    case INTAKETWO:
+                        Bot.ballIntake();
+                        if (intakeTimer.time() > 1000) {
+                            Bot.intakeStop();
+                            waitTimer.reset();
+                            launchState = LaunchState.WAITTWO;
+                        }
+                        break;
+                    case WAITTWO:
+                        if (waitTimer.time() > 1000) {
+                            intakeTimer.reset();
+                            launchState = LaunchState.INTAKETHREE;
+                        }
+                        break;
+                    case INTAKETHREE:
+                        Bot.ballIntake();
+                        Bot.artifactPushUp();
+                        if (intakeTimer.time() > 1000) {
+                            Bot.intakeStop();
+                            waitTimer.reset();
+                            launchState = LaunchState.WAITTWO;
+                        }
+                        break;
                 }
-                if(!follower.isBusy()){
-                    Bot.ballIntake();
-                    intakeTimer.reset();
-                    if(intakeTimer.time()>100){
-                        Bot.intakeStop();
-                    }
-                    Bot.ballIntake();
-                    intakeTimer.reset();
-                    if(intakeTimer.time() > 100){
-                        Bot.artifactPushDown();
-                    }
-                    pathState = PathState.INTAKE;
-                }
+                pathState = PathState.INTAKE;
                 break;
             case INTAKE:
                 if(!follower.isBusy()) {
                     follower.followPath(intakePath);
-                    pathState = PathState.PICKUP;
+                    pathState = PathState.READY;
                 }
                 break;
             case PICKUP:

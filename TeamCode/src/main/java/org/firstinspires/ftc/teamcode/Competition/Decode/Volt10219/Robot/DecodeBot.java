@@ -15,13 +15,6 @@ import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.DriveTrain.Me
 public class DecodeBot extends Mecanum {
     public HardwareMap hwBot = null;
 
-    public CRServo ballIntakeOne = null;
-    public CRServo ballIntakeTwo = null;
-
-    public Servo artifactPush = null;
-    public DcMotorEx ballLaunchOne = null;
-    public DcMotorEx ballLaunchTwo = null;
-
 
     public double velocity = 500;
     public double velocity_low = 1021;
