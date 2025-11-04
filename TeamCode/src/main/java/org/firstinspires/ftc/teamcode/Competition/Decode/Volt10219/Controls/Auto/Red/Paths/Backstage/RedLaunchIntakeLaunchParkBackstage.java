@@ -59,6 +59,7 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
 
     @Override
     public void init() {
+        Bot.initRobot(hardwareMap);
         intakeTimer = new ElapsedTime();
         intakeTimer.reset();
         opmodeTimer = new Timer();
