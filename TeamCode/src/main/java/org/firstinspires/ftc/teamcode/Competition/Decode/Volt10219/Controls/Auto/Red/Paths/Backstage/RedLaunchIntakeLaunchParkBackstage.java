@@ -21,7 +21,7 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
     private PathState pathState = PathState.READY;
     private LaunchState launchState = LaunchState.READY;
 
-    private Timer opmodeTimer, intakeTimer, waitTimer;
+    private Timer opmodeTimer, intakeTimer, waitTimer, pathTimer;
 
     private final Pose startPose = new Pose(120, 132, Math.toRadians(215));
     private final Pose launch = new Pose(84, 84, Math.toRadians(225));
@@ -65,6 +65,8 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
         waitTimer.resetTimer();
         opmodeTimer = new Timer();
         opmodeTimer.resetTimer();
+        pathTimer = new Timer();
+        pathTimer.resetTimer();
         follower = Constants.createFollower(hardwareMap);
         buildPaths();
         follower.setStartingPose(startPose);
@@ -95,18 +97,21 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
                 launchState = LaunchState.OUTTAKE;
                 switch(launchState) {
                     case OUTTAKE:
-                        Bot.ballOuttake();
-                        if (intakeTimer.getElapsedTimeSeconds() > 1) {
-                            Bot.intakeStop();
-                            waitTimer.resetTimer();
-                            Bot.ballLaunchV();
+                        Bot.ballLaunchV();
+                        if(!follower.isBusy()){
+                            Bot.ballOuttake();
+                            Bot.artifactPushDown();
                             launchState = LaunchState.WAIT;
+                            break;
                         }
+
                         break;
                     case WAIT:
                         if (waitTimer.getElapsedTimeSeconds() > 1) {
                             intakeTimer.resetTimer();
+                            Bot.intakeStop();
                             launchState = LaunchState.INTAKEONE;
+                            break;
                         }
                         break;
                     case INTAKEONE:
@@ -114,13 +119,15 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
                         if (intakeTimer.getElapsedTimeSeconds() > 1) {
                             Bot.intakeStop();
                             waitTimer.resetTimer();
-                            launchState = LaunchState.READY;
+                            launchState = LaunchState.WAITONE;
+                            break;
                         }
                         break;
                     case WAITONE:
                         if (waitTimer.getElapsedTimeSeconds() > 1) {
                             intakeTimer.resetTimer();
                             launchState = LaunchState.INTAKETWO;
+                            break;
                         }
                         break;
                     case INTAKETWO:
@@ -129,12 +136,14 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
                             Bot.intakeStop();
                             waitTimer.resetTimer();
                             launchState = LaunchState.WAITTWO;
+                            break;
                         }
                         break;
                     case WAITTWO:
                         if (waitTimer.getElapsedTimeSeconds() > 1) {
                             intakeTimer.resetTimer();
                             launchState = LaunchState.INTAKETHREE;
+                            break;
                         }
                         break;
                     case INTAKETHREE:
@@ -144,30 +153,38 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
                             Bot.intakeStop();
                             waitTimer.resetTimer();
                             launchState = LaunchState.WAITTWO;
+                            break;
                         }
                         break;
                 }
-                pathState = PathState.INTAKE;
+                waitTimer.resetTimer();
+                pathState = PathState.READY;
                 break;
             case WAIT:
-
-
+                if(waitTimer.getElapsedTimeSeconds()> 5000){
+                    pathState = PathState.INTAKE;
+                    break;
+                }
+                break;
             case INTAKE:
                 if(!follower.isBusy()) {
                     follower.followPath(intakePath);
                     pathState = PathState.READY;
+                    break;
                 }
                 break;
             case PICKUP:
                 if(!follower.isBusy()){
                     follower.followPath(intakePickupPath);
                     pathState = PathState.LAUNCHPOSTWO;
+                    break;
                 }
                 break;
             case LAUNCHPOSTWO:
                 if(!follower.isBusy()){
                     follower.followPath(launchTwoPath);
                     pathState = PathState.LAUNCHTWO;
+                    break;
                 }
                 break;
             case LAUNCHTWO:
@@ -208,10 +225,11 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
         // These loop the movements of the robot, these must be called continuously in order to work
         follower.update();
         // Feedback to Driver Hub for debugging
-        telemetry.addData("path state", pathState);
+        telemetry.addData("launch state", launchState);
         telemetry.addData("x", follower.getPose().getX());
         telemetry.addData("y", follower.getPose().getY());
         telemetry.addData("heading", follower.getPose().getHeading());
+        telemetry.addData("Is Busy: ", follower.isBusy());
         telemetry.update();
     }
 
