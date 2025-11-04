@@ -21,8 +21,7 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
     private PathState pathState = PathState.READY;
     private LaunchState launchState = LaunchState.READY;
 
-    private Timer opmodeTimer;
-    private ElapsedTime intakeTimer, waitTimer;
+    private Timer opmodeTimer, intakeTimer, waitTimer;
 
     private final Pose startPose = new Pose(120, 132, Math.toRadians(215));
     private final Pose launch = new Pose(84, 84, Math.toRadians(225));
@@ -60,10 +59,10 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
     @Override
     public void init() {
         Bot.initRobot(hardwareMap);
-        intakeTimer = new ElapsedTime();
-        intakeTimer.reset();
-        waitTimer = new ElapsedTime();
-        waitTimer.reset();
+        intakeTimer = new Timer();
+        intakeTimer.resetTimer();
+        waitTimer = new Timer();
+        waitTimer.resetTimer();
         opmodeTimer = new Timer();
         opmodeTimer.resetTimer();
         follower = Constants.createFollower(hardwareMap);
@@ -82,7 +81,7 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
     }
 
     public enum LaunchState {OUTTAKE, INTAKEONE, WAITONE, INTAKETWO, WAITTWO, INTAKETHREE, WAIT, READY}
-    public enum PathState{DRIVETOLAUNCH, LAUNCH, INTAKE, PICKUP, LAUNCHPOSTWO, LAUNCHTWO, PARK, READY;}
+    public enum PathState{DRIVETOLAUNCH, LAUNCH, INTAKE, PICKUP, LAUNCHPOSTWO, LAUNCHTWO, PARK, READY, WAIT;}
     @Override
     public void loop() {
 
@@ -90,64 +89,69 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
             case DRIVETOLAUNCH:
                 follower.followPath(launchOne);
                 pathState = PathState.LAUNCH;
-                intakeTimer.reset();
+                intakeTimer.resetTimer();
                 break;
             case LAUNCH:
+                launchState = LaunchState.OUTTAKE;
                 switch(launchState) {
                     case OUTTAKE:
                         Bot.ballOuttake();
-                        if (intakeTimer.time() > 500) {
+                        if (intakeTimer.getElapsedTimeSeconds() > 1) {
                             Bot.intakeStop();
+                            waitTimer.resetTimer();
                             Bot.ballLaunchV();
                             launchState = LaunchState.WAIT;
                         }
                         break;
                     case WAIT:
-                        if (waitTimer.time() > 1000) {
-                            intakeTimer.reset();
+                        if (waitTimer.getElapsedTimeSeconds() > 1) {
+                            intakeTimer.resetTimer();
                             launchState = LaunchState.INTAKEONE;
                         }
                         break;
                     case INTAKEONE:
                         Bot.ballIntake();
-                        if (intakeTimer.time() > 1000) {
+                        if (intakeTimer.getElapsedTimeSeconds() > 1) {
                             Bot.intakeStop();
-                            waitTimer.reset();
-                            launchState = LaunchState.WAITONE;
+                            waitTimer.resetTimer();
+                            launchState = LaunchState.READY;
                         }
                         break;
                     case WAITONE:
-                        if (waitTimer.time() > 1000) {
-                            intakeTimer.reset();
+                        if (waitTimer.getElapsedTimeSeconds() > 1) {
+                            intakeTimer.resetTimer();
                             launchState = LaunchState.INTAKETWO;
                         }
                         break;
                     case INTAKETWO:
                         Bot.ballIntake();
-                        if (intakeTimer.time() > 1000) {
+                        if (intakeTimer.getElapsedTimeSeconds() > 1) {
                             Bot.intakeStop();
-                            waitTimer.reset();
+                            waitTimer.resetTimer();
                             launchState = LaunchState.WAITTWO;
                         }
                         break;
                     case WAITTWO:
-                        if (waitTimer.time() > 1000) {
-                            intakeTimer.reset();
+                        if (waitTimer.getElapsedTimeSeconds() > 1) {
+                            intakeTimer.resetTimer();
                             launchState = LaunchState.INTAKETHREE;
                         }
                         break;
                     case INTAKETHREE:
                         Bot.ballIntake();
                         Bot.artifactPushUp();
-                        if (intakeTimer.time() > 1000) {
+                        if (intakeTimer.getElapsedTimeSeconds() > 1) {
                             Bot.intakeStop();
-                            waitTimer.reset();
+                            waitTimer.resetTimer();
                             launchState = LaunchState.WAITTWO;
                         }
                         break;
                 }
                 pathState = PathState.INTAKE;
                 break;
+            case WAIT:
+
+
             case INTAKE:
                 if(!follower.isBusy()) {
                     follower.followPath(intakePath);
@@ -170,21 +174,21 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
                 if(follower.isBusy()){
                     launchZone = LaunchZone.V;
                     Bot.ballOuttake();
-                    intakeTimer.reset();
-                    if(intakeTimer.time()> 100){
+                    intakeTimer.resetTimer();
+                    if(intakeTimer.getElapsedTimeSeconds()> .1){
                         Bot.intakeStop();
                     }
                     startFlyWheel();
                 }
                 if(!follower.isBusy()){
                     Bot.ballIntake();
-                    intakeTimer.reset();
-                    if(intakeTimer.time()>100){
+                    intakeTimer.resetTimer();
+                    if(intakeTimer.getElapsedTimeSeconds()>.1){
                         Bot.intakeStop();
                     }
                     Bot.ballIntake();
-                    intakeTimer.reset();
-                    if(intakeTimer.time() > 100){
+                    intakeTimer.resetTimer();
+                    if(intakeTimer.getElapsedTimeSeconds() > .1){
                         Bot.artifactPushDown();
                     }
                     pathState = PathState.PARK;
