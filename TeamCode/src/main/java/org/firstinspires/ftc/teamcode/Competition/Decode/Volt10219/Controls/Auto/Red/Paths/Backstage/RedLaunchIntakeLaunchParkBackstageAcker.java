@@ -114,11 +114,11 @@ public class RedLaunchIntakeLaunchParkBackstageAcker extends RedAlliance {
                 break;
 
             case LAUNCH:
-
-               if (launchState == LaunchState.READY || launchState == LaunchState.IDLE ) {
-                   launchState = LaunchState.OUTTAKE;
-               }
-
+                if ( !follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
+                    if (launchState == LaunchState.READY || launchState == LaunchState.IDLE) {
+                        launchState = LaunchState.OUTTAKE;
+                    }
+                }
                 if (scoringDone) {
                     waitTimer.resetTimer();
                     pathState = PathState.PARK;
