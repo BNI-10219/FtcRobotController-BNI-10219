@@ -294,9 +294,9 @@ public class TeleOp extends OpMode {
         if(gamepad1.a){
             Bot.artifactPushDown();
         }
-        if(gamepad1.y){
-            Bot.artifactPushUp();
-        }
+//        if(gamepad1.y){
+//            Bot.artifactPushUp();
+//        }
 //        else{
 //            Bot.artifactPushIntake();
 //        }

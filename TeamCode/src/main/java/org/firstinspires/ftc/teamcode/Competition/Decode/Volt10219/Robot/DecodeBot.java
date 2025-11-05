@@ -18,8 +18,8 @@ public class DecodeBot extends Mecanum {
 
     public double velocity = 500;
     public double velocity_low = 1021;
-    public double velocity_med = 936;
-    public double velocity_high = 1016;//2300
+    public double velocity_med = 1000;//936
+    public double velocity_high = 1075;//2300
 
     public DecodeBot() {
     }
@@ -110,6 +110,16 @@ public class DecodeBot extends Mecanum {
 //        ballLaunchOne.setPower(0.425);
     }
 
+    public void ballLaunchAutoV(){
+        ballLaunchOne.setVelocity(850);
+        ballLaunchTwo.setVelocity(850);
+    }
+    public void ballLaunchAutoBack(){
+        ballLaunchOne.setVelocity(750);
+        ballLaunchTwo.setVelocity(7500
+        );
+    }
+
     public void ballLaunchMidV(){
         velocity = velocity_low;
         velocity = Range.clip(velocity, 0, 5000);
@@ -143,6 +153,9 @@ public class DecodeBot extends Mecanum {
     }
     public void artifactPushMiddle(){
         artifactPush.setPosition(0.55);
+    }
+    public void artifactPushAuto(){
+        artifactPush.setPosition(0.75);
     }
 
 
