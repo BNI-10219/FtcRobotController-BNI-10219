@@ -147,7 +147,7 @@ public class RedLaunchIntakeLaunchParkBackstageAcker extends RedAlliance {
                 break;
 
             case OUTTAKE:
-                Bot.ballOuttake();
+                Bot.ballIntake();
                 Bot.artifactPushDown();
                 waitTimer.resetTimer();
                 intakeTimer.resetTimer();
@@ -161,7 +161,7 @@ public class RedLaunchIntakeLaunchParkBackstageAcker extends RedAlliance {
                 }
                 break;
             case INTAKEONE:
-                Bot.ballIntake();
+                Bot.ballOuttake();
                 if (intakeTimer.getElapsedTimeSeconds() > 3) {
                     Bot.intakeStop();
                     waitTimer.resetTimer();

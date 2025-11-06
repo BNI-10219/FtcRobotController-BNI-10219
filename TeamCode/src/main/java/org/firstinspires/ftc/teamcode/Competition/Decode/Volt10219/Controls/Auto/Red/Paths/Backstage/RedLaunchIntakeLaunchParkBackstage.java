@@ -9,7 +9,6 @@ import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.RedAlliance;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
@@ -101,7 +100,7 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
                     case OUTTAKE:
                         Bot.ballLaunchV();
                         if(!follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3){
-                            Bot.ballOuttake();
+                            Bot.ballIntake();
                             Bot.artifactPushDown();
                             intakeTimer.resetTimer();
                             launchState = LaunchState.WAIT;
@@ -116,7 +115,7 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
                         }
                         break;
                     case INTAKEONE:
-                        Bot.ballIntake();
+                        Bot.ballOuttake();
                         if (intakeTimer.getElapsedTimeSeconds() > 1) {
                             Bot.intakeStop();
                             waitTimer.resetTimer();
@@ -132,7 +131,7 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
                         }
                         break;
                     case INTAKETWO:
-                        Bot.ballIntake();
+                        Bot.ballOuttake();
                         if (intakeTimer.getElapsedTimeSeconds() > 1) {
                             Bot.intakeStop();
                             waitTimer.resetTimer();
@@ -148,8 +147,8 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
                         }
                         break;
                     case INTAKETHREE:
-                        Bot.ballIntake();
-                        Bot.artifactPushUp();
+                        Bot.ballOuttake();
+                        Bot.artifactPushMiddle();
                         if (intakeTimer.getElapsedTimeSeconds() > 1) {
                             Bot.intakeStop();
                             waitTimer.resetTimer();
@@ -191,7 +190,7 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
             case LAUNCHTWO:
                 if(follower.isBusy()){
                     launchZone = LaunchZone.V;
-                    Bot.ballOuttake();
+                    Bot.ballIntake();
                     intakeTimer.resetTimer();
                     if(intakeTimer.getElapsedTimeSeconds()> .1){
                         Bot.intakeStop();
@@ -199,12 +198,12 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
                     startFlyWheel();
                 }
                 if(!follower.isBusy()){
-                    Bot.ballIntake();
+                    Bot.ballOuttake();
                     intakeTimer.resetTimer();
                     if(intakeTimer.getElapsedTimeSeconds()>.1){
                         Bot.intakeStop();
                     }
-                    Bot.ballIntake();
+                    Bot.ballOuttake();
                     intakeTimer.resetTimer();
                     if(intakeTimer.getElapsedTimeSeconds() > .1){
                         Bot.artifactPushDown();

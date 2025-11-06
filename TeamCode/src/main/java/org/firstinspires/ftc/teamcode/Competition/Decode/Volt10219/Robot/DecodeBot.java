@@ -73,14 +73,14 @@ public class DecodeBot extends Mecanum {
         //init mechanisms
     }
 
-    public void ballOuttake() {
+    public void ballIntake() {
         //ballIntake.setPower(0.5);
 
         ballIntakeOne.setPower(-1);
         ballIntakeTwo.setPower(-1);
     }
 
-    public void ballIntake() {
+    public void ballOuttake() {
         ballIntakeOne.setPower(1);
         ballIntakeTwo.setPower(1);
     }
@@ -147,10 +147,10 @@ public class DecodeBot extends Mecanum {
     public void artifactPushDown(){
         artifactPush.setPosition(0.95);
     }
-    public void artifactPushUp(){
-        artifactPush.setPosition(0.4825);
-    }
     public void artifactPushMiddle(){
+        artifactPush.setPosition(.75);
+    }
+    public void artifactPushUps(){
         artifactPush.setPosition(0.55);
     }
     public void artifactPushAuto(){

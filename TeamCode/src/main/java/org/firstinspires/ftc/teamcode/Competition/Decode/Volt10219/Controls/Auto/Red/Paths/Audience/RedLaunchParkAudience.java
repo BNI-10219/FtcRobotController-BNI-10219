@@ -166,11 +166,11 @@ public class RedLaunchParkAudience extends RedAlliance {
 
             case OUTTAKE:
                 if(intakeTimer.getElapsedTimeSeconds()> 3) {
-                    Bot.ballIntake();
+                    Bot.ballOuttake();
                 }
                 if(outtakeTimer.getElapsedTimeSeconds() > .25){
                     Bot.intakeStop();
-                    Bot.ballOuttake();
+                    Bot.ballIntake();
                 }
                 //To change the velocity, change the numbers below
                 Bot.ballLaunchOne.setVelocity(850);//VELOCITY for launching 2nd artifact
@@ -189,7 +189,7 @@ public class RedLaunchParkAudience extends RedAlliance {
                 }
                 break;
             case INTAKEONE:
-                Bot.ballOuttake();
+                Bot.ballIntake();
                 Bot.ballLaunchAutoBack();
                 Bot.artifactPushDown();
                 if (intakeTimer.getElapsedTimeSeconds() > 2) {
@@ -208,7 +208,7 @@ public class RedLaunchParkAudience extends RedAlliance {
                 }
                 break;
             case INTAKETWO:
-                Bot.ballOuttake();
+                Bot.ballIntake();
                 if (intakeTimer.getElapsedTimeSeconds() > 1.5) {
                     Bot.intakeStop();
                     waitTimer.resetTimer();

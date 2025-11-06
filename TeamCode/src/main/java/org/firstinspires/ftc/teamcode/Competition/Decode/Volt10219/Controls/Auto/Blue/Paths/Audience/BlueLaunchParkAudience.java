@@ -10,7 +10,6 @@ import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Blue.BlueAlliance;
-import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.Paths.Audience.RedLaunchParkAudience;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
 
 @Autonomous(name = "Blue Launch Park Audience")
@@ -167,11 +166,11 @@ public class BlueLaunchParkAudience extends BlueAlliance {
 
             case OUTTAKE:
                 if(intakeTimer.getElapsedTimeSeconds()> 3) {
-                    Bot.ballIntake();
+                    Bot.ballOuttake();
                 }
                 if(outtakeTimer.getElapsedTimeSeconds() > .25){
                     Bot.intakeStop();
-                    Bot.ballOuttake();
+                    Bot.ballIntake();
                 }
                 Bot.ballLaunchAutoBack();//VELOCITY for launching 2nd artifact
 //                Bot.ballLaunchOne.setVelocity(700);
@@ -191,7 +190,7 @@ public class BlueLaunchParkAudience extends BlueAlliance {
                 }
                 break;
             case INTAKEONE:
-                Bot.ballOuttake();
+                Bot.ballIntake();
                 Bot.ballLaunchAutoBack();
                 Bot.artifactPushDown();
                 if (intakeTimer.getElapsedTimeSeconds() > 2) {
@@ -210,7 +209,7 @@ public class BlueLaunchParkAudience extends BlueAlliance {
                 }
                 break;
             case INTAKETWO:
-                Bot.ballOuttake();
+                Bot.ballIntake();
                 if (intakeTimer.getElapsedTimeSeconds() > 1.5) {
                     Bot.intakeStop();
                     waitTimer.resetTimer();

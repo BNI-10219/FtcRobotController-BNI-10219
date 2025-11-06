@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.TeleOp;
 
+import com.pedropathing.util.Timer;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -34,8 +35,11 @@ public class TeleOp extends OpMode {
     public DecodeBot Bot = new DecodeBot();
 
     public IntakeState intakeState = IntakeState.READY;
+    public OuttakeState outtakeState = OuttakeState.READY;
 
     private ElapsedTime intakeTimer = new ElapsedTime();
+
+    private Timer outtakeTimer = new Timer();
 
     private boolean autoPosition = false;
     private Limelight3A limelight;
@@ -69,6 +73,7 @@ public class TeleOp extends OpMode {
         fieldCentricDrive();
         autoPositioning();
         intakeControlStates();
+        timeOuttake();
     }
 
     public void autoPositioning(){
@@ -226,9 +231,9 @@ public class TeleOp extends OpMode {
 //    }
 
     public void launcherControl(){
-        if(gamepad2.x){
-            Bot.ballLaunchV();
-        }
+//        if(gamepad2.x){
+//            Bot.ballLaunchV();
+//        }
 
         if(gamepad2.y){
             Bot.ballLaunchStop();
@@ -252,7 +257,7 @@ public class TeleOp extends OpMode {
     public void intakeControlStates(){
         switch(intakeState){
             case RUN:
-                Bot.ballOuttake();
+                Bot.ballIntake();
                 intakeTimer.reset();
                 intakeState = IntakeState.WAIT;
                 break;
@@ -271,32 +276,59 @@ public class TeleOp extends OpMode {
         }
     }
 
+    public enum OuttakeState {START, WAIT, STOP, READY}
+
+    public void timeOuttake(){
+        switch(outtakeState){
+            case START:
+                Bot.ballOuttake();
+                outtakeState = OuttakeState.WAIT;
+                outtakeTimer.resetTimer();
+                break;
+            case WAIT:
+                if(outtakeTimer.getElapsedTimeSeconds() > 0.005){
+                    outtakeState = OuttakeState.STOP;
+                }
+                break;
+            case STOP:
+                Bot.intakeStop();
+                outtakeState = OuttakeState.READY;
+                break;
+            case READY:
+                break;
+        }
+
+    }
+
     public void intakeControl(){
         if(gamepad2.dpad_right){
-            Bot.ballOuttake();
+            Bot.ballIntake();
         }
         if(gamepad2.dpad_up)
             intakeState = IntakeState.RUN;
 
         if(gamepad2.dpad_left){
-            Bot.ballIntake();
+            Bot.ballOuttake();
         }
         if(gamepad2.b){
             Bot.intakeStop();
+        }
+        if(gamepad2.x){
+            outtakeState = OuttakeState.START;
         }
     }
 
     public void artifactPushControl(){
         if(gamepad1.y ){
-            Bot.artifactPushMiddle();
+            Bot.artifactPushUps();
         }
 
         if(gamepad1.a){
             Bot.artifactPushDown();
         }
-//        if(gamepad1.y){
-//            Bot.artifactPushUp();
-//        }
+        if(gamepad1.b){
+            Bot.artifactPushMiddle();
+        }
 //        else{
 //            Bot.artifactPushIntake();
 //        }

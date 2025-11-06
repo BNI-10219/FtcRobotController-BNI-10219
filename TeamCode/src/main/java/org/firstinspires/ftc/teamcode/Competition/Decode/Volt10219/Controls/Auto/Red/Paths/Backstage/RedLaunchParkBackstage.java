@@ -163,10 +163,10 @@ public class RedLaunchParkBackstage extends RedAlliance {
                 break;
 
             case OUTTAKE:
-                Bot.ballIntake();
+                Bot.ballOuttake();
                 if(outtakeTimer.getElapsedTimeSeconds() > .25){
                     Bot.intakeStop();
-                    Bot.ballOuttake();
+                    Bot.ballIntake();
                 }
                 Bot.artifactPushAuto();
                 waitTimer.resetTimer();
@@ -182,7 +182,7 @@ public class RedLaunchParkBackstage extends RedAlliance {
                 }
                 break;
             case INTAKEONE:
-                Bot.ballOuttake();
+                Bot.ballIntake();
                 Bot.artifactPushDown();
                 if (intakeTimer.getElapsedTimeSeconds() > 2) {
                     Bot.intakeStop();
@@ -200,7 +200,7 @@ public class RedLaunchParkBackstage extends RedAlliance {
                 }
                 break;
             case INTAKETWO:
-                Bot.ballOuttake();
+                Bot.ballIntake();
                 if (intakeTimer.getElapsedTimeSeconds() > 1.5) {
                     Bot.intakeStop();
                     waitTimer.resetTimer();

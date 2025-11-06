@@ -10,8 +10,6 @@ import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Blue.BlueAlliance;
-import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.Paths.Backstage.RedLaunchParkBackstage;
-import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.RedAlliance;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
 
 @Autonomous(name = "Blue Launch Park Backstage")
@@ -168,10 +166,10 @@ public class BlueLaunchParkBackstage extends BlueAlliance {
                 break;
 
             case OUTTAKE:
-                Bot.ballIntake();//actually launching
+                Bot.ballOuttake();//actually launching
                 if(outtakeTimer.getElapsedTimeSeconds() > .25){
                     Bot.intakeStop();
-                    Bot.ballOuttake();
+                    Bot.ballIntake();
                 }
                 Bot.artifactPushAuto();
                 waitTimer.resetTimer();
@@ -187,7 +185,7 @@ public class BlueLaunchParkBackstage extends BlueAlliance {
                 }
                 break;
             case INTAKEONE:
-                Bot.ballOuttake();
+                Bot.ballIntake();
                 Bot.artifactPushDown();//pushing the artifact into the launcher
                 if (intakeTimer.getElapsedTimeSeconds() > 2) {
                     Bot.intakeStop();
@@ -205,7 +203,7 @@ public class BlueLaunchParkBackstage extends BlueAlliance {
                 }
                 break;
             case INTAKETWO:
-                Bot.ballOuttake();
+                Bot.ballIntake();
                 if (intakeTimer.getElapsedTimeSeconds() > 1.5) {
                     Bot.intakeStop();
                     waitTimer.resetTimer();
