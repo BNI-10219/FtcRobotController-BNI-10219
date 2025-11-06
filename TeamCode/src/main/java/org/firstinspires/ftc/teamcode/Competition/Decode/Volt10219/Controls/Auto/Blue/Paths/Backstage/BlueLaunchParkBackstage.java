@@ -10,6 +10,7 @@ import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Blue.BlueAlliance;
+import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.Paths.Backstage.RedLaunchParkBackstage;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.RedAlliance;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
 
@@ -24,11 +25,11 @@ public class BlueLaunchParkBackstage extends BlueAlliance {
     private Timer opmodeTimer, intakeTimer, waitTimer, pathTimer, outtakeTimer;
 
     private final Pose startPose = new Pose(24, 132, Math.toRadians(315));//ANGLES UNTESTED
-    private final Pose launch = new Pose(60, 60, Math.toRadians(315));//ANGLES UNTESTED
+    private final Pose launch = new Pose(60, 84, Math.toRadians(315));//ANGLES UNTESTED
     private final Pose intake = new Pose(108, 36, Math.toRadians(180));//random point - DOES NOT WORK
     private final Pose intakePickup = new Pose(36, 128, Math.toRadians(180));//random point - DOES NOT WORK
-    private final Pose launchTwoPull = new Pose(72, 48, 157);//random point - DOES NOT WORK
-    private final Pose park = new Pose(108, 36, Math.toRadians(0));//random point - DOES NOT WORK
+    private final Pose launchTwoPull = new Pose(72, 48, Math.toRadians(157));//random point - DOES NOT WORK
+    private final Pose park = new Pose(34, 36, Math.toRadians(0));//random point - DOES NOT WORK
 
     private Path launchOne;
     private PathChain intakePath, intakePickupPath, launchTwoPath, parkPath;
@@ -143,16 +144,17 @@ public class BlueLaunchParkBackstage extends BlueAlliance {
     public void automaticLaunch() {
         switch(launchState) {
             case READY:
-                Bot.ballLaunchV();
+                Bot.ballLaunchAutoV();
                 outtakeTimer.resetTimer();
                 break;
 
             case OUTTAKE:
-                Bot.ballOuttake();
-                if(outtakeTimer.getElapsedTimeSeconds() > .75){
+                Bot.ballIntake();
+                if(outtakeTimer.getElapsedTimeSeconds() > .25){
                     Bot.intakeStop();
+                    Bot.ballOuttake();
                 }
-                Bot.artifactPushMiddle();
+                Bot.artifactPushAuto();
                 waitTimer.resetTimer();
                 intakeTimer.resetTimer();
                 launchState = LaunchState.WAIT;
@@ -160,16 +162,19 @@ public class BlueLaunchParkBackstage extends BlueAlliance {
             case WAIT:
                 if (waitTimer.getElapsedTimeSeconds() > 1) {
                     intakeTimer.resetTimer();
-                    Bot.intakeStop();
+                    //Bot.intakeStop();
                     launchState = LaunchState.INTAKEONE;
+                    Bot.ballLaunchV();
                 }
                 break;
             case INTAKEONE:
-                Bot.ballIntake();
-                if (intakeTimer.getElapsedTimeSeconds() > 1.5) {
+                Bot.ballOuttake();
+                Bot.artifactPushDown();
+                if (intakeTimer.getElapsedTimeSeconds() > 2) {
                     Bot.intakeStop();
                     waitTimer.resetTimer();
-                    launchState = LaunchState.READY;
+                    launchState = LaunchState.IDLE;
+                    scoringDone = true;
 
                 }
                 break;
@@ -181,7 +186,7 @@ public class BlueLaunchParkBackstage extends BlueAlliance {
                 }
                 break;
             case INTAKETWO:
-                Bot.ballIntake();
+                Bot.ballOuttake();
                 if (intakeTimer.getElapsedTimeSeconds() > 1.5) {
                     Bot.intakeStop();
                     waitTimer.resetTimer();

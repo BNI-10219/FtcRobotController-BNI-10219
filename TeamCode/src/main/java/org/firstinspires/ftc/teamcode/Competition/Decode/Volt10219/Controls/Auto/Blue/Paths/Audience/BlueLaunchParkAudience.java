@@ -10,6 +10,7 @@ import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Blue.BlueAlliance;
+import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.Paths.Audience.RedLaunchParkAudience;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
 
 @Autonomous(name = "Blue Launch Park Audience")
@@ -22,12 +23,12 @@ public class BlueLaunchParkAudience extends BlueAlliance {
 
     private Timer opmodeTimer, intakeTimer, waitTimer, pathTimer, outtakeTimer;
 
-    private final Pose startPose = new Pose(24, 8, Math.toRadians(90));
-    private final Pose launch = new Pose(60, 60, Math.toRadians(225));
+    private final Pose startPose = new Pose(48, 8, Math.toRadians(270));
+    private final Pose launch = new Pose(60, 12, Math.toRadians(300));
     private final Pose intake = new Pose(108, 36, Math.toRadians(0));//random point - DOES NOT WORK
     private final Pose intakePickup = new Pose(36, 128, Math.toRadians(90));//random point - DOES NOT WORK
     private final Pose launchTwoPull = new Pose(72, 48, 157);//random point - DOES NOT WORK
-    private final Pose park = new Pose(108, 36, Math.toRadians(0));//random point - DOES NOT WORK
+    private final Pose park = new Pose(45, 36, Math.toRadians(0));//random point - DOES NOT WORK
 
     private Path launchOne;
     private PathChain intakePath, intakePickupPath, launchTwoPath, parkPath;
@@ -142,16 +143,21 @@ public class BlueLaunchParkAudience extends BlueAlliance {
     public void automaticLaunch() {
         switch(launchState) {
             case READY:
-                Bot.ballLaunchV();
+                Bot.ballLaunchBackField();
                 outtakeTimer.resetTimer();
+                intakeTimer.resetTimer();
                 break;
 
             case OUTTAKE:
-                Bot.ballOuttake();
-                if(outtakeTimer.getElapsedTimeSeconds() > .75){
-                    Bot.intakeStop();
+                if(intakeTimer.getElapsedTimeSeconds()> 2) {
+                    Bot.ballIntake();
                 }
-                Bot.artifactPushMiddle();
+                if(outtakeTimer.getElapsedTimeSeconds() > .25){
+                    Bot.intakeStop();
+                    Bot.ballOuttake();
+                }
+                Bot.ballLaunchAutoBack();
+                Bot.artifactPushAuto();
                 waitTimer.resetTimer();
                 intakeTimer.resetTimer();
                 launchState = LaunchState.WAIT;
@@ -159,16 +165,20 @@ public class BlueLaunchParkAudience extends BlueAlliance {
             case WAIT:
                 if (waitTimer.getElapsedTimeSeconds() > 1) {
                     intakeTimer.resetTimer();
-                    Bot.intakeStop();
+                    //Bot.intakeStop();
                     launchState = LaunchState.INTAKEONE;
+                    //Bot.ballLaunchAutoBack();
                 }
                 break;
             case INTAKEONE:
-                Bot.ballIntake();
-                if (intakeTimer.getElapsedTimeSeconds() > 1.5) {
+                Bot.ballOuttake();
+                Bot.ballLaunchAutoBack();
+                Bot.artifactPushDown();
+                if (intakeTimer.getElapsedTimeSeconds() > 2) {
                     Bot.intakeStop();
                     waitTimer.resetTimer();
-                    launchState = LaunchState.READY;
+                    launchState = LaunchState.IDLE;
+                    scoringDone = true;
 
                 }
                 break;
@@ -180,7 +190,7 @@ public class BlueLaunchParkAudience extends BlueAlliance {
                 }
                 break;
             case INTAKETWO:
-                Bot.ballIntake();
+                Bot.ballOuttake();
                 if (intakeTimer.getElapsedTimeSeconds() > 1.5) {
                     Bot.intakeStop();
                     waitTimer.resetTimer();

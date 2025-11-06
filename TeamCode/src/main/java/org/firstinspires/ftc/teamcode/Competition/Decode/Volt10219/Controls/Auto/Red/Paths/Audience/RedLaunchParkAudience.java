@@ -154,6 +154,7 @@ public class RedLaunchParkAudience extends RedAlliance {
                     Bot.intakeStop();
                     Bot.ballOuttake();
                 }
+                Bot.ballLaunchAutoBack();
                 Bot.artifactPushAuto();
                 waitTimer.resetTimer();
                 intakeTimer.resetTimer();
@@ -164,7 +165,7 @@ public class RedLaunchParkAudience extends RedAlliance {
                     intakeTimer.resetTimer();
                     //Bot.intakeStop();
                     launchState = LaunchState.INTAKEONE;
-                    Bot.ballLaunchAutoBack();
+                    //Bot.ballLaunchAutoBack();
                 }
                 break;
             case INTAKEONE:
