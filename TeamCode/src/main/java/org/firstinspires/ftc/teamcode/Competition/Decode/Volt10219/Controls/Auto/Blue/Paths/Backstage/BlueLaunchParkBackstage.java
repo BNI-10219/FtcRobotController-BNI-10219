@@ -25,7 +25,7 @@ public class BlueLaunchParkBackstage extends BlueAlliance {
     private Timer opmodeTimer, intakeTimer, waitTimer, pathTimer, outtakeTimer;
 
     private final Pose startPose = new Pose(24, 132, Math.toRadians(315));//ANGLES UNTESTED
-    private final Pose launch = new Pose(60, 84, Math.toRadians(315));//ANGLES UNTESTED
+    private final Pose launch = new Pose(50, 76, Math.toRadians(303));//ANGLES UNTESTED
     private final Pose intake = new Pose(108, 36, Math.toRadians(180));//random point - DOES NOT WORK
     private final Pose intakePickup = new Pose(36, 128, Math.toRadians(180));//random point - DOES NOT WORK
     private final Pose launchTwoPull = new Pose(72, 48, Math.toRadians(157));//random point - DOES NOT WORK

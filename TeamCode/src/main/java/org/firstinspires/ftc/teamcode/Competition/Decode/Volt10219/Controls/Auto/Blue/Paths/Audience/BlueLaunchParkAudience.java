@@ -24,7 +24,7 @@ public class BlueLaunchParkAudience extends BlueAlliance {
     private Timer opmodeTimer, intakeTimer, waitTimer, pathTimer, outtakeTimer;
 
     private final Pose startPose = new Pose(48, 8, Math.toRadians(270));
-    private final Pose launch = new Pose(60, 12, Math.toRadians(300));
+    private final Pose launch = new Pose(58, 16, Math.toRadians(300));
     private final Pose intake = new Pose(108, 36, Math.toRadians(0));//random point - DOES NOT WORK
     private final Pose intakePickup = new Pose(36, 128, Math.toRadians(90));//random point - DOES NOT WORK
     private final Pose launchTwoPull = new Pose(72, 48, 157);//random point - DOES NOT WORK
@@ -149,7 +149,7 @@ public class BlueLaunchParkAudience extends BlueAlliance {
                 break;
 
             case OUTTAKE:
-                if(intakeTimer.getElapsedTimeSeconds()> 2) {
+                if(intakeTimer.getElapsedTimeSeconds()> 3) {
                     Bot.ballIntake();
                 }
                 if(outtakeTimer.getElapsedTimeSeconds() > .25){
@@ -157,6 +157,9 @@ public class BlueLaunchParkAudience extends BlueAlliance {
                     Bot.ballOuttake();
                 }
                 Bot.ballLaunchAutoBack();
+//                Bot.ballLaunchOne.setVelocity(700);
+//                Bot.ballLaunchOne.setVelocity(700);
+
                 Bot.artifactPushAuto();
                 waitTimer.resetTimer();
                 intakeTimer.resetTimer();

@@ -23,7 +23,7 @@ public class RedLaunchParkAudience extends RedAlliance {
     private Timer opmodeTimer, intakeTimer, waitTimer, pathTimer, outtakeTimer;
 
     private final Pose startPose = new Pose(96, 8, Math.toRadians(270));
-    private final Pose launch = new Pose(84, 12, Math.toRadians(250));//84, 84, 225
+    private final Pose launch = new Pose(86, 12, Math.toRadians(248));//84, 84, 225
     private final Pose intake = new Pose(108, 36, Math.toRadians(0));
     private final Pose intakePickup = new Pose(36, 128, Math.toRadians(90));
     private final Pose launchTwoPull = new Pose(72, 48, Math.toRadians(157));
@@ -141,20 +141,24 @@ public class RedLaunchParkAudience extends RedAlliance {
     public void automaticLaunch() {
         switch(launchState) {
             case READY:
-                Bot.ballLaunchBackField();
+                //Bot.ballLaunchAutoBack();
+                Bot.ballLaunchOne.setVelocity(900);
+                Bot.ballLaunchTwo.setVelocity(900);
                 outtakeTimer.resetTimer();
                 intakeTimer.resetTimer();
                 break;
 
             case OUTTAKE:
-                if(intakeTimer.getElapsedTimeSeconds()> 2) {
+                if(intakeTimer.getElapsedTimeSeconds()> 3) {
                     Bot.ballIntake();
                 }
                 if(outtakeTimer.getElapsedTimeSeconds() > .25){
                     Bot.intakeStop();
                     Bot.ballOuttake();
                 }
-                Bot.ballLaunchAutoBack();
+                //Bot.ballLaunchAutoBack();
+                Bot.ballLaunchOne.setVelocity(850);
+                Bot.ballLaunchTwo.setVelocity(850);
                 Bot.artifactPushAuto();
                 waitTimer.resetTimer();
                 intakeTimer.resetTimer();
