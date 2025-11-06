@@ -29,7 +29,7 @@ public class BlueLaunchParkBackstage extends BlueAlliance {
     private final Pose intake = new Pose(108, 36, Math.toRadians(180));//random point - DOES NOT WORK
     private final Pose intakePickup = new Pose(36, 128, Math.toRadians(180));//random point - DOES NOT WORK
     private final Pose launchTwoPull = new Pose(72, 48, Math.toRadians(157));//random point - DOES NOT WORK
-    private final Pose park = new Pose(34, 36, Math.toRadians(0));//random point - DOES NOT WORK
+    private final Pose park = new Pose(34, 36, Math.toRadians(180));//random point - DOES NOT WORK
 
     private Path launchOne;
     private PathChain intakePath, intakePickupPath, launchTwoPath, parkPath;
