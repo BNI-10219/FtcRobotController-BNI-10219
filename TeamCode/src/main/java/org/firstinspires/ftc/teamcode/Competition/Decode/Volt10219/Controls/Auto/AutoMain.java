@@ -13,8 +13,6 @@ public abstract class AutoMain extends OpMode {
 
     private Limelight3A limelight;
 
-    private ElapsedTime launchTimer;
-
     private boolean autoPosition = false;
 
     public double targetVelocity = 0;

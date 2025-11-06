@@ -15,6 +15,22 @@ import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.
 @Autonomous(name = "Red Launch Park Audience")
 public class RedLaunchParkAudience extends RedAlliance {
 
+    //   (0, 144)                          (144, 144)
+    //      --------------------------------
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      ---------------------------------
+    //   (0,0)                              (144, 0)
+
     Follower follower;
 
     private PathState pathState = PathState.READY;
@@ -141,9 +157,9 @@ public class RedLaunchParkAudience extends RedAlliance {
     public void automaticLaunch() {
         switch(launchState) {
             case READY:
-                //Bot.ballLaunchAutoBack();
-                Bot.ballLaunchOne.setVelocity(900);
-                Bot.ballLaunchTwo.setVelocity(900);
+                //To change the velocity, change the numbers below
+                Bot.ballLaunchOne.setVelocity(900);//VELOCITY for launching 1st artifact
+                Bot.ballLaunchTwo.setVelocity(900);//VELOCITY for launching 1st artifact
                 outtakeTimer.resetTimer();
                 intakeTimer.resetTimer();
                 break;
@@ -156,9 +172,9 @@ public class RedLaunchParkAudience extends RedAlliance {
                     Bot.intakeStop();
                     Bot.ballOuttake();
                 }
-                //Bot.ballLaunchAutoBack();
-                Bot.ballLaunchOne.setVelocity(850);
-                Bot.ballLaunchTwo.setVelocity(850);
+                //To change the velocity, change the numbers below
+                Bot.ballLaunchOne.setVelocity(850);//VELOCITY for launching 2nd artifact
+                Bot.ballLaunchTwo.setVelocity(850);//VELOCITY for launching 2nd artifact
                 Bot.artifactPushAuto();
                 waitTimer.resetTimer();
                 intakeTimer.resetTimer();

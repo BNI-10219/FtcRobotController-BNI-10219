@@ -17,6 +17,22 @@ import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.
 @Autonomous(name = "Blue Launch Park Backstage")
 public class BlueLaunchParkBackstage extends BlueAlliance {
 
+    //   (0, 144)                          (144, 144)
+    //      --------------------------------
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      ---------------------------------
+    //   (0,0)                              (144, 0)
+
     Follower follower;
 
     private PathState pathState = PathState.READY;
@@ -24,18 +40,19 @@ public class BlueLaunchParkBackstage extends BlueAlliance {
 
     private Timer opmodeTimer, intakeTimer, waitTimer, pathTimer, outtakeTimer;
 
-    private final Pose startPose = new Pose(24, 132, Math.toRadians(315));//ANGLES UNTESTED
-    private final Pose launch = new Pose(50, 76, Math.toRadians(303));//ANGLES UNTESTED
-    private final Pose intake = new Pose(108, 36, Math.toRadians(180));//random point - DOES NOT WORK
-    private final Pose intakePickup = new Pose(36, 128, Math.toRadians(180));//random point - DOES NOT WORK
-    private final Pose launchTwoPull = new Pose(72, 48, Math.toRadians(157));//random point - DOES NOT WORK
-    private final Pose park = new Pose(34, 36, Math.toRadians(0));//random point - DOES NOT WORK
+    private final Pose startPose = new Pose(24, 132, Math.toRadians(315));
+    private final Pose launch = new Pose(50, 76, Math.toRadians(303));
+    private final Pose intake = new Pose(108, 36, Math.toRadians(180));//UNUSED POINT
+    private final Pose intakePickup = new Pose(36, 128, Math.toRadians(180));//UNUSED POINT
+    private final Pose launchTwoPull = new Pose(72, 48, Math.toRadians(157));//UNUSED POINT
+    private final Pose park = new Pose(34, 36, Math.toRadians(0));
 
     private Path launchOne;
     private PathChain intakePath, intakePickupPath, launchTwoPath, parkPath;
 
     boolean scoringDone = false;
 
+    //DOES NOT NEED TO BE CHANGED
     private void buildPaths() {
         launchOne = new Path(new BezierCurve(startPose, launch));
         launchOne.setLinearHeadingInterpolation(startPose.getHeading(), launch.getHeading());
@@ -109,6 +126,7 @@ public class BlueLaunchParkBackstage extends BlueAlliance {
 
     public void stop() {}
 
+    //DOES NOT NEED TO BE CHANGED
     public void autoPathing() {
         switch(pathState){
             case DRIVETOLAUNCH:
@@ -141,15 +159,16 @@ public class BlueLaunchParkBackstage extends BlueAlliance {
         }
     }
 
+    //LAUNCHING CODE DURING AUTO - MIGHT NEED TO BE CHANGED
     public void automaticLaunch() {
         switch(launchState) {
             case READY:
-                Bot.ballLaunchAutoV();
+                Bot.ballLaunchAutoV();//setting VELOCITY for launching 1st artifact
                 outtakeTimer.resetTimer();
                 break;
 
             case OUTTAKE:
-                Bot.ballIntake();
+                Bot.ballIntake();//actually launching
                 if(outtakeTimer.getElapsedTimeSeconds() > .25){
                     Bot.intakeStop();
                     Bot.ballOuttake();
@@ -164,12 +183,12 @@ public class BlueLaunchParkBackstage extends BlueAlliance {
                     intakeTimer.resetTimer();
                     //Bot.intakeStop();
                     launchState = LaunchState.INTAKEONE;
-                    Bot.ballLaunchV();
+                    Bot.ballLaunchV();//VELOCITY for launching 2nd artifact
                 }
                 break;
             case INTAKEONE:
                 Bot.ballOuttake();
-                Bot.artifactPushDown();
+                Bot.artifactPushDown();//pushing the artifact into the launcher
                 if (intakeTimer.getElapsedTimeSeconds() > 2) {
                     Bot.intakeStop();
                     waitTimer.resetTimer();

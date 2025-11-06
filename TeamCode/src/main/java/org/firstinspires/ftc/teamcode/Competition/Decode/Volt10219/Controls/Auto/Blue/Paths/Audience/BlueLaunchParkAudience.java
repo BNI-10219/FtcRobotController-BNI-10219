@@ -16,6 +16,23 @@ import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.
 @Autonomous(name = "Blue Launch Park Audience")
 public class BlueLaunchParkAudience extends BlueAlliance {
 
+
+    //   (0, 144)                          (144, 144)
+    //      --------------------------------
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      ---------------------------------
+    //   (0,0)                              (144, 0)
+
     Follower follower;
 
     private PathState pathState = PathState.READY;
@@ -143,7 +160,7 @@ public class BlueLaunchParkAudience extends BlueAlliance {
     public void automaticLaunch() {
         switch(launchState) {
             case READY:
-                Bot.ballLaunchBackField();
+                Bot.ballLaunchBackField();//VELOCITY for launching 1st artifact
                 outtakeTimer.resetTimer();
                 intakeTimer.resetTimer();
                 break;
@@ -156,11 +173,11 @@ public class BlueLaunchParkAudience extends BlueAlliance {
                     Bot.intakeStop();
                     Bot.ballOuttake();
                 }
-                Bot.ballLaunchAutoBack();
+                Bot.ballLaunchAutoBack();//VELOCITY for launching 2nd artifact
 //                Bot.ballLaunchOne.setVelocity(700);
 //                Bot.ballLaunchOne.setVelocity(700);
 
-                Bot.artifactPushAuto();
+                Bot.artifactPushAuto();//pushing the artifact into the launcher
                 waitTimer.resetTimer();
                 intakeTimer.resetTimer();
                 launchState = LaunchState.WAIT;

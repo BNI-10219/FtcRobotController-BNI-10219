@@ -22,6 +22,22 @@ public class RedLaunchParkBackstage extends RedAlliance {
 
     private Timer opmodeTimer, intakeTimer, waitTimer, pathTimer, outtakeTimer;
 
+    //   (0, 144)                          (144, 144)
+    //      --------------------------------
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      |                               |
+    //      ---------------------------------
+    //   (0,0)                              (144, 0)
+
     private final Pose startPose = new Pose(120, 132, Math.toRadians(215));
     private final Pose launch = new Pose(84, 84, Math.toRadians(225));
     private final Pose intake = new Pose(108, 36, Math.toRadians(0));
@@ -142,7 +158,7 @@ public class RedLaunchParkBackstage extends RedAlliance {
     public void automaticLaunch() {
         switch(launchState) {
             case READY:
-                Bot.ballLaunchAutoV();
+                Bot.ballLaunchAutoV();//VELOCITY for launching 1st artifact
                 outtakeTimer.resetTimer();
                 break;
 
