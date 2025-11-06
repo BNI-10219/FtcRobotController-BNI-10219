@@ -43,7 +43,7 @@ public class RedLaunchParkBackstage extends RedAlliance {
     private final Pose intake = new Pose(108, 36, Math.toRadians(0));
     private final Pose intakePickup = new Pose(36, 128, Math.toRadians(90));
     private final Pose launchTwoPull = new Pose(72, 48, Math.toRadians(157));
-    private final Pose park = new Pose(96, 44, Math.toRadians(180));
+    private final Pose park = new Pose(96, 44, Math.toRadians(0));
 
     private Path launchOne;
     private PathChain intakePath, intakePickupPath, launchTwoPath, parkPath;

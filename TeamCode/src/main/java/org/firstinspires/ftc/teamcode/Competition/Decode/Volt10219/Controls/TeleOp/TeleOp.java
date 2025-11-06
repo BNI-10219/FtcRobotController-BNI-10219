@@ -287,7 +287,7 @@ public class TeleOp extends OpMode {
     }
 
     public void artifactPushControl(){
-        if(gamepad1.b ){
+        if(gamepad1.y ){
             Bot.artifactPushMiddle();
         }
 
