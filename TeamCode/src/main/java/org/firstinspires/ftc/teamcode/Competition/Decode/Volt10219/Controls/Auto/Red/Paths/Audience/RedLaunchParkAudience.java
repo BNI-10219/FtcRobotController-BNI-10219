@@ -158,8 +158,8 @@ public class RedLaunchParkAudience extends RedAlliance {
         switch(launchState) {
             case READY:
                 //To change the velocity, change the numbers below
-                Bot.ballLaunchOne.setVelocity(900);//VELOCITY for launching 1st artifact
-                Bot.ballLaunchTwo.setVelocity(900);//VELOCITY for launching 1st artifact
+                Bot.ballLaunchBackField();;//VELOCITY for launching 1st artifact
+
                 outtakeTimer.resetTimer();
                 intakeTimer.resetTimer();
                 break;
@@ -173,8 +173,8 @@ public class RedLaunchParkAudience extends RedAlliance {
                     Bot.ballIntake();
                 }
                 //To change the velocity, change the numbers below
-                Bot.ballLaunchOne.setVelocity(850);//VELOCITY for launching 2nd artifact
-                Bot.ballLaunchTwo.setVelocity(850);//VELOCITY for launching 2nd artifact
+                Bot.ballLaunchAutoBack();//VELOCITY for launching 2nd artifact
+
                 Bot.artifactPushAuto();
                 waitTimer.resetTimer();
                 intakeTimer.resetTimer();

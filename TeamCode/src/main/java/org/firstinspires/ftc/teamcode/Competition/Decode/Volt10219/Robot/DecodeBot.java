@@ -115,8 +115,8 @@ public class DecodeBot extends Mecanum {
         ballLaunchTwo.setVelocity(850);
     }
     public void ballLaunchAutoBack(){
-        ballLaunchOne.setVelocity(750);
-        ballLaunchTwo.setVelocity(750);
+        ballLaunchOne.setVelocity(800);
+        ballLaunchTwo.setVelocity(800);
     }
 
     public void ballLaunchMidV(){
