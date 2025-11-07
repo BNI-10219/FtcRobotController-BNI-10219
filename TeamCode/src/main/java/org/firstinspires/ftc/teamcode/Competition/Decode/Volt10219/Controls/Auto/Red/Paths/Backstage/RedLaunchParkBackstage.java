@@ -38,6 +38,16 @@ public class RedLaunchParkBackstage extends RedAlliance {
     //      ---------------------------------
     //   (0,0)                              (144, 0)
 
+
+    //HEADING(ANGLE)
+
+    //                90 degrees
+    //                     |
+    //                     |
+    //  180 degrees  --------------   0 degrees
+    //                     |
+    //                     |
+    //                180 degrees
     private final Pose startPose = new Pose(120, 132, Math.toRadians(215));
     private final Pose launch = new Pose(84, 84, Math.toRadians(225));
     private final Pose intake = new Pose(108, 36, Math.toRadians(0));
@@ -123,6 +133,8 @@ public class RedLaunchParkBackstage extends RedAlliance {
 
     public void stop() {}
 
+
+    //DOES NOT NEED TO BE CHANGED
     public void autoPathing() {
         switch(pathState){
             case DRIVETOLAUNCH:
@@ -155,10 +167,14 @@ public class RedLaunchParkBackstage extends RedAlliance {
         }
     }
 
+    //LAUNCHING CODE DURING AUTO - MIGHT NEED TO BE CHANGED
     public void automaticLaunch() {
         switch(launchState) {
             case READY:
+                //To change the velocity, change the numbers below
                 Bot.ballLaunchAutoV();//VELOCITY for launching 1st artifact
+                // Command + B to change the velocity(while the white line index thing is in the method)
+
                 outtakeTimer.resetTimer();
                 break;
 
@@ -178,7 +194,12 @@ public class RedLaunchParkBackstage extends RedAlliance {
                     intakeTimer.resetTimer();
                     //Bot.intakeStop();
                     launchState = LaunchState.INTAKEONE;
-                    Bot.ballLaunchV();
+
+                    //To change the velocity, change the numbers below
+                    Bot.ballLaunchV();//VELOCITY for launching 2nd artifact
+                    // Command + B to change the velocity(while the white line index thing is in the method)
+
+
                 }
                 break;
             case INTAKEONE:
@@ -205,7 +226,6 @@ public class RedLaunchParkBackstage extends RedAlliance {
                     Bot.intakeStop();
                     waitTimer.resetTimer();
                     launchState = LaunchState.IDLE;
-                    scoringDone = true;   //***********************************************/////////////
                 }
                 break;
             case IDLE:

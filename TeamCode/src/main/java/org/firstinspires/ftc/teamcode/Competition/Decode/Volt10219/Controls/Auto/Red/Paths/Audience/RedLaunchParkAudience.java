@@ -31,6 +31,15 @@ public class RedLaunchParkAudience extends RedAlliance {
     //      ---------------------------------
     //   (0,0)                              (144, 0)
 
+
+    //                90 degrees
+    //                     |
+    //                     |
+    //  180 degrees  --------------   0 degrees
+    //                     |
+    //                     |
+    //                180 degrees
+
     Follower follower;
 
     private PathState pathState = PathState.READY;
@@ -39,7 +48,7 @@ public class RedLaunchParkAudience extends RedAlliance {
     private Timer opmodeTimer, intakeTimer, waitTimer, pathTimer, outtakeTimer;
 
     private final Pose startPose = new Pose(96, 8, Math.toRadians(270));
-    private final Pose launch = new Pose(86, 12, Math.toRadians(248));//84, 84, 225
+    private final Pose launch = new Pose(86, 12, Math.toRadians(248));
     private final Pose intake = new Pose(108, 36, Math.toRadians(0));
     private final Pose intakePickup = new Pose(36, 128, Math.toRadians(90));
     private final Pose launchTwoPull = new Pose(72, 48, Math.toRadians(157));
@@ -122,6 +131,7 @@ public class RedLaunchParkAudience extends RedAlliance {
 
     public void stop() {}
 
+    //DOES NOT NEED TO BE CHANGED
     public void autoPathing() {
         switch(pathState){
             case DRIVETOLAUNCH:
@@ -154,11 +164,14 @@ public class RedLaunchParkAudience extends RedAlliance {
         }
     }
 
+
+    //LAUNCHING CODE DURING AUTO - MIGHT NEED TO BE CHANGED
     public void automaticLaunch() {
         switch(launchState) {
             case READY:
                 //To change the velocity, change the numbers below
                 Bot.ballLaunchBackField();;//VELOCITY for launching 1st artifact
+                // Command + B to change the velocity(while the white line index thing is in the method)
 
                 outtakeTimer.resetTimer();
                 intakeTimer.resetTimer();
@@ -172,8 +185,10 @@ public class RedLaunchParkAudience extends RedAlliance {
                     Bot.intakeStop();
                     Bot.ballIntake();
                 }
+
                 //To change the velocity, change the numbers below
                 Bot.ballLaunchAutoBack();//VELOCITY for launching 2nd artifact
+                // Command + B to change the velocity(while the white line index thing is in the method)
 
                 Bot.artifactPushAuto();
                 waitTimer.resetTimer();
@@ -213,7 +228,6 @@ public class RedLaunchParkAudience extends RedAlliance {
                     Bot.intakeStop();
                     waitTimer.resetTimer();
                     launchState = LaunchState.IDLE;
-                    scoringDone = true;   //***********************************************/////////////
                 }
                 break;
             case IDLE:

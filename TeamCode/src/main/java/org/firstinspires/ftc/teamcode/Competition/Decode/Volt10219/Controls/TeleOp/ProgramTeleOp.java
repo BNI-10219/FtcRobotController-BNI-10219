@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Tel
 
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
@@ -10,6 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Robot.DecodeBot;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Robot.ProgramBot;
 
+@Disabled
 @TeleOp(name = "Decode Program TeleOp")
 public class ProgramTeleOp extends OpMode {
     double leftStickYVal;

@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.Competition.Z20202021UltimateGoal.Controls.TeleOp;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.Competition.Z20202021UltimateGoal.Robots.StraferKit;
+@Disabled
 @TeleOp(name = "C.H.I.R.P",group = "4")
 
 public class TeleopStraferKit extends OpMode{

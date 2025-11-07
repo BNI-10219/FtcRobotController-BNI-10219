@@ -31,6 +31,14 @@ public class BlueLaunchParkBackstage extends BlueAlliance {
     //      ---------------------------------
     //   (0,0)                              (144, 0)
 
+    //                90 degrees
+    //                     |
+    //                     |
+    //  180 degrees  --------------   0 degrees
+    //                     |
+    //                     |
+    //                180 degrees
+
     Follower follower;
 
     private PathState pathState = PathState.READY;
@@ -161,7 +169,11 @@ public class BlueLaunchParkBackstage extends BlueAlliance {
     public void automaticLaunch() {
         switch(launchState) {
             case READY:
+                //To change the velocity, change the numbers below
                 Bot.ballLaunchAutoV();//setting VELOCITY for launching 1st artifact
+                // Command + B to change the velocity(while the white line index thing is in the method)
+
+
                 outtakeTimer.resetTimer();
                 break;
 
@@ -181,7 +193,10 @@ public class BlueLaunchParkBackstage extends BlueAlliance {
                     intakeTimer.resetTimer();
                     //Bot.intakeStop();
                     launchState = LaunchState.INTAKEONE;
+
+                    //To change the velocity, change the numbers below
                     Bot.ballLaunchV();//VELOCITY for launching 2nd artifact
+                    // Command + B to change the velocity(while the white line index thing is in the method)
                 }
                 break;
             case INTAKEONE:
@@ -208,7 +223,6 @@ public class BlueLaunchParkBackstage extends BlueAlliance {
                     Bot.intakeStop();
                     waitTimer.resetTimer();
                     launchState = LaunchState.IDLE;
-                    scoringDone = true;   //***********************************************/////////////
                 }
                 break;
             case IDLE:

@@ -32,6 +32,15 @@ public class BlueLaunchParkAudience extends BlueAlliance {
     //      ---------------------------------
     //   (0,0)                              (144, 0)
 
+
+    //                90 degrees
+    //                     |
+    //                     |
+    //  180 degrees  --------------   0 degrees
+    //                     |
+    //                     |
+    //                180 degrees
+
     Follower follower;
 
     private PathState pathState = PathState.READY;
@@ -124,6 +133,8 @@ public class BlueLaunchParkAudience extends BlueAlliance {
 
     public void stop() {}
 
+
+    //DOES NOT NEED TO BE CHANGED
     public void autoPathing() {
         switch(pathState){
             case DRIVETOLAUNCH:
@@ -156,10 +167,15 @@ public class BlueLaunchParkAudience extends BlueAlliance {
         }
     }
 
+    //LAUNCHING CODE DURING AUTO - MIGHT NEED TO BE CHANGED
     public void automaticLaunch() {
         switch(launchState) {
             case READY:
+                //To change the velocity, change the numbers below
                 Bot.ballLaunchBackField();//VELOCITY for launching 1st artifact
+                // Command + B to change the velocity(while the white line index thing is in the method)
+
+
                 outtakeTimer.resetTimer();
                 intakeTimer.resetTimer();
                 break;
@@ -172,9 +188,12 @@ public class BlueLaunchParkAudience extends BlueAlliance {
                     Bot.intakeStop();
                     Bot.ballIntake();
                 }
+
+                //To change the velocity, change the numbers below
                 Bot.ballLaunchAutoBack();//VELOCITY for launching 2nd artifact
-//                Bot.ballLaunchOne.setVelocity(700);
-//                Bot.ballLaunchOne.setVelocity(700);
+                // Command + B to change the velocity(while the white line index thing is in the method)
+
+
 
                 Bot.artifactPushAuto();//pushing the artifact into the launcher
                 waitTimer.resetTimer();
@@ -214,7 +233,6 @@ public class BlueLaunchParkAudience extends BlueAlliance {
                     Bot.intakeStop();
                     waitTimer.resetTimer();
                     launchState = LaunchState.IDLE;
-                    scoringDone = true;   //***********************************************/////////////
                 }
                 break;
             case IDLE:

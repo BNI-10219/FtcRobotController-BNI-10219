@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.TeleOp;
 
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Robot.DecodeBot;
 
+@Disabled
 @TeleOp(name = "Intake Tester TeleOp")
 public class IntakeTesterTeleOp extends OpMode {
     double leftStickYVal;
