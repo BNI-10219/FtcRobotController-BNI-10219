@@ -46,6 +46,8 @@ public class TeleOp extends OpMode {
     private boolean autoPosition = false;
     private Limelight3A limelight;
 
+    LLResult result = limelight.getLatestResult();
+
 
     @Override
     public void init() {
@@ -181,6 +183,12 @@ public class TeleOp extends OpMode {
                 } else {
                     Bot.rrMotor.setPower(rrSpeed * speedMultiply);
                 }
+                if(gamepad1.right_trigger > 0.1){
+                    Bot.flMotor.setPower(.5);
+                    Bot.frMotor.setPower(.5);
+                    Bot.rlMotor.setPower(.5);
+                    Bot.rrMotor.setPower(.5);
+                }
 
         }
     }
@@ -190,7 +198,6 @@ public class TeleOp extends OpMode {
         if (!autoPosition) {
             return;
         }
-        LLResult result = limelight.getLatestResult();
         double txDifference = result.getTx() - targetTX;
         double taDifference = result.getTy() - targetTA;
 
@@ -423,6 +430,7 @@ public class TeleOp extends OpMode {
         public void telemetryOutput () {
             telemetry.addData("Launcher One: ", Math.abs(Bot.ballLaunchOne.getVelocity()));
             telemetry.addData("Launcher Two: ", Bot.ballLaunchTwo.getVelocity());
+            telemetry.addData("Limelight AT: ", result.getFiducialResults());
             telemetry.update();
         }
     }

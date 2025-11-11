@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.RedAlliance;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
 
-@Autonomous(name = "Red Launch Park Audience")
+@Autonomous(name = "Red Launch Park Audience Cam")
 public class RedLaunchParkAudienceCam extends RedAlliance {
 
     //   (0, 144)                          (144, 144)
