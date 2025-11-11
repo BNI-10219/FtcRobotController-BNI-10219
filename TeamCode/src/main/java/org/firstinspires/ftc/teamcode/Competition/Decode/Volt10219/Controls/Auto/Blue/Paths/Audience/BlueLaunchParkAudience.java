@@ -31,8 +31,6 @@ public class BlueLaunchParkAudience extends BlueAlliance {
     //      |                               |
     //      ---------------------------------
     //   (0,0)                              (144, 0)
-
-
     //                90 degrees
     //                     |
     //                     |
@@ -237,13 +235,8 @@ public class BlueLaunchParkAudience extends BlueAlliance {
                 break;
             case IDLE:
                 break;
-
         }
-
-
     }
-
-
 }
 
 
