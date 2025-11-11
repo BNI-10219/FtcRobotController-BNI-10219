@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Blue.Paths.Audience;
+package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.Paths.Audience;
 
 
 import com.pedropathing.follower.Follower;
@@ -7,14 +7,15 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Blue.BlueAlliance;
+import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.RedAlliance;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
 
-@Autonomous(name = "Blue Launch Park Audience")
-public class BlueLaunchParkAudience extends BlueAlliance {
-
+@Autonomous(name = "Red Launch Park Audience Cam")
+public class RedLaunchParkAudienceCam extends RedAlliance {
 
     //   (0, 144)                          (144, 144)
     //      --------------------------------
@@ -31,6 +32,8 @@ public class BlueLaunchParkAudience extends BlueAlliance {
     //      |                               |
     //      ---------------------------------
     //   (0,0)                              (144, 0)
+
+
     //                90 degrees
     //                     |
     //                     |
@@ -41,22 +44,28 @@ public class BlueLaunchParkAudience extends BlueAlliance {
 
     Follower follower;
 
+    private Limelight3A limelight;
+
     private PathState pathState = PathState.READY;
     private LaunchState launchState = LaunchState.READY;
 
     private Timer opmodeTimer, intakeTimer, waitTimer, pathTimer, outtakeTimer;
 
-    private final Pose startPose = new Pose(48, 8, Math.toRadians(270));
-    private final Pose launch = new Pose(58, 16, Math.toRadians(300));
-    private final Pose intake = new Pose(108, 36, Math.toRadians(0));//random point - DOES NOT WORK
-    private final Pose intakePickup = new Pose(36, 128, Math.toRadians(90));//random point - DOES NOT WORK
-    private final Pose launchTwoPull = new Pose(72, 48, 157);//random point - DOES NOT WORK
-    private final Pose park = new Pose(45, 36, Math.toRadians(180));//random point - DOES NOT WORK
+    private final Pose startPose = new Pose(96, 8, Math.toRadians(270));
+    private final Pose launch = new Pose(86, 12, Math.toRadians(248));
+    private final Pose intake = new Pose(108, 36, Math.toRadians(0));
+    private final Pose intakePickup = new Pose(36, 128, Math.toRadians(90));
+    private final Pose launchTwoPull = new Pose(72, 48, Math.toRadians(157));
+    private final Pose park = new Pose(96, 44, Math.toRadians(0));
 
     private Path launchOne;
     private PathChain intakePath, intakePickupPath, launchTwoPath, parkPath;
 
     boolean scoringDone = false;
+
+    double targetTX = 23;
+    double targetTA = 3;
+    double llTolerance = 1.25;
 
     private void buildPaths() {
         launchOne = new Path(new BezierCurve(startPose, launch));
@@ -78,12 +87,16 @@ public class BlueLaunchParkAudience extends BlueAlliance {
                 .addPath(new BezierCurve(launch, park))
                 .setLinearHeadingInterpolation(launch.getHeading(), park.getHeading())
                 .build();
-
     }
 
     @Override
     public void init() {
         Bot.initRobot(hardwareMap);
+
+        limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        telemetry.setMsTransmissionInterval(11);
+        limelight.pipelineSwitch(0);
+
         intakeTimer = new Timer();
         intakeTimer.resetTimer();
         waitTimer = new Timer();
@@ -105,6 +118,7 @@ public class BlueLaunchParkAudience extends BlueAlliance {
 
     public void start() {
         opmodeTimer.resetTimer();
+        limelight.start();
         pathState = PathState.DRIVETOLAUNCH;
         launchState = LaunchState.READY;
         launchZone = LaunchZone.NONE;
@@ -118,6 +132,11 @@ public class BlueLaunchParkAudience extends BlueAlliance {
         autoPathing();
         automaticLaunch();
 
+        LLResult result = limelight.getLatestResult();
+        double txDifference = result.getTx() - targetTX;
+        double taDifference = result.getTy() - targetTA;
+
+
         // These loop the movements of the robot, these must be called continuously in order to work
         follower.update();
         // Feedback to Driver Hub for debugging
@@ -126,19 +145,28 @@ public class BlueLaunchParkAudience extends BlueAlliance {
         telemetry.addData("y", follower.getPose().getY());
         telemetry.addData("heading", follower.getPose().getHeading());
         telemetry.addData("Is Busy: ", follower.isBusy());
+        telemetry.addData("Tx Difference: ", txDifference);
+        telemetry.addData("Ta Difference: ", taDifference);
+        telemetry.addData("LL Ta:", result.getTa());
+        telemetry.addData("LL Tx: ", result.getTx());
         telemetry.update();
     }
 
     public void stop() {}
-
 
     //DOES NOT NEED TO BE CHANGED
     public void autoPathing() {
         switch(pathState){
             case DRIVETOLAUNCH:
                 follower.followPath(launchOne, true);
-                pathState = PathState.LAUNCH;
-                pathTimer.resetTimer();
+
+                if(!follower.isBusy()){
+                    autoPositioning();
+                }
+                if(targetFound == true) {
+                    pathState = PathState.LAUNCH;
+                    pathTimer.resetTimer();
+                }
                 break;
 
             case LAUNCH:
@@ -165,14 +193,14 @@ public class BlueLaunchParkAudience extends BlueAlliance {
         }
     }
 
+
     //LAUNCHING CODE DURING AUTO - MIGHT NEED TO BE CHANGED
     public void automaticLaunch() {
         switch(launchState) {
             case READY:
                 //To change the velocity, change the numbers below
-                Bot.ballLaunchBackField();//VELOCITY for launching 1st artifact
+                Bot.ballLaunchBackField();;//VELOCITY for launching 1st artifact
                 // Command + B to change the velocity(while the white line index thing is in the method)
-
 
                 outtakeTimer.resetTimer();
                 intakeTimer.resetTimer();
@@ -191,9 +219,7 @@ public class BlueLaunchParkAudience extends BlueAlliance {
                 Bot.ballLaunchAutoBack();//VELOCITY for launching 2nd artifact
                 // Command + B to change the velocity(while the white line index thing is in the method)
 
-
-
-                Bot.artifactPushAuto();//pushing the artifact into the launcher
+                Bot.artifactPushAuto();
                 waitTimer.resetTimer();
                 intakeTimer.resetTimer();
                 launchState = LaunchState.WAIT;
@@ -235,6 +261,11 @@ public class BlueLaunchParkAudience extends BlueAlliance {
                 break;
             case IDLE:
                 break;
+
         }
+
     }
+
 }
+
+
