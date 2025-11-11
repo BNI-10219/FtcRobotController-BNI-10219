@@ -37,6 +37,8 @@ public class TeleOp extends OpMode {
     public IntakeState intakeState = IntakeState.READY;
     public OuttakeState outtakeState = OuttakeState.READY;
 
+    public DriveState driveState = DriveState.ANDREA;
+
     private ElapsedTime intakeTimer = new ElapsedTime();
 
     private Timer outtakeTimer = new Timer();
@@ -46,7 +48,7 @@ public class TeleOp extends OpMode {
 
 
     @Override
-    public void init(){
+    public void init() {
         Bot.initRobot(hardwareMap);
 
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
@@ -55,238 +57,318 @@ public class TeleOp extends OpMode {
 
     }
 
-    public void init_loop(){}
+    public void init_loop() {
+    }
 
 
-    public void start(){
+    public void start() {
         limelight.start();
     }
 
     @Override
-    public void loop(){
+    public void loop() {
         speedControl();
+        driveStatesControl();//if you want to switch back to no states, comment out this one
+        driveStateControls();//Do not comment out this one
         //drive();
         launcherControl();
         intakeControl();
         artifactPushControl();
         telemetryOutput();
-        fieldCentricDrive();
+        //fieldCentricDrive();
         autoPositioning();
         intakeControlStates();
         timeOuttake();
     }
 
-    public void autoPositioning(){
-       autoPosition = gamepad1.dpad_down;
-       if (!autoPosition){
-           return;
-       }
-       LLResult result = limelight.getLatestResult();
-       double txDifference = result.getTx() - targetTX;
-       double taDifference = result.getTy() - targetTA;
-
-       if (autoPosition){
-           if (txDifference < 0 - llTolerance){
-               Bot.strafeRight(1);
-
-           }
-           else if (txDifference > 0 + llTolerance){
-               Bot.strafeLeft(1);
-           }
-           else if((txDifference> 0 - llTolerance) && (txDifference < 0 + llTolerance)){
-               Bot.stopMotors();
-           }
-
-           if (taDifference > 0 + llTolerance){
-               Bot.driveForward(0.5);
-           }
-           else if (taDifference < 0 + llTolerance){
-               Bot.stopMotors();
-           }
-
-        }
-
-       telemetry.addData("Tx Difference: ", txDifference);
-       telemetry.addData("Ta Difference: ", taDifference);
-       telemetry.addData("LL Ta:", result.getTa() );
-       telemetry.addData("LL Tx: ", result.getTx());
-       telemetry.update();
-
-    }
-
-    public void fieldCentricDrive(){
-        double y;
-        double x;
-        double rx;
-
-        y = Math.abs(Math.pow(gamepad1.left_stick_y, 2)); // Remember, Y stick value is reversed
-        if (gamepad1.left_stick_y > 0) y *= -1;
-        x = Math.abs(Math.pow(gamepad1.left_stick_x, 2));
-        if (gamepad1.left_stick_x < 0) x *= -1;
-        rx = Math.abs(Math.pow(gamepad1.right_stick_x, 2));
-        if (gamepad1.right_stick_x < 0) rx *= -1;
-
-
-        // This button choice was made so that it is hard to hit on accident,
-        // it can be freely changed based on preference.
-        // The equivalent button is start on Xbox-style controllers.
-        if(gamepad1.options){
-            Bot.imu.resetYaw();
-        }
-
-        double botHeading = Bot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-
-        // Rotate the movement direction counter to the bot's rotation
-        double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-        double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
-
-        rotX = rotX * 1.1;  // Counteract imperfect strafing
-
-        // Denominator is the largest motor power (absolute value) or 1
-        // This ensures all the powers maintain the same ratio,
-        // but only if at least one is out of the range [-1, 1]
-        double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
-        double flPower = (rotY + rotX + rx) / denominator;
-        double rlPower = (rotY - rotX + rx) / denominator;
-        double frPower = (rotY - rotX - rx) / denominator;
-        double rrPower = (rotY + rotX - rx) / denominator;
-
-        Bot.flMotor.setPower(flPower);
-        Bot.frMotor.setPower(frPower);
-        Bot.rlMotor.setPower(rlPower);
-        Bot.rrMotor.setPower(rrPower);
-
-
-
-    }
-    public void drive(){
-
-        leftStickYVal = -gamepad1.left_stick_y;
-        leftStickYVal = Range.clip(leftStickYVal, -1, 1);
-        leftStickXVal = gamepad1.left_stick_x;
-        leftStickXVal = Range.clip(leftStickXVal, -1, 1);
-        rightStickXVal = gamepad1.right_stick_x;
-        rightStickXVal = Range.clip(rightStickXVal, -1, 1);
-
-        //Field Centric
-//        flSpeed = leftStickYVal+leftStickXVal+rightStickXVal;
-//        flSpeed = Range.clip(flSpeed, -1, 1);
-//        frSpeed = leftStickYVal-leftStickXVal-rightStickXVal;
-//        frSpeed = Range.clip(frSpeed, -1, 1);
-//        rlSpeed = leftStickYVal-leftStickXVal+rightStickXVal;
-//        rlSpeed = Range.clip(rlSpeed, -1, 1);
-//        rrSpeed = leftStickYVal+leftStickXVal-rightStickXVal;
-//        rrSpeed = Range.clip(rrSpeed, -1, 1);
-
-        //Robot Centric - Andrea prefers
-        flSpeed = leftStickYVal + rightStickXVal + leftStickXVal;    // Vertical + Rotation + Staffing
-        flSpeed = Range.clip(flSpeed, -1, 1);
-        frSpeed = leftStickYVal - rightStickXVal - leftStickXVal;   // Vertical - Rotation - Strafing(sign in front is the way the motor is turning in relation to the others)
-        frSpeed = Range.clip(frSpeed, -1, 1);
-        rlSpeed = leftStickYVal - rightStickXVal + leftStickXVal;
-        rlSpeed = Range.clip(rlSpeed, -1, 1);
-        rrSpeed = leftStickYVal + rightStickXVal - leftStickXVal;
-        rrSpeed = Range.clip(rrSpeed, -1, 1);
-
-        if (flSpeed <= powerThreshold && flSpeed >= -powerThreshold){
-            flSpeed = 0;
-            Bot.flMotor.setPower(flSpeed);
-        }else{
-            Bot.flMotor.setPower(flSpeed * speedMultiply);
-        }
-
-        if(frSpeed <= powerThreshold && frSpeed >= -powerThreshold){
-            frSpeed = 0;
-            Bot.frMotor.setPower(frSpeed);
-        }else{
-            Bot.frMotor.setPower(frSpeed * speedMultiply);
-        }
-
-        if(rlSpeed <= powerThreshold && rlSpeed >= -powerThreshold) {
-            rlSpeed = 0;
-            Bot.rlMotor.setPower(rlSpeed);
-        }else{
-            Bot.rlMotor.setPower(rlSpeed * speedMultiply);
-        }
-
-        if(rrSpeed <= powerThreshold && rrSpeed >= -powerThreshold) {
-            rrSpeed = 0;
-            Bot.rrMotor.setPower(rrSpeed);
-        }else{
-            Bot.rrMotor.setPower(rrSpeed * speedMultiply);
-        }
-        if(gamepad1.right_bumper){
-            Bot.resetHeading();
+    public void driveStatesControl() {
+        if (gamepad1.share) {
+            driveState = DriveState.AUDREY;
+        } else {
+            driveState = DriveState.ANDREA;
         }
     }
 
-    //Old Intake
-//    public void intakeControl(){
-//        if(gamepad2.b){
-//            Bot.ballIntakeStop();
+    public enum DriveState {
+        ANDREA, AUDREY;
+    }
+
+    public void driveStateControls() {
+        switch (driveState) {
+            case ANDREA:
+                double y;
+                double x;
+                double rx;
+
+                y = Math.abs(Math.pow(gamepad1.left_stick_y, 2)); // Remember, Y stick value is reversed
+                if (gamepad1.left_stick_y > 0) y *= -1;
+                x = Math.abs(Math.pow(gamepad1.left_stick_x, 2));
+                if (gamepad1.left_stick_x < 0) x *= -1;
+                rx = Math.abs(Math.pow(gamepad1.right_stick_x, 2));
+                if (gamepad1.right_stick_x < 0) rx *= -1;
+
+
+                // This button choice was made so that it is hard to hit on accident,
+                // it can be freely changed based on preference.
+                // The equivalent button is start on Xbox-style controllers.
+                if (gamepad1.options) {
+                    Bot.imu.resetYaw();
+                }
+
+                double botHeading = Bot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+
+                // Rotate the movement direction counter to the bot's rotation
+                double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+                double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+
+                rotX = rotX * 1.1;  // Counteract imperfect strafing
+
+                // Denominator is the largest motor power (absolute value) or 1
+                // This ensures all the powers maintain the same ratio,
+                // but only if at least one is out of the range [-1, 1]
+                double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
+                double flPower = (rotY + rotX + rx) / denominator;
+                double rlPower = (rotY - rotX + rx) / denominator;
+                double frPower = (rotY - rotX - rx) / denominator;
+                double rrPower = (rotY + rotX - rx) / denominator;
+
+                Bot.flMotor.setPower(flPower);
+                Bot.frMotor.setPower(frPower);
+                Bot.rlMotor.setPower(rlPower);
+                Bot.rrMotor.setPower(rrPower);
+            case AUDREY:
+                leftStickYVal = -gamepad1.left_stick_y;
+                leftStickYVal = Range.clip(leftStickYVal, -1, 1);
+                leftStickXVal = gamepad1.left_stick_x;
+                leftStickXVal = Range.clip(leftStickXVal, -1, 1);
+                rightStickXVal = gamepad1.right_stick_x;
+                rightStickXVal = Range.clip(rightStickXVal, -1, 1);
+
+                //Robot Centric - Andrea prefers
+                flSpeed = leftStickYVal + rightStickXVal + leftStickXVal;    // Vertical + Rotation + Staffing
+                flSpeed = Range.clip(flSpeed, -1, 1);
+                frSpeed = leftStickYVal - rightStickXVal - leftStickXVal;   // Vertical - Rotation - Strafing(sign in front is the way the motor is turning in relation to the others)
+                frSpeed = Range.clip(frSpeed, -1, 1);
+                rlSpeed = leftStickYVal - rightStickXVal + leftStickXVal;
+                rlSpeed = Range.clip(rlSpeed, -1, 1);
+                rrSpeed = leftStickYVal + rightStickXVal - leftStickXVal;
+                rrSpeed = Range.clip(rrSpeed, -1, 1);
+
+                if (flSpeed <= powerThreshold && flSpeed >= -powerThreshold) {
+                    flSpeed = 0;
+                    Bot.flMotor.setPower(flSpeed);
+                } else {
+                    Bot.flMotor.setPower(flSpeed * speedMultiply);
+                }
+
+                if (frSpeed <= powerThreshold && frSpeed >= -powerThreshold) {
+                    frSpeed = 0;
+                    Bot.frMotor.setPower(frSpeed);
+                } else {
+                    Bot.frMotor.setPower(frSpeed * speedMultiply);
+                }
+
+                if (rlSpeed <= powerThreshold && rlSpeed >= -powerThreshold) {
+                    rlSpeed = 0;
+                    Bot.rlMotor.setPower(rlSpeed);
+                } else {
+                    Bot.rlMotor.setPower(rlSpeed * speedMultiply);
+                }
+
+                if (rrSpeed <= powerThreshold && rrSpeed >= -powerThreshold) {
+                    rrSpeed = 0;
+                    Bot.rrMotor.setPower(rrSpeed);
+                } else {
+                    Bot.rrMotor.setPower(rrSpeed * speedMultiply);
+                }
+
+        }
+    }
+
+    public void autoPositioning() {
+        autoPosition = gamepad1.dpad_down;
+        if (!autoPosition) {
+            return;
+        }
+        LLResult result = limelight.getLatestResult();
+        double txDifference = result.getTx() - targetTX;
+        double taDifference = result.getTy() - targetTA;
+
+        if (autoPosition) {
+            if (txDifference < 0 - llTolerance) {
+                Bot.strafeRight(1);
+
+            } else if (txDifference > 0 + llTolerance) {
+                Bot.strafeLeft(1);
+            } else if ((txDifference > 0 - llTolerance) && (txDifference < 0 + llTolerance)) {
+                Bot.stopMotors();
+            }
+
+            if (taDifference > 0 + llTolerance) {
+                Bot.driveForward(0.5);
+            } else if (taDifference < 0 + llTolerance) {
+                Bot.stopMotors();
+            }
+
+        }
+
+        telemetry.addData("Tx Difference: ", txDifference);
+        telemetry.addData("Ta Difference: ", taDifference);
+        telemetry.addData("LL Ta:", result.getTa());
+        telemetry.addData("LL Tx: ", result.getTx());
+        telemetry.update();
+
+    }
+
+//    public void fieldCentricDrive(){
+//        double y;
+//        double x;
+//        double rx;
+//
+//        y = Math.abs(Math.pow(gamepad1.left_stick_y, 2)); // Remember, Y stick value is reversed
+//        if (gamepad1.left_stick_y > 0) y *= -1;
+//        x = Math.abs(Math.pow(gamepad1.left_stick_x, 2));
+//        if (gamepad1.left_stick_x < 0) x *= -1;
+//        rx = Math.abs(Math.pow(gamepad1.right_stick_x, 2));
+//        if (gamepad1.right_stick_x < 0) rx *= -1;
+//
+//
+//        // This button choice was made so that it is hard to hit on accident,
+//        // it can be freely changed based on preference.
+//        // The equivalent button is start on Xbox-style controllers.
+//        if(gamepad1.options){
+//            Bot.imu.resetYaw();
 //        }
-//        if(gamepad2.x){
-//            Bot.ballIntake();
+//
+//        double botHeading = Bot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+//
+//        // Rotate the movement direction counter to the bot's rotation
+//        double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+//        double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+//
+//        rotX = rotX * 1.1;  // Counteract imperfect strafing
+//
+//        // Denominator is the largest motor power (absolute value) or 1
+//        // This ensures all the powers maintain the same ratio,
+//        // but only if at least one is out of the range [-1, 1]
+//        double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
+//        double flPower = (rotY + rotX + rx) / denominator;
+//        double rlPower = (rotY - rotX + rx) / denominator;
+//        double frPower = (rotY - rotX - rx) / denominator;
+//        double rrPower = (rotY + rotX - rx) / denominator;
+//
+//        Bot.flMotor.setPower(flPower);
+//        Bot.frMotor.setPower(frPower);
+//        Bot.rlMotor.setPower(rlPower);
+//        Bot.rrMotor.setPower(rrPower);
+//
+//    }
+//    public void drive(){
+//
+//        leftStickYVal = -gamepad1.left_stick_y;
+//        leftStickYVal = Range.clip(leftStickYVal, -1, 1);
+//        leftStickXVal = gamepad1.left_stick_x;
+//        leftStickXVal = Range.clip(leftStickXVal, -1, 1);
+//        rightStickXVal = gamepad1.right_stick_x;
+//        rightStickXVal = Range.clip(rightStickXVal, -1, 1);
+//
+//        //Robot Centric - Andrea prefers
+//        flSpeed = leftStickYVal + rightStickXVal + leftStickXVal;    // Vertical + Rotation + Staffing
+//        flSpeed = Range.clip(flSpeed, -1, 1);
+//        frSpeed = leftStickYVal - rightStickXVal - leftStickXVal;   // Vertical - Rotation - Strafing(sign in front is the way the motor is turning in relation to the others)
+//        frSpeed = Range.clip(frSpeed, -1, 1);
+//        rlSpeed = leftStickYVal - rightStickXVal + leftStickXVal;
+//        rlSpeed = Range.clip(rlSpeed, -1, 1);
+//        rrSpeed = leftStickYVal + rightStickXVal - leftStickXVal;
+//        rrSpeed = Range.clip(rrSpeed, -1, 1);
+//
+//        if (flSpeed <= powerThreshold && flSpeed >= -powerThreshold){
+//            flSpeed = 0;
+//            Bot.flMotor.setPower(flSpeed);
+//        }else{
+//            Bot.flMotor.setPower(flSpeed * speedMultiply);
+//        }
+//
+//        if(frSpeed <= powerThreshold && frSpeed >= -powerThreshold){
+//            frSpeed = 0;
+//            Bot.frMotor.setPower(frSpeed);
+//        }else{
+//            Bot.frMotor.setPower(frSpeed * speedMultiply);
+//        }
+//
+//        if(rlSpeed <= powerThreshold && rlSpeed >= -powerThreshold) {
+//            rlSpeed = 0;
+//            Bot.rlMotor.setPower(rlSpeed);
+//        }else{
+//            Bot.rlMotor.setPower(rlSpeed * speedMultiply);
+//        }
+//
+//        if(rrSpeed <= powerThreshold && rrSpeed >= -powerThreshold) {
+//            rrSpeed = 0;
+//            Bot.rrMotor.setPower(rrSpeed);
+//        }else{
+//            Bot.rrMotor.setPower(rrSpeed * speedMultiply);
+//        }
+//        if(gamepad1.right_bumper){
+//            Bot.resetHeading();
 //        }
 //    }
 
-    public void launcherControl(){
+    public void launcherControl() {
 //        if(gamepad2.x){
 //            Bot.ballLaunchV();
 //        }
 
-        if(gamepad2.y){
+        if (gamepad2.y) {
             Bot.ballLaunchStop();
         }
-        if(gamepad2.right_bumper){
+        if (gamepad2.right_bumper) {
             Bot.ballLaunchMidV();
         }
-        if(gamepad2.right_trigger > 0.001){
+        if (gamepad2.right_trigger > 0.001) {
             Bot.ballLaunchBackField();
         }
-
     }
 
-    public enum IntakeState{
+    public enum IntakeState {
         RUN,
         WAIT,
         STOP,
         READY;
     }
 
-    public void intakeControlStates(){
-        switch(intakeState){
+    public void intakeControlStates() {
+        switch (intakeState) {
             case RUN:
                 Bot.ballIntake();
                 intakeTimer.reset();
                 intakeState = IntakeState.WAIT;
                 break;
             case WAIT:
-                if(intakeTimer.time() > 1.5){
+                if (intakeTimer.time() > 1.5) {
                     intakeState = IntakeState.STOP;
                 }
                 break;
             case STOP:
                 Bot.intakeStop();
-                intakeState  = IntakeState.READY;
+                intakeState = IntakeState.READY;
                 break;
             case READY:
                 break;
-
         }
     }
 
     public enum OuttakeState {START, WAIT, STOP, READY}
 
-    public void timeOuttake(){
-        switch(outtakeState){
+    public void timeOuttake() {
+        switch (outtakeState) {
             case START:
                 Bot.ballOuttake();
                 outtakeState = OuttakeState.WAIT;
                 outtakeTimer.resetTimer();
                 break;
             case WAIT:
-                if(outtakeTimer.getElapsedTimeSeconds() > 0.005){
+                if (outtakeTimer.getElapsedTimeSeconds() > 0.005) {
                     outtakeState = OuttakeState.STOP;
                 }
                 break;
@@ -297,65 +379,50 @@ public class TeleOp extends OpMode {
             case READY:
                 break;
         }
-
     }
 
-    public void intakeControl(){
-        if(gamepad2.dpad_right){
+    public void intakeControl() {
+        if (gamepad2.dpad_right) {
             Bot.ballIntake();
         }
-        if(gamepad2.dpad_up)
+        if (gamepad2.dpad_up)
             intakeState = IntakeState.RUN;
 
-        if(gamepad2.dpad_left){
+        if (gamepad2.dpad_left) {
             Bot.ballOuttake();
         }
-        if(gamepad2.b){
+        if (gamepad2.b) {
             Bot.intakeStop();
         }
-        if(gamepad2.x){
+        if (gamepad2.x) {
             outtakeState = OuttakeState.START;
         }
     }
 
-    public void artifactPushControl(){
-        if(gamepad1.y ){
+    public void artifactPushControl() {
+        if (gamepad1.y) {
             Bot.artifactPushUps();
         }
 
-        if(gamepad1.a){
+        if (gamepad1.a) {
             Bot.artifactPushDown();
         }
-        if(gamepad1.b){
+        if (gamepad1.b) {
             Bot.artifactPushMiddle();
         }
-//        else{
-//            Bot.artifactPushIntake();
-//        }
     }
 
-//    public void stateControl(){
-//
-//    }
-//
-//    public enum launchState{
-//        LAUNCH_START,
-//
-//    }
-
-    public void speedControl(){
-        if(gamepad1.left_bumper){
-            speedMultiply = 1;
-        }
-        else if(gamepad1.left_trigger>0.1){
-            speedMultiply = .5;
+        public void speedControl () {
+            if (gamepad1.left_bumper) {
+                speedMultiply = 1;
+            } else if (gamepad1.left_trigger > 0.1) {
+                speedMultiply = 0.5;
+            }
         }
 
+        public void telemetryOutput () {
+            telemetry.addData("Launcher One: ", Math.abs(Bot.ballLaunchOne.getVelocity()));
+            telemetry.addData("Launcher Two: ", Bot.ballLaunchTwo.getVelocity());
+            telemetry.update();
+        }
     }
-
-    public void telemetryOutput(){
-        telemetry.addData("Launcher One: ", Math.abs(Bot.ballLaunchOne.getVelocity()));
-        telemetry.addData("Launcher Two: ", Bot.ballLaunchTwo.getVelocity());
-        telemetry.update();
-    }
-}

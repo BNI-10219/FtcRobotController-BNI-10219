@@ -15,6 +15,8 @@ public abstract class AutoMain extends OpMode {
 
     private boolean autoPosition = false;
 
+    public boolean targetFound = false;
+
     public double targetVelocity = 0;
 
     public int maxShots = 4;
@@ -86,9 +88,8 @@ public void startScoring(LaunchZone zone, int shots, double time, double nowSec)
     scoring.startedAtSec = nowSec;
 }
 
-
     public void autoPositioning(){
-        autoPosition = false;
+        autoPosition = true;
         if (!autoPosition){
             return;
         }
@@ -108,6 +109,7 @@ public void startScoring(LaunchZone zone, int shots, double time, double nowSec)
             }
             else if((txDifference> 0 - llTolerance) && (txDifference < 0 + llTolerance)){
                 Bot.stopMotors();
+                targetFound = true;
             }
 
             if (taDifference > 0 + llTolerance){
@@ -115,6 +117,7 @@ public void startScoring(LaunchZone zone, int shots, double time, double nowSec)
             }
             else if (taDifference < 0 + llTolerance){
                 Bot.stopMotors();
+                targetFound = true;
             }
 
         }
