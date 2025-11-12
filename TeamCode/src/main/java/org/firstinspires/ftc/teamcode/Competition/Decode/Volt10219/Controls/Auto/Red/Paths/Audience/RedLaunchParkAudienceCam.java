@@ -8,11 +8,14 @@ import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
 import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.RedAlliance;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
+
+import java.util.List;
 
 @Autonomous(name = "Red Launch Park Audience Cam")
 public class RedLaunchParkAudienceCam extends RedAlliance {
@@ -63,6 +66,8 @@ public class RedLaunchParkAudienceCam extends RedAlliance {
 
     boolean scoringDone = false;
 
+    public int motifID;
+
     double targetTX = 23;
     double targetTA = 3;
     double llTolerance = 1.25;
@@ -96,6 +101,7 @@ public class RedLaunchParkAudienceCam extends RedAlliance {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         telemetry.setMsTransmissionInterval(11);
         limelight.pipelineSwitch(0);
+        limelight.start();
 
         intakeTimer = new Timer();
         intakeTimer.resetTimer();
@@ -111,6 +117,36 @@ public class RedLaunchParkAudienceCam extends RedAlliance {
         buildPaths();
         follower.setStartingPose(startPose);
         follower.getHeading();
+
+        LLResult result = limelight.getLatestResult();
+        List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
+        for(LLResultTypes.FiducialResult fr : fiducialResults){
+            if(fr.getFiducialId() == 21){
+                motifID = 21;
+                telemetry.addLine("21");
+                //telemetry.addData("FI: ", fr.getFiducialId());
+                telemetry.update();
+
+            }
+            if(fr.getFiducialId() == 22){
+                motifID = 22;
+                telemetry.addLine("22");
+                //telemetry.addData("FI: ", fr.getFiducialId());
+                telemetry.update();
+
+            }
+            if(fr.getFiducialId() == 23){
+                motifID = 23;
+                telemetry.addLine("23");
+                //telemetry.addData("FI: ", fr.getFiducialId());
+                telemetry.update();
+            }
+            else{
+                motifID = 21;
+                telemetry.addLine("None detected");
+                telemetry.update();
+            }
+        }
     }
 
 
@@ -125,7 +161,7 @@ public class RedLaunchParkAudienceCam extends RedAlliance {
     }
 
     public enum LaunchState {OUTTAKE, INTAKEONE, WAITONE, INTAKETWO, WAITTWO, INTAKETHREE, WAIT, READY, IDLE, OUTTAKEONE, OUTTAKETWO, OUTTAKETHREE}
-    public enum PathState{DRIVETOLAUNCH, LAUNCH, INTAKE, PICKUP, LAUNCHPOSTWO, LAUNCHTWO, PARK, READY, WAIT;}
+    public enum PathState{DRIVETOLAUNCH, LAUNCH, INTAKE, PICKUP, LAUNCHPOSTWO, LAUNCHTWO, DECIDE, PARK, READY, WAIT;}
     @Override
     public void loop() {
 
@@ -185,9 +221,25 @@ public class RedLaunchParkAudienceCam extends RedAlliance {
             case PARK:
                 follower.followPath(parkPath);
                 if(!follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 4) {
-                    pathState = PathState.READY;
+                    pathState = PathState.DECIDE;
                 }
                 break;
+            case DECIDE:
+                if (motifID == 21){
+                    telemetry.addLine("21");
+                    telemetry.update();
+                    pathState = PathState.READY;
+                }
+                if(motifID == 22){
+                    telemetry.addLine("22");
+                    telemetry.update();
+                    pathState = PathState.READY;
+                }
+                if(motifID == 23){
+                    telemetry.addLine("23");
+                    telemetry.update();
+                    pathState = PathState.READY;
+                }
             case READY:
                 break;
         }
