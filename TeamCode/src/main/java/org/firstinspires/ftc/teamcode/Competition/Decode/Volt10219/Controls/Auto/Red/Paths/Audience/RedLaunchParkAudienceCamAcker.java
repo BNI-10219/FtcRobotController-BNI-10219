@@ -111,7 +111,6 @@ public class RedLaunchParkAudienceCamAcker extends RedAlliance {
         outtakeTimer.resetTimer();
         follower = Constants.createFollower(hardwareMap);
         buildPaths();
-
         follower.setStartingPose(startPose);
         follower.getHeading();
 
@@ -130,10 +129,11 @@ public class RedLaunchParkAudienceCamAcker extends RedAlliance {
         pathState = PathState.DRIVETOLAUNCH;
         launchState = LaunchState.IDLE;
         launchZone = LaunchZone.NONE;
+        scoringDone = false;
         shotCount = 0;
     }
 
-    public enum LaunchState {OUTTAKE, WAIT, READY, IDLE}
+    public enum LaunchState {OUTTAKE, INTAKEONE, WAITONE, INTAKETWO, WAITTWO, INTAKETHREE, WAIT, READY, IDLE, OUTTAKEONE, OUTTAKETWO, OUTTAKETHREE}
     public enum PathState{DRIVETOLAUNCH, LAUNCH, INTAKE, PICKUP, LAUNCHPOSTWO, LAUNCHTWO, DECIDE, CREEP_INTAKE, PARK, READY, WAIT;}
     @Override
     public void loop() {
@@ -216,7 +216,7 @@ public class RedLaunchParkAudienceCamAcker extends RedAlliance {
                 if (scoringDone) {
                     Bot.artifactPushUps();
                     Bot.ballIntake();
-                    follower.followPath(intakePath);
+                    follower.followPath(parkPath);
                     waitTimer.resetTimer();
                     pathState = PathState.PARK;
                     pathTimer.resetTimer();
@@ -226,7 +226,6 @@ public class RedLaunchParkAudienceCamAcker extends RedAlliance {
 
             case PARK:
                 if(!follower.isBusy()) {
-                    follower.followPath(parkPath);
                     pathState = PathState.READY;
                     pathTimer.resetTimer();
                 }
@@ -247,12 +246,12 @@ public class RedLaunchParkAudienceCamAcker extends RedAlliance {
                 intakeTimer.resetTimer();
                 break;
 
-                case OUTTAKE:
-//                if(intakeTimer.getElapsedTimeSeconds()> 3) {
-//                    Bot.ballOuttake();
-//                }
+            case OUTTAKE:
+                if(intakeTimer.getElapsedTimeSeconds()> 3) {
+                    Bot.ballOuttake();
+                }
                 if(outtakeTimer.getElapsedTimeSeconds() > .25){
-                    //Bot.intakeStop();
+                    Bot.intakeStop();
                     Bot.ballIntake();
                 }
 
@@ -264,7 +263,7 @@ public class RedLaunchParkAudienceCamAcker extends RedAlliance {
                 launchState = LaunchState.WAIT;
                 break;
 
-                case WAIT:
+            case WAIT:
                 if (waitTimer.getElapsedTimeSeconds() > 1) {
                     intakeTimer.resetTimer();
                     scoringDone = true;
@@ -306,7 +305,6 @@ public class RedLaunchParkAudienceCamAcker extends RedAlliance {
         Bot.frMotor.setPower(0);
         Bot.rlMotor.setPower(0);
         Bot.rrMotor.setPower(0);
-
 
     }
 
