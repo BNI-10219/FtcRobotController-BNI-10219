@@ -134,7 +134,7 @@ public class RedLaunchParkAudienceCamAcker extends RedAlliance {
     }
 
     public enum LaunchState {OUTTAKE, INTAKEONE, WAITONE, INTAKETWO, WAITTWO, INTAKETHREE, WAIT, READY, IDLE, OUTTAKEONE, OUTTAKETWO, OUTTAKETHREE}
-    public enum PathState{DRIVETOLAUNCH, LAUNCH, INTAKE, PICKUP, LAUNCHPOSTWO, LAUNCHTWO, DECIDE, CREEP_INTAKE, PARK, READY, WAIT;}
+    public enum PathState{DRIVETOLAUNCH, LAUNCH, INTAKE_START, PICKUP, LAUNCHPOSTWO, LAUNCHTWO, DECIDE, INTAKE_ARTIFACTS, PARK, READY, WAIT;}
     @Override
     public void loop() {
 
@@ -176,22 +176,23 @@ public class RedLaunchParkAudienceCamAcker extends RedAlliance {
                     Bot.ballIntake();
                     follower.followPath(intakePath);
                     waitTimer.resetTimer();
-                    pathState = PathState.INTAKE;
+                    pathState = PathState.INTAKE_START;
                     pathTimer.resetTimer();
 
                 }
                 break;
 
-            case INTAKE:
+            case INTAKE_START:
                 if(!follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3){
                     creepTimer.resetTimer();
                     scoringDone = false;
-                    pathState = PathState.CREEP_INTAKE;
+                    pathState = PathState.INTAKE_ARTIFACTS;
+                    Bot.ballIntake();
                     pathTimer.resetTimer();
                 }
                 break;
 
-            case CREEP_INTAKE:
+            case INTAKE_ARTIFACTS:
                 driveForwardCreep(CREEP_POWER);
                 if (creepTimer.getElapsedTimeSeconds() >= CREEP_TIMEOUT_S) {
                     stopCreepDrive();
@@ -231,6 +232,7 @@ public class RedLaunchParkAudienceCamAcker extends RedAlliance {
                 }
 
                 break;
+
             case READY:
                 break;
         }
@@ -247,37 +249,31 @@ public class RedLaunchParkAudienceCamAcker extends RedAlliance {
                 break;
 
             case OUTTAKE:
-                if(intakeTimer.getElapsedTimeSeconds()> 3) {
-                    Bot.ballOuttake();
-                }
-                if(outtakeTimer.getElapsedTimeSeconds() > .25){
-                    Bot.intakeStop();
-                    Bot.ballIntake();
-                }
-
+                Bot.ballOuttake();
                 Bot.ballLaunchAutoBack();
-
                 Bot.artifactPushAuto();
-                waitTimer.resetTimer();
-                intakeTimer.resetTimer();
-                launchState = LaunchState.WAIT;
+                if (outtakeTimer.getElapsedTimeSeconds() > 1) {
+                    waitTimer.resetTimer();
+                    intakeTimer.resetTimer();
+                    launchState = LaunchState.WAIT;
+                    Bot.intakeStop();
+                }
                 break;
 
             case WAIT:
+                Bot.ballIntake();
                 if (waitTimer.getElapsedTimeSeconds() > 1) {
                     intakeTimer.resetTimer();
                     scoringDone = true;
                     shotCount ++;
                     launchState = LaunchState.IDLE;
                     Bot.artifactPushUps();
-                    Bot.ballIntake();
                 }
                 break;
 
             case IDLE:
                 Bot.ballLaunchOne.setPower(0);
                 Bot.ballLaunchTwo.setPower(0);
-                Bot.intakeStop();
                 break;
 
 
