@@ -153,7 +153,7 @@ public class DecodeBot extends Mecanum {
         artifactPush.setPosition(.75);
     }
     public void artifactPushUps(){
-        artifactPush.setPosition(0.55);
+        artifactPush.setPosition(0.57);
     }
     public void artifactPushAuto(){
         artifactPush.setPosition(0.75);

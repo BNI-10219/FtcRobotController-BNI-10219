@@ -223,6 +223,7 @@ public class RedLaunchParkAudienceCam extends RedAlliance {
                     waitTimer.resetTimer();
                     pathState = PathState.INTAKE;
                     pathTimer.resetTimer();
+                    Bot.artifactPushMiddle();
                     Bot.artifactPushUps();
                 }
                 break;
@@ -233,6 +234,7 @@ public class RedLaunchParkAudienceCam extends RedAlliance {
                     creepTimer.resetTimer();
                     scoringDone = false;
                     pathState = PathState.CREEP_INTAKE;
+                    Bot.artifactPushUps();
                     pathTimer.resetTimer();
                 }
                 break;
@@ -252,14 +254,15 @@ public class RedLaunchParkAudienceCam extends RedAlliance {
                 if(!follower.isBusy()){
                     pathState = PathState.READY;
                     pathTimer.resetTimer();
+                    scoringDone = false;
                 }
                 break;
             case LAUNCHTWO:
-//                if ( !follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
-//                    if (launchStateTwo == LaunchStateTwo.READY || launchStateTwo == LaunchStateTwo.IDLE) {
-//                        launchStateTwo = LaunchStateTwo.OUTTAKE;
-//                    }
-//                }
+                if ( !follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
+                    if (launchStateOne == LaunchStateOne.READY || launchStateOne == LaunchStateOne.IDLE) {
+                        launchStateOne = LaunchStateOne.OUTTAKE;
+                    }
+                }
                 if (scoringDone) {
                     Bot.ballIntake();
                     waitTimer.resetTimer();
@@ -343,6 +346,7 @@ public class RedLaunchParkAudienceCam extends RedAlliance {
                 Bot.artifactPushDown();
                 if (intakeTimer.getElapsedTimeSeconds() > 2) {
                     Bot.intakeStop();
+                    Bot.artifactPushUps();
                     waitTimer.resetTimer();
                     launchStateOne = LaunchStateOne.IDLE;
                     scoringDone = true;
@@ -367,6 +371,7 @@ public class RedLaunchParkAudienceCam extends RedAlliance {
             case IDLE:
                 Bot.ballLaunchOne.setPower(0);
                 Bot.ballLaunchTwo.setPower(0);
+                //Bot.artifactPushUps();
                 Bot.intakeStop();
                 break;
         }
