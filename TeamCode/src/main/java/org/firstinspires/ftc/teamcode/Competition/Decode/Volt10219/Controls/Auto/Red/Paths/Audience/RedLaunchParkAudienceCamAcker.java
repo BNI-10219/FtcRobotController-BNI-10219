@@ -129,6 +129,7 @@ public class RedLaunchParkAudienceCamAcker extends RedAlliance {
         pathState = PathState.DRIVETOLAUNCH;
         launchState = LaunchState.IDLE;
         launchZone = LaunchZone.NONE;
+        scoringDone = false;
         shotCount = 0;
     }
 
@@ -215,7 +216,7 @@ public class RedLaunchParkAudienceCamAcker extends RedAlliance {
                 if (scoringDone) {
                     Bot.artifactPushUps();
                     Bot.ballIntake();
-                    follower.followPath(intakePath);
+                    follower.followPath(parkPath);
                     waitTimer.resetTimer();
                     pathState = PathState.PARK;
                     pathTimer.resetTimer();
@@ -225,7 +226,6 @@ public class RedLaunchParkAudienceCamAcker extends RedAlliance {
 
             case PARK:
                 if(!follower.isBusy()) {
-                    follower.followPath(parkPath);
                     pathState = PathState.READY;
                     pathTimer.resetTimer();
                 }
