@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.RedAlliance;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
 
-@Autonomous(name = "Tester:Red Launch Park Audience Acker")
+@Autonomous(name = "Tester: Red Launch Park Audience Acker")
 public class RedLaunchParkAudienceAcker extends RedAlliance {
 
     //   (0, 144)                          (144, 144)
