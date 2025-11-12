@@ -174,7 +174,7 @@ public class RedLaunchParkAudienceCam extends RedAlliance {
         automaticLaunchOne();
         //automaticLaunchTwo();
 
-        if(launchStateOne == LaunchStateOne.IDLE || launchStateOne == LaunchStateOne.READY){
+        if(launchStateOne == LaunchStateOne.IDLE ){
             automaticLaunchTwo();
         }
 
@@ -230,13 +230,13 @@ public class RedLaunchParkAudienceCam extends RedAlliance {
                     waitTimer.resetTimer();
                     pathState = PathState.INTAKE;
                     pathTimer.resetTimer();
-                    Bot.artifactPushUps();
+                    //Bot.artifactPushUps();
                 }
                 break;
             case INTAKE:
-                Bot.artifactPushUps();
+                //Bot.artifactPushUps();
                 if(!follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3){
-                    Bot.artifactPushUps();
+                    //Bot.artifactPushUps();
                     creepTimer.resetTimer();
                     scoringDone = false;
                     pathState = PathState.CREEP_INTAKE;
@@ -356,21 +356,21 @@ public class RedLaunchParkAudienceCam extends RedAlliance {
 
                 }
                 break;
-            case WAITONE:
-                if (waitTimer.getElapsedTimeSeconds() > 1) {
-                    intakeTimer.resetTimer();
-                    Bot.intakeStop();
-                    launchStateOne = LaunchStateOne.INTAKETWO;
-                }
-                break;
-            case INTAKETWO:
-                Bot.ballIntake();
-                if (intakeTimer.getElapsedTimeSeconds() > 1.5) {
-                    Bot.intakeStop();
-                    waitTimer.resetTimer();
-                    launchStateOne = LaunchStateOne.IDLE;
-                }
-                break;
+//            case WAITONE:
+//                if (waitTimer.getElapsedTimeSeconds() > 1) {
+//                    intakeTimer.resetTimer();
+//                    Bot.intakeStop();
+//                    launchStateOne = LaunchStateOne.INTAKETWO;
+//                }
+//                break;
+//            case INTAKETWO:
+//                Bot.ballIntake();
+//                if (intakeTimer.getElapsedTimeSeconds() > 1.5) {
+//                    Bot.intakeStop();
+//                    waitTimer.resetTimer();
+//                    launchStateOne = LaunchStateOne.IDLE;
+//                }
+//                break;
             case IDLE:
                 Bot.ballLaunchOne.setPower(0);
                 Bot.ballLaunchTwo.setPower(0);
@@ -391,6 +391,7 @@ public class RedLaunchParkAudienceCam extends RedAlliance {
                 break;
 
             case OUTTAKE:
+                Bot.artifactPushUps();
                 if(intakeTimer.getElapsedTimeSeconds()> 3) {
                     Bot.ballOuttake();
                 }
@@ -427,22 +428,22 @@ public class RedLaunchParkAudienceCam extends RedAlliance {
                     scoringDone = true;
 
                 }
-                break;
-            case WAITONE:
-                if (waitTimer.getElapsedTimeSeconds() > 1) {
-                    intakeTimer.resetTimer();
-                    Bot.intakeStop();
-                    launchStateTwo = LaunchStateTwo.INTAKETWO;
-                }
-                break;
-            case INTAKETWO:
-                Bot.ballIntake();
-                if (intakeTimer.getElapsedTimeSeconds() > 1.5) {
-                    Bot.intakeStop();
-                    waitTimer.resetTimer();
-                    launchStateTwo = LaunchStateTwo.IDLE;
-                }
-                break;
+//                break;
+//            case WAITONE:
+//                if (waitTimer.getElapsedTimeSeconds() > 1) {
+//                    intakeTimer.resetTimer();
+//                    Bot.intakeStop();
+//                    launchStateTwo = LaunchStateTwo.INTAKETWO;
+//                }
+//                break;
+//            case INTAKETWO:
+//                Bot.ballIntake();
+//                if (intakeTimer.getElapsedTimeSeconds() > 1.5) {
+//                    Bot.intakeStop();
+//                    waitTimer.resetTimer();
+//                    launchStateTwo = LaunchStateTwo.IDLE;
+//                }
+//                break;
             case IDLE:
                 Bot.ballLaunchOne.setPower(0);
                 Bot.ballLaunchTwo.setPower(0);
