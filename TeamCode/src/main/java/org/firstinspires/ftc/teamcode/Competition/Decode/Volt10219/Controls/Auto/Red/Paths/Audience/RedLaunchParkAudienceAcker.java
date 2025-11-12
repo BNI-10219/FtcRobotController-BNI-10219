@@ -80,6 +80,7 @@ public class RedLaunchParkAudienceAcker extends RedAlliance {
         intakePickupPath = follower.pathBuilder()
                 .addPath(new BezierCurve(intake, intakePickup))
                 .setLinearHeadingInterpolation(intake.getHeading(), intakePickup.getHeading())
+                .setGlobalDeceleration()
                 .build();
         launchTwoPath = follower.pathBuilder()
                 .addPath(new BezierCurve(intakePickup, launchTwoPull, launch))
@@ -171,11 +172,25 @@ public class RedLaunchParkAudienceAcker extends RedAlliance {
             case INTAKE:
                 if ( !follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
                     creepTimer.resetTimer();
+                    //follower.followPath(intakePickupPath);
                     pathState = PathState.CREEP_INTAKE;
                     pathTimer.resetTimer();
                 }
                 break;
 
+
+                //This Creep Intake uses Pedro Pathing & Deceleration
+//          case CREEP_INTAKE:
+//                if (!follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
+//                    Bot.intakeStop();
+//                    waitTimer.resetTimer();
+//                    pathState = PathState.PARK;  // continue your normal flow
+//                    pathTimer.resetTimer();
+//                }
+//                break;
+
+
+            // This Creep Intake escapes out of Pedro and uses custom creep methods
             case CREEP_INTAKE:
                 driveForwardCreep(CREEP_POWER);
                 if (creepTimer.getElapsedTimeSeconds() >= CREEP_TIMEOUT_S) {
