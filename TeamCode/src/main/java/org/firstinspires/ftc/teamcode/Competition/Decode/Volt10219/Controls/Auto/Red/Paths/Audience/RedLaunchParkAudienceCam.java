@@ -46,7 +46,6 @@ public class RedLaunchParkAudienceCam extends RedAlliance {
 
     private PathState pathState = PathState.READY;
     private LaunchStateOne launchStateOne = LaunchStateOne.READY;
-    private LaunchStateTwo launchStateTwo = LaunchStateTwo.READY;
 
     protected Timer creepTimer;
     protected static final double CREEP_POWER = 0.5;
@@ -160,23 +159,17 @@ public class RedLaunchParkAudienceCam extends RedAlliance {
         //limelight.start();
         pathState = PathState.DRIVETOLAUNCH;
         launchStateOne = LaunchStateOne.READY;
-        launchStateTwo = LaunchStateTwo.READY;
         launchZone = LaunchZone.NONE;
     }
 
     public enum LaunchStateOne {OUTTAKE, INTAKEONE, WAITONE, INTAKETWO, WAITTWO, INTAKETHREE, WAIT, READY, IDLE, OUTTAKEONE, OUTTAKETWO, OUTTAKETHREE}
-    public enum LaunchStateTwo {OUTTAKE, INTAKEONE, WAITONE, INTAKETWO, WAITTWO, INTAKETHREE, WAIT, READY, IDLE, OUTTAKEONE, OUTTAKETWO, OUTTAKETHREE}
     public enum PathState{DRIVETOLAUNCH, LAUNCH, INTAKE, PICKUP, LAUNCHPOSTWO, LAUNCHTWO, DECIDE, CREEP_INTAKE, PARK, READY, WAIT;}
     @Override
     public void loop() {
 
         autoPathing();
         automaticLaunchOne();
-        //automaticLaunchTwo();
 
-        if(launchStateOne == LaunchStateOne.IDLE ){
-            automaticLaunchTwo();
-        }
 
 
 //        LLResult result = limelight.getLatestResult();
@@ -230,7 +223,7 @@ public class RedLaunchParkAudienceCam extends RedAlliance {
                     waitTimer.resetTimer();
                     pathState = PathState.INTAKE;
                     pathTimer.resetTimer();
-                    //Bot.artifactPushUps();
+                    Bot.artifactPushUps();
                 }
                 break;
             case INTAKE:
@@ -257,16 +250,16 @@ public class RedLaunchParkAudienceCam extends RedAlliance {
                 break;
             case LAUNCHPOSTWO:
                 if(!follower.isBusy()){
-                    pathState = PathState.LAUNCHTWO;
+                    pathState = PathState.READY;
                     pathTimer.resetTimer();
                 }
                 break;
             case LAUNCHTWO:
-                if ( !follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
-                    if (launchStateTwo == LaunchStateTwo.READY || launchStateTwo == LaunchStateTwo.IDLE) {
-                        launchStateTwo = LaunchStateTwo.OUTTAKE;
-                    }
-                }
+//                if ( !follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
+//                    if (launchStateTwo == LaunchStateTwo.READY || launchStateTwo == LaunchStateTwo.IDLE) {
+//                        launchStateTwo = LaunchStateTwo.OUTTAKE;
+//                    }
+//                }
                 if (scoringDone) {
                     Bot.ballIntake();
                     waitTimer.resetTimer();
@@ -377,81 +370,6 @@ public class RedLaunchParkAudienceCam extends RedAlliance {
                 Bot.intakeStop();
                 break;
         }
-    }
-
-    public void automaticLaunchTwo() {
-        switch(launchStateTwo) {
-            case READY:
-                //To change the velocity, change the numbers below
-                Bot.ballLaunchBackField();;//VELOCITY for launching 1st artifact
-                // Command + B to change the velocity(while the white line index thing is in the method)
-
-                outtakeTimer.resetTimer();
-                intakeTimer.resetTimer();
-                break;
-
-            case OUTTAKE:
-                Bot.artifactPushUps();
-                if(intakeTimer.getElapsedTimeSeconds()> 3) {
-                    Bot.ballOuttake();
-                }
-                if(outtakeTimer.getElapsedTimeSeconds() > .25){
-                    Bot.intakeStop();
-                    Bot.ballIntake();
-                }
-
-                //To change the velocity, change the numbers below
-                Bot.ballLaunchAutoBack();//VELOCITY for launching 2nd artifact
-                // Command + B to change the velocity(while the white line index thing is in the method)
-
-                Bot.artifactPushAuto();
-                waitTimer.resetTimer();
-                intakeTimer.resetTimer();
-                launchStateTwo = LaunchStateTwo.WAIT;
-                break;
-            case WAIT:
-                if (waitTimer.getElapsedTimeSeconds() > 1) {
-                    intakeTimer.resetTimer();
-                    //Bot.intakeStop();
-                    launchStateTwo = LaunchStateTwo.INTAKEONE;
-                    //Bot.ballLaunchAutoBack();
-                }
-                break;
-            case INTAKEONE:
-                Bot.ballIntake();
-                Bot.ballLaunchAutoBack();
-                Bot.artifactPushDown();
-                if (intakeTimer.getElapsedTimeSeconds() > 2) {
-                    Bot.intakeStop();
-                    waitTimer.resetTimer();
-                    launchStateTwo = LaunchStateTwo.IDLE;
-                    scoringDone = true;
-
-                }
-//                break;
-//            case WAITONE:
-//                if (waitTimer.getElapsedTimeSeconds() > 1) {
-//                    intakeTimer.resetTimer();
-//                    Bot.intakeStop();
-//                    launchStateTwo = LaunchStateTwo.INTAKETWO;
-//                }
-//                break;
-//            case INTAKETWO:
-//                Bot.ballIntake();
-//                if (intakeTimer.getElapsedTimeSeconds() > 1.5) {
-//                    Bot.intakeStop();
-//                    waitTimer.resetTimer();
-//                    launchStateTwo = LaunchStateTwo.IDLE;
-//                }
-//                break;
-            case IDLE:
-                Bot.ballLaunchOne.setPower(0);
-                Bot.ballLaunchTwo.setPower(0);
-                Bot.intakeStop();
-                break;
-
-        }
-
     }
 
 
