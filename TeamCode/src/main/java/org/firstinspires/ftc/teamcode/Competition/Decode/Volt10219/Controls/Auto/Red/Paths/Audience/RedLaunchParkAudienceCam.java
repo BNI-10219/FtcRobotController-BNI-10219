@@ -172,7 +172,12 @@ public class RedLaunchParkAudienceCam extends RedAlliance {
 
         autoPathing();
         automaticLaunchOne();
-        automaticLaunchTwo();
+        //automaticLaunchTwo();
+
+        if(launchStateOne == LaunchStateOne.IDLE || launchStateOne == LaunchStateOne.READY){
+            automaticLaunchTwo();
+        }
+
 
 //        LLResult result = limelight.getLatestResult();
 //        double txDifference = result.getTx() - targetTX;
@@ -225,12 +230,10 @@ public class RedLaunchParkAudienceCam extends RedAlliance {
                     waitTimer.resetTimer();
                     pathState = PathState.INTAKE;
                     pathTimer.resetTimer();
-                    Bot.artifactPushDown();
                     Bot.artifactPushUps();
                 }
                 break;
             case INTAKE:
-                Bot.artifactPushDown();
                 Bot.artifactPushUps();
                 if(!follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3){
                     Bot.artifactPushUps();
@@ -247,13 +250,13 @@ public class RedLaunchParkAudienceCam extends RedAlliance {
                     Bot.intakeStop();
                     waitTimer.resetTimer();
 
+                    follower.followPath(launchTwoPath, true);
                     pathState = PathState.LAUNCHPOSTWO;  // continue your normal flow
                     pathTimer.resetTimer();
                 }
                 break;
             case LAUNCHPOSTWO:
                 if(!follower.isBusy()){
-                    follower.followPath(launchTwoPath, true);
                     pathState = PathState.LAUNCHTWO;
                     pathTimer.resetTimer();
                 }
