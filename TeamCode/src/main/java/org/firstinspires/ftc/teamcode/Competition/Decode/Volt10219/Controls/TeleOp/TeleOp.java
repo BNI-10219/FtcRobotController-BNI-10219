@@ -218,14 +218,14 @@ public class TeleOp extends OpMode {
                 if(gamepad1.right_bumper){
                     Bot.resetHeading();
                 }
-                if(gamepad1.right_trigger > 0.1){
-                    Bot.flMotor.setPower(.5);
-                    Bot.frMotor.setPower(.5);
-                    Bot.rlMotor.setPower(.5);
-                    Bot.rrMotor.setPower(.5);
-                }
+                break;
         }
-
+        if (gamepad1.right_trigger > 0.1){
+            Bot.flMotor.setPower(.5);
+            Bot.frMotor.setPower(.5);
+            Bot.rlMotor.setPower(.5);
+            Bot.rrMotor.setPower(.5);
+        }
     }
 
 
