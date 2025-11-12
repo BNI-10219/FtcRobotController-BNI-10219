@@ -226,9 +226,13 @@ public class RedLaunchParkAudienceCamAcker extends RedAlliance {
                 break;
 
             case PARK:
-                if(!follower.isBusy()) {
+                if(!follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
                     pathState = PathState.READY;
                     pathTimer.resetTimer();
+                    scoringDone = true;
+                    launchState = LaunchState.IDLE;
+                    Bot.intakeStop();
+
                 }
 
                 break;
