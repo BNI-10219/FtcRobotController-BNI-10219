@@ -246,7 +246,7 @@ public class RedLaunchParkAudienceCamAcker extends RedAlliance {
                 intakeTimer.resetTimer();
                 break;
 
-                case OUTTAKE:
+            case OUTTAKE:
                 if(intakeTimer.getElapsedTimeSeconds()> 3) {
                     Bot.ballOuttake();
                 }
@@ -263,7 +263,7 @@ public class RedLaunchParkAudienceCamAcker extends RedAlliance {
                 launchState = LaunchState.WAIT;
                 break;
 
-                case WAIT:
+            case WAIT:
                 if (waitTimer.getElapsedTimeSeconds() > 1) {
                     intakeTimer.resetTimer();
                     scoringDone = true;
