@@ -48,16 +48,16 @@ public class RedLaunchParkAudienceCamAcker extends RedAlliance {
     private LaunchState launchState = LaunchState.READY;
 
     protected Timer creepTimer;
-    protected static final double CREEP_POWER = 0.5;
-    protected static final double CREEP_TIMEOUT_S = 3;
+    protected static final double CREEP_POWER = 0.7;
+    protected static final double CREEP_TIMEOUT_S = 2.5;
 
     private Timer opmodeTimer, intakeTimer, waitTimer, pathTimer, outtakeTimer;
 
     private final Pose startPose = new Pose(96, 8, Math.toRadians(270));
     private final Pose launch = new Pose(86, 12, Math.toRadians(248));
-    private final Pose intake = new Pose(96, 36, Math.toRadians(0));
-    private final Pose intakePickupEnd = new Pose(112, 36, Math.toRadians(0));
-    private final Pose park = new Pose(108, 12, Math.toRadians(0));
+    private final Pose intake = new Pose(96, 34, Math.toRadians(2.5));
+    private final Pose intakePickupEnd = new Pose(112, 34, Math.toRadians(2.5));
+    private final Pose park = new Pose(96, 24, Math.toRadians(0));
 
     private Path launchOne;
     private PathChain intakePath, intakePickupPath, launchTwoPath, parkPath;
@@ -133,8 +133,8 @@ public class RedLaunchParkAudienceCamAcker extends RedAlliance {
         shotCount = 0;
     }
 
-    public enum LaunchState {OUTTAKE, INTAKEONE, WAITONE, INTAKETWO, WAITTWO, INTAKETHREE, WAIT, READY, IDLE, OUTTAKEONE, OUTTAKETWO, OUTTAKETHREE}
-    public enum PathState{DRIVETOLAUNCH, LAUNCH, INTAKE_START, PICKUP, LAUNCHPOSTWO, LAUNCHTWO, DECIDE, INTAKE_ARTIFACTS, PARK, READY, WAIT;}
+    public enum LaunchState {OUTTAKE, WAIT, READY, IDLE}
+    public enum PathState{DRIVETOLAUNCH, LAUNCH, INTAKE_START, PICKUP, INTAKE_PICKUP, LAUNCHPOSTWO, LAUNCHTWO, DECIDE, INTAKE_ARTIFACTS, PARK, READY, WAIT;}
     @Override
     public void loop() {
 
@@ -150,6 +150,7 @@ public class RedLaunchParkAudienceCamAcker extends RedAlliance {
         telemetry.addData("y", follower.getPose().getY());
         telemetry.addData("heading", follower.getPose().getHeading());
         telemetry.addData("Is Busy: ", follower.isBusy());
+        telemetry.addData("Path State: ", pathState);
         telemetry.update();
     }
 
@@ -166,7 +167,7 @@ public class RedLaunchParkAudienceCamAcker extends RedAlliance {
                 break;
 
             case LAUNCH:
-                if ( !follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
+                if (!follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
                     if (launchState == LaunchState.READY && !scoringDone ) {
                          launchState = LaunchState.OUTTAKE;
                     }
@@ -186,17 +187,26 @@ public class RedLaunchParkAudienceCamAcker extends RedAlliance {
                 if(!follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3){
                     creepTimer.resetTimer();
                     scoringDone = false;
-                    pathState = PathState.INTAKE_ARTIFACTS;
+                    follower.followPath(intakePickupPath);
+                    pathState = PathState.INTAKE_PICKUP;
                     Bot.ballIntake();
                     pathTimer.resetTimer();
                 }
                 break;
+            case INTAKE_PICKUP:
+                if(!follower.isBusy()){
+                    follower.followPath(launchTwoPath, true);
+                    pathState = PathState.LAUNCHPOSTWO;
+                    launchState = LaunchState.READY;
+                    scoringDone = false;
+                    pathTimer.resetTimer();
+                }
 
             case INTAKE_ARTIFACTS:
                 driveForwardCreep(CREEP_POWER);
                 if (creepTimer.getElapsedTimeSeconds() >= CREEP_TIMEOUT_S) {
                     stopCreepDrive();
-                    Bot.intakeStop();
+                    //Bot.intakeStop();
                     waitTimer.resetTimer();
 
                     follower.followPath(launchTwoPath, true);
@@ -208,8 +218,10 @@ public class RedLaunchParkAudienceCamAcker extends RedAlliance {
                 break;
 
             case LAUNCHPOSTWO:
+
                 if ( !follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
                     if (launchState == LaunchState.READY && !scoringDone ) {
+                        Bot.intakeStop();
                         launchState = LaunchState.OUTTAKE;
                     }
                 }
@@ -253,10 +265,10 @@ public class RedLaunchParkAudienceCamAcker extends RedAlliance {
                 break;
 
             case OUTTAKE:
-                Bot.ballOuttake();
+                //Bot.ballOuttake();
                 Bot.ballLaunchAutoBack();
-                Bot.artifactPushAuto();
-                if (outtakeTimer.getElapsedTimeSeconds() > 1) {
+                Bot.artifactPushDown();
+                if (outtakeTimer.getElapsedTimeSeconds() > 3) {
                     waitTimer.resetTimer();
                     intakeTimer.resetTimer();
                     launchState = LaunchState.WAIT;
@@ -265,7 +277,7 @@ public class RedLaunchParkAudienceCamAcker extends RedAlliance {
                 break;
 
             case WAIT:
-                Bot.ballIntake();
+                Bot.ballIntake();//intake sooner
                 if (waitTimer.getElapsedTimeSeconds() > 1) {
                     intakeTimer.resetTimer();
                     scoringDone = true;
