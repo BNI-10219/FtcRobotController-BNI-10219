@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.Paths.Audience;
+package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.Paths.Audience.AckerTesters;
 
 
 import com.pedropathing.follower.Follower;
@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.RedAlliance;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
-//@Disabled
+@Disabled
 @Autonomous(name = "Tester: Red Launch Park Audience Cam Acker")
 public class RedLaunchParkAudienceCamAcker extends RedAlliance {
 

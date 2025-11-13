@@ -12,14 +12,17 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.RedAlliance;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
+
 import java.util.List;
 
-/*** This Version Uses Pedro for Intaking... which is not able to slow down ***/
 
-@Autonomous(name = "Tester V2 Pedro: Red Launch Park Audience Cam")
-public class RedLaunchParkAudienceCamAckerV2 extends RedAlliance {
+/**** This Version Uses Creep Foward Controller using Pedro Poses and Pinpoint for Slow Intake ***/
+
+@Autonomous(name = "Creeper: Red Launch Park Audience Cam")
+public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
 
     //   (0, 144)                          (144, 144)
     //      --------------------------------
@@ -49,21 +52,18 @@ public class RedLaunchParkAudienceCamAckerV2 extends RedAlliance {
     // Limelight and April Tag Variables
     protected Limelight3A limelight;
     protected int motifID;
-    protected static final int PPG_TAG_ID = 23;
-    protected static final int PGP_TAG_ID = 22;
-    protected static final int GPP_TAG_ID = 21;
+             // safety timeout
+
 
     // Pedro Pathing Follower
-    protected Follower fastFollower;
-    protected Follower slowFollower;
-    protected Follower activeFollower;   // always points to whichever is currently controlling
+    protected Follower follower;
 
     // State Machine for Launching
     protected enum LaunchState {OUTTAKE, WAIT, READY, IDLE}
     protected LaunchState launchState = LaunchState.READY;
 
     // State Machine for Auto Pathing
-    protected enum PathState{DRIVETOLAUNCH, LAUNCH, INTAKE_START, PICKUP, INTAKE_PICKUP, LAUNCHPOSTWO, LAUNCHTWO, DECIDE, PARK, READY, WAIT;}
+    protected enum PathState{DRIVETOLAUNCH, LAUNCH, INTAKE_START, INTAKE_CREEP, LAUNCHPOSTWO, LAUNCHTWO, PARK, READY, WAIT;}
     protected PathState pathState = PathState.READY;
 
 
@@ -76,22 +76,10 @@ public class RedLaunchParkAudienceCamAckerV2 extends RedAlliance {
     //********* Pedro Pathing Poses
 
     protected final Pose startPose = new Pose(96, 8, Math.toRadians(270));
-    protected final Pose launch = new Pose(86, 12, Math.toRadians(248));
+    protected final Pose launch = new Pose(86, 12, Math.toRadians(246));
     protected final Pose park = new Pose(96, 24, Math.toRadians(0));
 
-    // For Testing without Motif
-    protected final Pose intake = new Pose(96, 34, Math.toRadians(0));
-    protected final Pose intakePickupEnd = new Pose(112, 34, Math.toRadians(0));
 
-    // Preparing for Intake Using Motifs... Not Used Yet.
-    protected final Pose PPGPose = new Pose(96, 83, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
-    protected final Pose PPGPosePickup = new Pose(112, 83, Math.toRadians(0));
-
-    protected final Pose PGPPose = new Pose(96, 59, Math.toRadians(0)); // Middle (Second Set) of Artifacts from the Spike Mark.
-    protected final Pose PGPPosePickup = new Pose(112, 59, Math.toRadians(0));
-
-    protected final Pose GPPPose = new Pose(96, 34, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    protected final Pose GPPPosePickup = new Pose(112, 34, Math.toRadians(0));
 
 
     //************ Building Paths for Pedro
@@ -103,77 +91,77 @@ public class RedLaunchParkAudienceCamAckerV2 extends RedAlliance {
     protected PathChain moveToPPG, grabPPG, scorePPG;
     protected PathChain moveToPGP, grabPGP, scorePGP;
     protected PathChain moveToGPP, grabGPP, scoreGPP;
-    protected PathChain chosenMoveToPath, chosenPickupPath, chosenScorePath;
+    protected PathChain chosenMoveToPath, chosenScorePath;
 
     // Basic Path Builder (Laumch, Default Intake, Intake Pickup, Park)
     protected void buildPaths() {
         launchOne = new Path(new BezierCurve(startPose, launch));
         launchOne.setLinearHeadingInterpolation(startPose.getHeading(), launch.getHeading());
 
-        intakePath = fastFollower.pathBuilder()
+        intakePath = follower.pathBuilder()
                 .addPath(new BezierCurve(launch, intake))
                 .setLinearHeadingInterpolation(launch.getHeading(), intake.getHeading())
                 .build();
-        // Note this path uses slow follower
-        intakePickupPath = slowFollower.pathBuilder()
+
+        intakePickupPath = follower.pathBuilder()
                 .addPath(new BezierCurve(intake, intakePickupEnd))
                 .setLinearHeadingInterpolation(intake.getHeading(), intakePickupEnd.getHeading())
                 .setGlobalDeceleration()
                 .build();
-        launchTwoPath = fastFollower.pathBuilder()
+        launchTwoPath = follower.pathBuilder()
                 .addPath(new BezierCurve(intakePickupEnd, launch))
                 .setLinearHeadingInterpolation(intakePickupEnd.getHeading(), launch.getHeading())
                 .build();
-        parkPath = fastFollower.pathBuilder()
+        parkPath = follower.pathBuilder()
                 .addPath(new BezierCurve(launch, park))
                 .setLinearHeadingInterpolation(launch.getHeading(), park.getHeading())
                 .build();
     }
 
-    // Build the PPG Pathing (this uses BezierLine instead of curve... change????)
+    // Build the PPG Pathing
     public void buildPathsPPG() {
-        moveToPPG = fastFollower.pathBuilder() //
+        moveToPPG = follower.pathBuilder() //
                 .addPath(new BezierCurve(launch, PPGPose))
                 .setLinearHeadingInterpolation(launch.getHeading(), PPGPose.getHeading())
                 .build();
-        grabPPG = slowFollower.pathBuilder()
+        grabPPG = follower.pathBuilder()
                 .addPath(new BezierLine(PPGPose, PPGPosePickup))
                 .setLinearHeadingInterpolation(PPGPose.getHeading(), PPGPosePickup.getHeading())
                 .build();
-        scorePPG = fastFollower.pathBuilder()
+        scorePPG = follower.pathBuilder()
                 .addPath(new BezierCurve(PPGPosePickup, launch))
                 .setLinearHeadingInterpolation(PPGPosePickup.getHeading(), launch.getHeading())
                 .build();
     }
 
-    // Build the PGP Pathing (this uses BezierLine instead of curve... change????)
+    // Build the PGP Pathing
     public void buildPathsPGP() {
-        moveToPGP = fastFollower.pathBuilder()
+        moveToPGP = follower.pathBuilder()
                 .addPath(new BezierCurve(launch, PGPPose))
                 .setLinearHeadingInterpolation(launch.getHeading(), PGPPose.getHeading())
                 .build();
-        grabPGP = slowFollower.pathBuilder()
+        grabPGP = follower.pathBuilder()
                 .addPath(new BezierLine(PGPPose, PGPPosePickup))
                 .setLinearHeadingInterpolation(PGPPose.getHeading(), PGPPosePickup.getHeading())
                 .build();
 
-        scorePGP = slowFollower.pathBuilder()
+        scorePGP = follower.pathBuilder()
                 .addPath(new BezierCurve(PGPPosePickup, launch))
                 .setLinearHeadingInterpolation(PGPPosePickup.getHeading(), launch.getHeading())
                 .build();
     }
 
-    // Build the GPP Pathing (this uses BezierLine instead of curve... change????)
+    // Build the GPP Pathing
     public void buildPathsGPP() {
-        moveToGPP = fastFollower.pathBuilder()
+        moveToGPP = follower.pathBuilder()
                 .addPath(new BezierCurve(launch, GPPPose))
                 .setLinearHeadingInterpolation(launch.getHeading(), GPPPose.getHeading())
                 .build();
-        grabGPP = slowFollower.pathBuilder()
+        grabGPP = follower.pathBuilder()
                 .addPath(new BezierLine(GPPPose, GPPPosePickup))
                 .setLinearHeadingInterpolation(GPPPose.getHeading(), GPPPosePickup.getHeading())
                 .build();
-        scoreGPP = fastFollower.pathBuilder()
+        scoreGPP = follower.pathBuilder()
                 .addPath(new BezierCurve(GPPPosePickup, launch))
                 .setLinearHeadingInterpolation(GPPPosePickup.getHeading(), launch.getHeading())
                 .build();
@@ -202,9 +190,7 @@ public class RedLaunchParkAudienceCamAckerV2 extends RedAlliance {
         detectMotif();
 
         //Pedro Followers
-        fastFollower = Constants.createFollower(hardwareMap);
-        slowFollower = Constants.slowFollower(hardwareMap);
-        activeFollower = fastFollower;
+        follower = Constants.createFollower(hardwareMap);
 
         // Build Pedro Paths
         buildPaths();
@@ -213,10 +199,9 @@ public class RedLaunchParkAudienceCamAckerV2 extends RedAlliance {
         buildPathsPPG();
 
         // Same Starting Pose for each follower
-        fastFollower.setStartingPose(startPose);
-        slowFollower.setStartingPose(startPose);
-        fastFollower.getHeading();
-        slowFollower.getHeading();
+        follower.setStartingPose(startPose);
+        follower.getHeading();
+
 
         creepTimer = new Timer();
         creepTimer.resetTimer();
@@ -243,7 +228,10 @@ public class RedLaunchParkAudienceCamAckerV2 extends RedAlliance {
 
         autoPathing();
         automaticLaunch();
-        activeFollower.update();
+        follower.update();
+        // Creep Forward,  Override drive motors, and Check Status
+        creepControl();
+
         telemetryUpdate();
     }
 
@@ -255,15 +243,15 @@ public class RedLaunchParkAudienceCamAckerV2 extends RedAlliance {
     public void autoPathing() {
         switch(pathState){
             case DRIVETOLAUNCH:
-                useFastFollower();
-                activeFollower.followPath(launchOne, true);
+
+                follower.followPath(launchOne, true);
                 pathState = PathState.LAUNCH;
                 launchState = LaunchState.READY;
                 pathTimer.resetTimer();
                 break;
 
             case LAUNCH:
-                if (!activeFollower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
+                if (!follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
                     if (launchState == LaunchState.READY && !scoringDone ) {
                          launchState = LaunchState.OUTTAKE;
                     }
@@ -276,7 +264,7 @@ public class RedLaunchParkAudienceCamAckerV2 extends RedAlliance {
                     if (motifID == PPG_TAG_ID) { chosenMoveToPath = moveToPPG;} // Path for 23
                     else if (motifID == PGP_TAG_ID) {chosenMoveToPath = moveToPGP;} // Path for 22
                     else { chosenMoveToPath = moveToGPP;}   // Path f
-                    activeFollower.followPath(chosenMoveToPath);
+                    follower.followPath(chosenMoveToPath);
 
                     // Transition to Next State
                     waitTimer.resetTimer();
@@ -287,48 +275,25 @@ public class RedLaunchParkAudienceCamAckerV2 extends RedAlliance {
                 break;
 
             case INTAKE_START:
-                if (!activeFollower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
+                if (!follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
                     creepTimer.resetTimer();
 
-                    // Change from Fast Follower to Slow Follower
-                    useSlowFollower();
-
-                    // Path Detection using April Tag
-                    if (motifID == PPG_TAG_ID) { chosenPickupPath = grabPPG;} // Path for 23
-                    else if (motifID == PGP_TAG_ID) {chosenPickupPath = grabPGP;} // Path for 22
-                    else { chosenPickupPath = grabGPP;}   // Path for 21
-
-                    // Transition to Next State
-                    activeFollower.followPath(chosenPickupPath, true);
-                    pathState = PathState.INTAKE_PICKUP;
+                    // Transition to Creep Forward Control and State
+                    startPinpointCreep();
+                    pathState = PathState.INTAKE_CREEP;
                     Bot.ballIntake();
                     pathTimer.resetTimer();
-                }
-                break;
-
-            case INTAKE_PICKUP:
-                if (!activeFollower.isBusy() || pathTimer.getElapsedTimeSeconds() > 4) {
-
-                    // Change from Slow Follower to Fast Follower
-                    useFastFollower();
-
-                    // Path Detection using April Tag
-                    if (motifID == PPG_TAG_ID) { chosenScorePath = scorePPG;} // Path for 23
-                    else if (motifID == PGP_TAG_ID) {chosenScorePath = scorePGP;} // Path for 22
-                    else { chosenScorePath = scoreGPP;}   // Path 21
-                    activeFollower.followPath(chosenScorePath);
-
-                    // Transition to Next State
-                    pathState = PathState.LAUNCHPOSTWO;
-                    launchState = LaunchState.READY;
                     scoringDone = false;
-                    pathTimer.resetTimer();
                 }
                 break;
 
+            case INTAKE_CREEP:
+                // Creep Forwards Controlled by outside of state machine for looping
+                // State Transition happens in creepController()
+                break;
 
             case LAUNCHPOSTWO:
-                if ( !activeFollower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
+                if ( !follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
                     if (launchState == LaunchState.READY && !scoringDone ) {
                         Bot.intakeStop();
                         launchState = LaunchState.OUTTAKE;
@@ -339,7 +304,7 @@ public class RedLaunchParkAudienceCamAckerV2 extends RedAlliance {
                     Bot.artifactPushUps();
                     Bot.ballIntake();
 
-                    activeFollower.followPath(parkPath);
+                    follower.followPath(parkPath);
                     waitTimer.resetTimer();
                     pathState = PathState.PARK;
                     pathTimer.resetTimer();
@@ -348,7 +313,7 @@ public class RedLaunchParkAudienceCamAckerV2 extends RedAlliance {
                 break;
 
             case PARK:
-                if(!activeFollower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
+                if(!follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
                     pathState = PathState.READY;
                     pathTimer.resetTimer();
                     scoringDone = true;
@@ -374,15 +339,29 @@ public class RedLaunchParkAudienceCamAckerV2 extends RedAlliance {
                 break;
 
             case OUTTAKE:
-                Bot.ballLaunchAutoBack();
-                if (outtakeTimer.getElapsedTimeSeconds() > 2.5) {
-                    Bot.artifactPushDown();
-                    waitTimer.resetTimer();
-                    intakeTimer.resetTimer();
-                    launchState = LaunchState.WAIT;
-                    Bot.intakeStop();
-                }
+                Bot.ballIntake();
+                outtakeTimer.resetTimer();
+
+                //To change the velocity, change the numbers below
+                Bot.ballLaunchBackField();//VELOCITY for launching 2nd artifact
+                // Command + B to change the velocity(while the white line index thing is in the method)
+
+
+                Bot.artifactPushAuto();
+                Bot.artifactPushDown();
+                waitTimer.resetTimer();
+                intakeTimer.resetTimer();
+                launchState = LaunchState.WAIT;
                 break;
+//                Bot.ballLaunchAutoBack();
+//                if (outtakeTimer.getElapsedTimeSeconds() > 2.5) {
+//                    Bot.artifactPushDown();
+//                    waitTimer.resetTimer();
+//                    intakeTimer.resetTimer();
+//                    launchState = LaunchState.WAIT;
+//                    Bot.intakeStop();
+//                }
+//                break;
 
             case WAIT:
                 Bot.ballIntake();//intake sooner
@@ -457,29 +436,106 @@ public class RedLaunchParkAudienceCamAckerV2 extends RedAlliance {
         }
     }
 
-    // Helper Methods to Manage Transition between Fast and Slow Followers
-    public void useFastFollower() {
-        if (activeFollower != null && activeFollower != fastFollower) {
-            fastFollower.setPose(activeFollower.getPose());
-        }
-        activeFollower = fastFollower;
+    // ********  Creep Forward Helper Methods
+    protected double normalizeAngle(double angle) {
+        while (angle > Math.PI)  angle -= 2.0 * Math.PI;
+        while (angle < -Math.PI) angle += 2.0 * Math.PI;
+        return angle;
     }
 
-    public void useSlowFollower() {
-        if (activeFollower != null && activeFollower != slowFollower) {
-            slowFollower.setPose(activeFollower.getPose());
+    // Starts the Creeper Slow Intake
+    protected void startPinpointCreep() {
+        Pose p = follower.getPose();
+        creepStartPose = new Pose(p.getX(), p.getY(), p.getHeading());
+
+        // We want to drive forward while holding:
+        // - the current Y (no sideways drift)
+        // - the current heading (no rotate)
+        creepTargetY = p.getY();
+        creepTargetHeading = p.getHeading();
+
+        creepTimer.resetTimer();
+    }
+
+    protected void creepControl() {
+        if (pathState == PathState.INTAKE_CREEP) {
+            boolean creepDone = runPinpointCreepStep();
+
+            if (creepDone) {
+
+                // Pick the correct scoring path based on motif
+                if (motifID == PPG_TAG_ID) { chosenScorePath = scorePPG;
+                } else if (motifID == PGP_TAG_ID) { chosenScorePath = scorePGP;
+                } else {chosenScorePath = scoreGPP; }
+
+                follower.followPath(chosenScorePath);
+                pathState = PathState.LAUNCHPOSTWO;
+                launchState = LaunchState.READY;
+                scoringDone = false;
+                pathTimer.resetTimer();
+            }
         }
-        activeFollower = slowFollower;
+    }
+
+    protected boolean runPinpointCreepStep() {
+        Pose curr = follower.getPose();
+
+        double dx = curr.getX() - creepStartPose.getX();
+        double dy = curr.getY() - creepStartPose.getY();
+
+        double forwardProgress =
+                dx * Math.cos(creepTargetHeading) +
+                        dy * Math.sin(creepTargetHeading);
+
+        double yError = curr.getY() - creepTargetY;
+        double headingError = normalizeAngle(creepTargetHeading - curr.getHeading());
+
+        double forward = creepForwardPower;
+        double strafe  = -creepLatKp * yError;
+        double turn    = creepHeadingKp * headingError;
+
+        double fl = forward + strafe + turn;
+        double fr = forward - strafe - turn;
+        double rl = forward - strafe + turn;
+        double rr = forward + strafe - turn;
+
+        double max = Math.max(Math.max(Math.abs(fl), Math.abs(fr)),
+                Math.max(Math.abs(rl), Math.abs(rr)));
+        if (max > 1.0) {
+            fl /= max;
+            fr /= max;
+            rl /= max;
+            rr /= max;
+        }
+
+        Bot.flMotor.setPower(fl);
+        Bot.frMotor.setPower(fr);
+        Bot.rlMotor.setPower(rl);
+        Bot.rrMotor.setPower(rr);
+
+        boolean distanceDone = Math.abs(forwardProgress) >= creepTargetDistanceIn;
+        boolean timeDone = creepTimer.getElapsedTimeSeconds() > creepTimeoutS;
+
+        if (distanceDone || timeDone) {
+            // Stop motors
+            Bot.flMotor.setPower(0);
+            Bot.frMotor.setPower(0);
+            Bot.rlMotor.setPower(0);
+            Bot.rrMotor.setPower(0);
+            return true;    // tell caller method we are done creeping
+        }
+
+        return false;       // still creeping
     }
 
     // Telemetry Update
     public void telemetryUpdate() {
         telemetry.addData("launch state", launchState);
         telemetry.addData("Path State: ", pathState);
-        telemetry.addData("x", activeFollower.getPose().getX());
-        telemetry.addData("y", activeFollower.getPose().getY());
-        telemetry.addData("heading", activeFollower.getPose().getHeading());
-        telemetry.addData("Is Busy: ", activeFollower.isBusy());
+        telemetry.addData("x", follower.getPose().getX());
+        telemetry.addData("y", follower.getPose().getY());
+        telemetry.addData("heading", follower.getPose().getHeading());
+        telemetry.addData("Is Busy: ", follower.isBusy());
         telemetry.addData("Motif ID: ", motifID);
         telemetry.update();
     }

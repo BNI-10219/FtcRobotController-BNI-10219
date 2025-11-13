@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.Paths.Audience;
+package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Blue.Paths.Audience;
 
 
 import com.pedropathing.follower.Follower;
@@ -12,15 +12,19 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.RedAlliance;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
+
 import java.util.List;
 
 
 /**** This Version Uses Creep Foward Controller using Pedro Poses and Pinpoint for Slow Intake ***/
 
-@Autonomous(name = "Tester V3 Creeper: Red Launch Park Audience Cam")
-public class RedLaunchParkAudienceCamAckerV3 extends RedAlliance {
+@Disabled
+@Autonomous(name = "Creeper: Blue Launch Park Audience Cam")
+public class BlueLaunchParkAudienceCamOliviaV3 extends RedAlliance {
 
     //   (0, 144)                          (144, 144)
     //      --------------------------------
@@ -50,21 +54,7 @@ public class RedLaunchParkAudienceCamAckerV3 extends RedAlliance {
     // Limelight and April Tag Variables
     protected Limelight3A limelight;
     protected int motifID;
-    protected static final int PPG_TAG_ID = 23;
-    protected static final int PGP_TAG_ID = 22;
-    protected static final int GPP_TAG_ID = 21;
-
-    // GoBilda Pinpoint-based Creep Control
-    protected Pose creepStartPose;
-    protected double creepTargetY;           // field Y we want to hold
-    protected double creepTargetHeading;     // heading we want to hold
-
-    protected double creepForwardPower = 0.20;   // slow forward power (tune)
-    protected double creepLatKp = 0.03;          // lateral (Y) correction gain (tune)
-    protected double creepHeadingKp = 0.02;      // heading correction gain (tune)
-
-    protected double creepTargetDistanceIn = 6.0;  // how far to creep (inches)
-    protected double creepTimeoutS = 3.0;          // safety timeout
+             // safety timeout
 
 
     // Pedro Pathing Follower
@@ -88,22 +78,10 @@ public class RedLaunchParkAudienceCamAckerV3 extends RedAlliance {
     //********* Pedro Pathing Poses
 
     protected final Pose startPose = new Pose(96, 8, Math.toRadians(270));
-    protected final Pose launch = new Pose(86, 12, Math.toRadians(248));
+    protected final Pose launch = new Pose(86, 12, Math.toRadians(246));
     protected final Pose park = new Pose(96, 24, Math.toRadians(0));
 
-    // For Testing without Motif
-    protected final Pose intake = new Pose(96, 34, Math.toRadians(0));
-    protected final Pose intakePickupEnd = new Pose(112, 34, Math.toRadians(0));
 
-    // Preparing for Intake Using Motifs... Not Used Yet.
-    protected final Pose PPGPose = new Pose(96, 83, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
-    protected final Pose PPGPosePickup = new Pose(112, 83, Math.toRadians(0));
-
-    protected final Pose PGPPose = new Pose(96, 59, Math.toRadians(0)); // Middle (Second Set) of Artifacts from the Spike Mark.
-    protected final Pose PGPPosePickup = new Pose(112, 59, Math.toRadians(0));
-
-    protected final Pose GPPPose = new Pose(96, 34, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    protected final Pose GPPPosePickup = new Pose(112, 34, Math.toRadians(0));
 
 
     //************ Building Paths for Pedro
@@ -307,6 +285,7 @@ public class RedLaunchParkAudienceCamAckerV3 extends RedAlliance {
                     pathState = PathState.INTAKE_CREEP;
                     Bot.ballIntake();
                     pathTimer.resetTimer();
+                    scoringDone = false;
                 }
                 break;
 
@@ -362,15 +341,29 @@ public class RedLaunchParkAudienceCamAckerV3 extends RedAlliance {
                 break;
 
             case OUTTAKE:
-                Bot.ballLaunchAutoBack();
-                if (outtakeTimer.getElapsedTimeSeconds() > 2.5) {
-                    Bot.artifactPushDown();
-                    waitTimer.resetTimer();
-                    intakeTimer.resetTimer();
-                    launchState = LaunchState.WAIT;
-                    Bot.intakeStop();
-                }
+                Bot.ballIntake();
+                outtakeTimer.resetTimer();
+
+                //To change the velocity, change the numbers below
+                Bot.ballLaunchBackField();//VELOCITY for launching 2nd artifact
+                // Command + B to change the velocity(while the white line index thing is in the method)
+
+
+                Bot.artifactPushAuto();
+                Bot.artifactPushDown();
+                waitTimer.resetTimer();
+                intakeTimer.resetTimer();
+                launchState = LaunchState.WAIT;
                 break;
+//                Bot.ballLaunchAutoBack();
+//                if (outtakeTimer.getElapsedTimeSeconds() > 2.5) {
+//                    Bot.artifactPushDown();
+//                    waitTimer.resetTimer();
+//                    intakeTimer.resetTimer();
+//                    launchState = LaunchState.WAIT;
+//                    Bot.intakeStop();
+//                }
+//                break;
 
             case WAIT:
                 Bot.ballIntake();//intake sooner
