@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.RedAlliance;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
-@Disabled
+//@Disabled
 @Autonomous(name = "Tester: Red Launch Park Audience Cam Acker")
 public class RedLaunchParkAudienceCamAcker extends RedAlliance {
 
@@ -185,14 +185,14 @@ public class RedLaunchParkAudienceCamAcker extends RedAlliance {
                 break;
 
             case INTAKE_START:
-                if(!follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3){
+                //if(!follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3){
                     creepTimer.resetTimer();
                     scoringDone = false;
-                    follower.followPath(intakePickupPath);
-                    pathState = PathState.INTAKE_PICKUP;
+                    //follower.followPath(intakePickupPath);
+                    pathState = PathState.INTAKE_ARTIFACTS;
                     Bot.ballIntake();
                     pathTimer.resetTimer();
-                }
+                //}
                 break;
             case INTAKE_PICKUP:
                 if(!follower.isBusy()){
