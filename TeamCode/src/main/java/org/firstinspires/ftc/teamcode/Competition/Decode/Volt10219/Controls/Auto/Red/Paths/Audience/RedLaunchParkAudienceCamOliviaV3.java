@@ -407,14 +407,14 @@ public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
             }
             // PGP Detection
             else if (fr.getFiducialId() == 22) {
-                motifID = 22;
+                motifID = 21;//CHANGE BACK AFTER 2ND MEET
                 telemetry.addLine("Detected PGP - 22");
                 telemetry.addData("FI: ", fr.getFiducialId());
 
             }
             // PPG Detection
             else if (fr.getFiducialId() == 23) {
-                motifID = 23;
+                motifID = 21;//CHANGE BACK AFTER 2ND MEET
                 telemetry.addLine("Detected PPG - 23");
                 telemetry.addData("FI: ", fr.getFiducialId());
 
