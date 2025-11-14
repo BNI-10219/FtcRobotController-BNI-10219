@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.Paths.Backstage;
+package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Blue.Paths.Backstage;
 
 
 import com.pedropathing.follower.Follower;
@@ -14,6 +14,7 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
+import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Blue.BlueAlliance;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.RedAlliance;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
 
@@ -23,8 +24,8 @@ import java.util.List;
 /**** This Version Uses Creep Foward Controller using Pedro Poses and Pinpoint for Slow Intake ***/
 
 @Disabled
-@Autonomous(name = "Creeper: Red Launch Park Backstage Cam")
-public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
+@Autonomous(name = "Creeper: Blue Launch Park Backstage Cam")
+public class BlueLaunchParkBackstageCamOliviaV3 extends BlueAlliance {
 
     //   (0, 144)                          (144, 144)
     //      --------------------------------
@@ -77,9 +78,9 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
 
     //********* Pedro Pathing Poses
 
-    private final Pose startPose = new Pose(120, 132, Math.toRadians(215));
-    private final Pose launch = new Pose(84, 84, Math.toRadians(225));
-    protected final Pose park = new Pose(96, 120, Math.toRadians(0));//old pose - near square - 96, 24, 0
+    private final Pose startPose = new Pose(24, 132, Math.toRadians(315));
+    private final Pose launch = new Pose(50, 76, Math.toRadians(303));
+    protected final Pose park = new Pose(48, 120, Math.toRadians(180));//old pose - near square - 96, 24, 0
 
 
 

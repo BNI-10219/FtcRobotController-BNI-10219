@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.TeleOp;
 
 import com.pedropathing.util.Timer;
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -20,9 +22,10 @@ public class TeleOp extends OpMode {
     double speedMultiply = 1;
 
 
-    double targetTX = 23;
-    double targetTA = 3;
-    double llTolerance = 1.25;
+    double targetRedTX = -2;
+    double targetTA = 0;
+    double targetBlueTX = 25;
+    double llTolerance = 1.5;
 
     private static final int AUDREY = 1;
     private static final int ANDREA = 2;
@@ -44,19 +47,20 @@ public class TeleOp extends OpMode {
     private Timer outtakeTimer = new Timer();
 
     private boolean autoPosition = false;
-    //private Limelight3A limelight;
+    private Limelight3A limelight;
 
-    //LLResult result = limelight.getLatestResult();
+    LLResult result;
 
 
     @Override
     public void init() {
         Bot.initRobot(hardwareMap);
 
-//        limelight = hardwareMap.get(Limelight3A.class, "limelight");
-//        telemetry.setMsTransmissionInterval(11);
-//        limelight.pipelineSwitch(0);
-//        limelight.start();
+        limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        telemetry.setMsTransmissionInterval(11);
+        limelight.pipelineSwitch(0);
+        limelight.start();
+
 
     }
 
@@ -65,19 +69,21 @@ public class TeleOp extends OpMode {
 
 
     public void start() {
-        //limelight.start();
+        limelight.start();
+
+
     }
 
     @Override
     public void loop() {
         speedControl();
         launcherControl();
-        changeDriverProfile();
+        //changeDriverProfile();
         intakeControl();
         artifactPushControl();
         telemetryOutput();
         fieldCentricDrive();
-        //autoPositioning();
+        autoPositioning();
         intakeControlStates();
         timeOuttake();
     }
@@ -92,39 +98,60 @@ public class TeleOp extends OpMode {
 
     }
 
-//    public void autoPositioning() {
-//        autoPosition = gamepad1.dpad_down;
-//        if (!autoPosition) {
-//            return;
-//        }
-//        double txDifference = result.getTx() - targetTX;
-//        double taDifference = result.getTy() - targetTA;
-//
-//        if (autoPosition) {
-//            if (txDifference < 0 - llTolerance) {
-//                Bot.strafeRight(1);
-//
-//            } else if (txDifference > 0 + llTolerance) {
-//                Bot.strafeLeft(1);
-//            } else if ((txDifference > 0 - llTolerance) && (txDifference < 0 + llTolerance)) {
-//                Bot.stopMotors();
-//            }
-//
-//            if (taDifference > 0 + llTolerance) {
-//                Bot.driveForward(0.5);
-//            } else if (taDifference < 0 + llTolerance) {
-//                Bot.stopMotors();
-//            }
-//
-//        }
-//
-//        telemetry.addData("Tx Difference: ", txDifference);
-//        telemetry.addData("Ta Difference: ", taDifference);
-//        telemetry.addData("LL Ta:", result.getTa());
-//        telemetry.addData("LL Tx: ", result.getTx());
-//        telemetry.update();
-//
-//    }
+    public void autoPositioning() {
+        result = limelight.getLatestResult();
+        autoPosition = gamepad1.dpad_down;
+        if (!autoPosition) {
+            telemetry.addData("LL Ta:", result.getTa());
+            telemetry.addData("LL Tx: ", result.getTx());
+            return;
+        }
+        double txRedDifference = result.getTx() - targetRedTX;
+        double txBlueDifference = result.getTx() - targetBlueTX;
+        double taDifference = result.getTy() - targetTA;
+
+        if (gamepad1.right_bumper) {
+            if (txRedDifference < 0 - llTolerance) {
+                Bot.strafeRight(1);
+
+            } else if (txRedDifference > 0 + llTolerance) {
+                Bot.strafeLeft(1);
+            } else if ((txRedDifference > 0 - llTolerance) && (txRedDifference < 0 + llTolerance)) {
+                Bot.stopMotors();
+            }
+
+            if (taDifference > 0 + llTolerance) {
+                Bot.driveForward(0.5);
+            } else if (taDifference < 0 + llTolerance) {
+                Bot.stopMotors();
+            }
+
+        }
+        if (gamepad1.left_bumper) {
+            if (txBlueDifference < 0 - llTolerance) {
+                Bot.strafeRight(1);
+
+            } else if (txBlueDifference > 0 + llTolerance) {
+                Bot.strafeLeft(1);
+            } else if ((txBlueDifference > 0 - llTolerance) && (txBlueDifference < 0 + llTolerance)) {
+                Bot.stopMotors();
+            }
+
+            if (taDifference > 0 + llTolerance) {
+                Bot.driveForward(0.5);
+            } else if (taDifference < 0 + llTolerance) {
+                Bot.stopMotors();
+            }
+
+        }
+
+        telemetry.addData("Tx Difference: ", txRedDifference);
+        telemetry.addData("Ta Difference: ", taDifference);
+        telemetry.addData("LL Ta:", result.getTa());
+        telemetry.addData("LL Tx: ", result.getTx());
+        telemetry.update();
+
+    }
 
     public void fieldCentricDrive(){
         switch(currentProfile){
@@ -336,8 +363,10 @@ public class TeleOp extends OpMode {
         }
 
         public void telemetryOutput () {
+
             telemetry.addData("Launcher One: ", Math.abs(Bot.ballLaunchOne.getVelocity()));
             telemetry.addData("Launcher Two: ", Bot.ballLaunchTwo.getVelocity());
+
             //telemetry.addData("Limelight AT: ", result.getFiducialResults());
             telemetry.update();
         }

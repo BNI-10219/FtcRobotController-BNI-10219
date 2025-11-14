@@ -27,14 +27,14 @@ public abstract class RedAlliance extends AutoMain {
     protected final Pose intakePickupEnd = new Pose(112, 34, Math.toRadians(0));
 
     // Preparing for Intake Using Motifs... Not Used Yet.
-    protected final Pose PPGPose = new Pose(96, 83, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
-    protected final Pose PPGPosePickup = new Pose(112, 83, Math.toRadians(0));
+    protected final Pose PPGPose = new Pose(96, 81, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
+    protected final Pose PPGPosePickup = new Pose(112, 81, Math.toRadians(0));
 
-    protected final Pose PGPPose = new Pose(96, 59, Math.toRadians(0)); // Middle (Second Set) of Artifacts from the Spike Mark.
-    protected final Pose PGPPosePickup = new Pose(112, 59, Math.toRadians(0));
+    protected final Pose PGPPose = new Pose(96, 57.5, Math.toRadians(0)); // Middle (Second Set) of Artifacts from the Spike Mark.
+    protected final Pose PGPPosePickup = new Pose(112, 57.5, Math.toRadians(0));
 
-    protected final Pose GPPPose = new Pose(96, 34, Math.toRadians(3.5)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    protected final Pose GPPPosePickup = new Pose(112, 34, Math.toRadians(3.5));
+    protected final Pose GPPPose = new Pose(96, 34, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    protected final Pose GPPPosePickup = new Pose(112, 34, Math.toRadians(0));
 
 
 }

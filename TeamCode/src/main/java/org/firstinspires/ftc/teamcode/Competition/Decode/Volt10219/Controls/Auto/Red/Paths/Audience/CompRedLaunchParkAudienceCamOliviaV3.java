@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.Paths.Backstage;
+package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.Paths.Audience;
 
 
 import com.pedropathing.follower.Follower;
@@ -23,8 +23,8 @@ import java.util.List;
 /**** This Version Uses Creep Foward Controller using Pedro Poses and Pinpoint for Slow Intake ***/
 
 @Disabled
-@Autonomous(name = "Creeper: Red Launch Park Backstage Cam")
-public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
+@Autonomous(name = "Creeper: Red Launch Park Audience Cam")
+public class CompRedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
 
     //   (0, 144)                          (144, 144)
     //      --------------------------------
@@ -77,9 +77,9 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
 
     //********* Pedro Pathing Poses
 
-    private final Pose startPose = new Pose(120, 132, Math.toRadians(215));
-    private final Pose launch = new Pose(84, 84, Math.toRadians(225));
-    protected final Pose park = new Pose(96, 120, Math.toRadians(0));//old pose - near square - 96, 24, 0
+    protected final Pose startPose = new Pose(96, 8, Math.toRadians(270));
+    protected final Pose launch = new Pose(86, 12, Math.toRadians(246));
+    protected final Pose park = new Pose(96, 24, Math.toRadians(0));
 
 
 
@@ -253,8 +253,6 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
                 break;
 
             case LAUNCH:
-                detectMotif();
-                detectMotif();
                 if (!follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
                     if (launchState == LaunchState.READY && !scoringDone ) {
                          launchState = LaunchState.OUTTAKE;
@@ -411,14 +409,14 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
             }
             // PGP Detection
             else if (fr.getFiducialId() == 22) {
-                motifID = 22;
+                motifID = 22;//CHANGE BACK AFTER 2ND MEET
                 telemetry.addLine("Detected PGP - 22");
                 telemetry.addData("FI: ", fr.getFiducialId());
 
             }
             // PPG Detection
             else if (fr.getFiducialId() == 23) {
-                motifID = 23;
+                motifID = 23;//CHANGE BACK AFTER 2ND MEET
                 telemetry.addLine("Detected PPG - 23");
                 telemetry.addData("FI: ", fr.getFiducialId());
 
