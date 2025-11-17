@@ -16,8 +16,8 @@ public abstract class RedAlliance extends AutoMain {
     protected double creepTargetHeading;     // heading we want to hold
 
     protected double creepForwardPower = 0.50;   // slow forward power (tune)
-    protected double creepLatKp = 0.03;          // lateral (Y) correction gain (tune)
-    protected double creepHeadingKp = 0.05;      // heading correction gain (tune)
+    protected double creepLatKp = 0.02;          // lateral (Y) correction gain (tune)
+    protected double creepHeadingKp = 0.1;      // heading correction gain (tune)
 
     protected double creepTargetDistanceIn = 26.5;  // how far to creep (inches)
     protected double creepTimeoutS = 4.0;
@@ -28,13 +28,13 @@ public abstract class RedAlliance extends AutoMain {
 
     // Preparing for Intake Using Motifs... Not Used Yet.
     protected final Pose PPGPose = new Pose(96, 81, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
-    protected final Pose PPGPosePickup = new Pose(112, 81, Math.toRadians(0));
+    protected final Pose PPGPosePickup = new Pose(109, 81, Math.toRadians(0));
 
     protected final Pose PGPPose = new Pose(96, 57.5, Math.toRadians(0)); // Middle (Second Set) of Artifacts from the Spike Mark.
     protected final Pose PGPPosePickup = new Pose(112, 57.5, Math.toRadians(0));
 
     protected final Pose GPPPose = new Pose(96, 34, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    protected final Pose GPPPosePickup = new Pose(112, 34, Math.toRadians(0));
+    protected final Pose GPPPosePickup = new Pose(107.5, 38, Math.toRadians(0));
 
 
 }

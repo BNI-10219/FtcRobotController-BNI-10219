@@ -22,7 +22,7 @@ import java.util.List;
 
 /**** This Version Uses Creep Foward Controller using Pedro Poses and Pinpoint for Slow Intake ***/
 
-@Disabled
+//@Disabled
 @Autonomous(name = "Creeper: Red Launch Park Audience Cam")
 public class CompRedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
 
@@ -78,7 +78,7 @@ public class CompRedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
     //********* Pedro Pathing Poses
 
     protected final Pose startPose = new Pose(96, 8, Math.toRadians(270));
-    protected final Pose launch = new Pose(86, 12, Math.toRadians(246));
+    protected final Pose launch = new Pose(86, 12, Math.toRadians(248));
     protected final Pose park = new Pose(96, 24, Math.toRadians(0));
 
 
