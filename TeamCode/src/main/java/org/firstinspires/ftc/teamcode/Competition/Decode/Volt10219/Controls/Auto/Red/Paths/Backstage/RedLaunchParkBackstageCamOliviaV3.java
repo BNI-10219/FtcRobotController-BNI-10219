@@ -65,7 +65,7 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
     protected LaunchState launchState = LaunchState.READY;
 
     // State Machine for Auto Pathing
-    protected enum PathState{DRIVETOLAUNCH, LAUNCH, INTAKE_START, INTAKE_CREEP, LAUNCHPOSTWO, LAUNCHTWO, PARK, READY, WAIT;}
+    protected enum PathState{DRIVETOLAUNCH, LAUNCH, INTAKE_START, INTAKE_CREEP, WAITDETECT, DETECTMOTIF, LAUNCHPOSTWO, LAUNCHTWO, PARK, READY, WAIT;}
     protected PathState pathState = PathState.READY;
 
 
@@ -80,6 +80,7 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
     private final Pose startPose = new Pose(120, 132, Math.toRadians(215));
     private final Pose launch = new Pose(84, 84, Math.toRadians(225));
     protected final Pose park = new Pose(96, 120, Math.toRadians(0));//old pose - near square - 96, 24, 0
+    protected final Pose detectMotif = new Pose(84, 84, 270);
 
 
 
@@ -87,7 +88,7 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
     //************ Building Paths for Pedro
 
     protected Path launchOne;
-    protected PathChain intakePath, intakePickupPath, launchTwoPath, parkPath;
+    protected PathChain intakePath, intakePickupPath, launchTwoPath, parkPath, detectMotifPath;
 
     // Preparing for Intaking Motifs... Not Used Yet
     protected PathChain moveToPPG, grabPPG, scorePPG;
@@ -100,6 +101,11 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
         launchOne = new Path(new BezierCurve(startPose, launch));
         launchOne.setLinearHeadingInterpolation(startPose.getHeading(), launch.getHeading());
 
+        detectMotifPath = follower.pathBuilder()
+                .addPath(new BezierCurve(launch, detectMotif))
+                .setLinearHeadingInterpolation(launch.getHeading(), detectMotif.getHeading())
+                .build();
+
         intakePath = follower.pathBuilder()
                 .addPath(new BezierCurve(launch, intake))
                 .setLinearHeadingInterpolation(launch.getHeading(), intake.getHeading())
@@ -110,6 +116,8 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
                 .setLinearHeadingInterpolation(intake.getHeading(), intakePickupEnd.getHeading())
                 .setGlobalDeceleration()
                 .build();
+
+
         launchTwoPath = follower.pathBuilder()
                 .addPath(new BezierCurve(intakePickupEnd, launch))
                 .setLinearHeadingInterpolation(intakePickupEnd.getHeading(), launch.getHeading())
@@ -253,32 +261,52 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
                 break;
 
             case LAUNCH:
-                detectMotif();
-                detectMotif();
                 if (!follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
                     if (launchState == LaunchState.READY && !scoringDone ) {
                          launchState = LaunchState.OUTTAKE;
+                         pathTimer.resetTimer();
                     }
                 }
                 if (scoringDone) {
                     Bot.artifactPushUps();
-                    Bot.ballIntake();
-
-                    // Path Detection using April Tag
-                    if (motifID == PPG_TAG_ID) { chosenMoveToPath = moveToPPG;} // Path for 23
-                    else if (motifID == PGP_TAG_ID) {chosenMoveToPath = moveToPGP;} // Path for 22
-                    else { chosenMoveToPath = moveToGPP;}   // Path f
-                    follower.followPath(chosenMoveToPath);
-
-                    // Transition to Next State
-                    waitTimer.resetTimer();
-                    pathState = PathState.INTAKE_START;
-                    pathTimer.resetTimer();
+                    if(pathTimer.getElapsedTimeSeconds() > 2){
+                        waitTimer.resetTimer();
+                        follower.followPath(detectMotifPath);
+                        pathState = PathState.DETECTMOTIF;
+                        pathTimer.resetTimer();
+                    }
+                    //Bot.ballIntake();
 
                 }
                 break;
+            case DETECTMOTIF:
+                if(!follower.isBusy()){
+                    pathState = PathState.WAITDETECT;
+                    waitTimer.resetTimer();
+                }
+                break;
+
+            case WAITDETECT:
+                detectMotif();
+                detectMotif();
+                detectMotif();
+                if(waitTimer.getElapsedTimeSeconds() > 2.5) {
+                    if (motifID == PPG_TAG_ID) {
+                        chosenMoveToPath = moveToPPG;
+                    } // Path for 23
+                    else if (motifID == PGP_TAG_ID) {
+                        chosenMoveToPath = moveToPGP;
+                    } // Path for 22
+                    else {
+                        chosenMoveToPath = moveToGPP;
+                    }   // Path f
+                    follower.followPath(chosenMoveToPath);
+                    pathState = PathState.INTAKE_START;
+                }
+
 
             case INTAKE_START:
+                Bot.ballIntake();
                 if (!follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
                     creepTimer.resetTimer();
 
@@ -337,7 +365,7 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
         switch(launchState) {
 
             case READY:
-                Bot.ballLaunchBackField();
+                Bot.ballLaunchV();
                 outtakeTimer.resetTimer();
                 intakeTimer.resetTimer();
                 break;

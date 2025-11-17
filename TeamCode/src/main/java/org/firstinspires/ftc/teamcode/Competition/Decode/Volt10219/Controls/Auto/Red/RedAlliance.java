@@ -16,8 +16,8 @@ public abstract class RedAlliance extends AutoMain {
     protected double creepTargetHeading;     // heading we want to hold
 
     protected double creepForwardPower = 0.50;   // slow forward power (tune)
-    protected double creepLatKp = 0.02;          // lateral (Y) correction gain (tune)
-    protected double creepHeadingKp = 0.1;      // heading correction gain (tune)
+    protected double creepLatKp = 0.03;          // lateral (Y) correction gain (tune)
+    protected double creepHeadingKp = 1.5;      // heading correction gain (tune)
 
     protected double creepTargetDistanceIn = 26.5;  // how far to creep (inches)
     protected double creepTimeoutS = 4.0;
