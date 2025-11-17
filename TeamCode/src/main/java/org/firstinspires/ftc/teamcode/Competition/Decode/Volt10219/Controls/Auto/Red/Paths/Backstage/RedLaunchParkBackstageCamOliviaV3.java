@@ -288,8 +288,6 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
 
             case WAITDETECT:
                 detectMotif();
-                detectMotif();
-                detectMotif();
                 if(waitTimer.getElapsedTimeSeconds() > 2.5) {
                     if (motifID == PPG_TAG_ID) {
                         chosenMoveToPath = moveToPPG;
@@ -303,8 +301,7 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
                     follower.followPath(chosenMoveToPath);
                     pathState = PathState.INTAKE_START;
                 }
-
-
+                break;
             case INTAKE_START:
                 Bot.ballIntake();
                 if (!follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
