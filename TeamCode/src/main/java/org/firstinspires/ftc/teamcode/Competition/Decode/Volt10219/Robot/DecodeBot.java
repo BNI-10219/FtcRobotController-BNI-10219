@@ -19,7 +19,7 @@ public class DecodeBot extends Mecanum {
     public double velocity = 500;
     public double velocity_low = 1021;
     public double velocity_med = 1050;//936
-    public double velocity_high = 1031;//2300//1016
+    public double velocity_high = 1045;//2300//1016
 
     public DecodeBot() {
     }
