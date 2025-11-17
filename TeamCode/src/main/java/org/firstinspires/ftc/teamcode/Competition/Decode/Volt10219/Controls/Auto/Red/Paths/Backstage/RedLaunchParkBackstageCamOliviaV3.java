@@ -80,7 +80,7 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
     private final Pose startPose = new Pose(120, 132, Math.toRadians(215));
     private final Pose launch = new Pose(84, 84, Math.toRadians(225));
     protected final Pose park = new Pose(96, 120, Math.toRadians(0));//old pose - near square - 96, 24, 0
-    protected final Pose detectMotif = new Pose(84, 84, 270);
+    protected final Pose detectMotif = new Pose(82, 80, Math.toRadians(270));
 
 
 
