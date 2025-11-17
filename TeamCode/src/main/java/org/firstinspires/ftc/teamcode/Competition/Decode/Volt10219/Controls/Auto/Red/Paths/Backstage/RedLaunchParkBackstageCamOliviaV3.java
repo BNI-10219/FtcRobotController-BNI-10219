@@ -280,7 +280,7 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
                 }
                 break;
             case DETECTMOTIF:
-                if(!follower.isBusy()){
+                if(!follower.isBusy()|| pathTimer.getElapsedTimeSeconds() > 3){
                     pathState = PathState.WAITDETECT;
                     waitTimer.resetTimer();
                 }
@@ -300,6 +300,7 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
                     }   // Path f
                     follower.followPath(chosenMoveToPath);
                     pathState = PathState.INTAKE_START;
+                    pathTimer.resetTimer();
                 }
                 break;
             case INTAKE_START:
