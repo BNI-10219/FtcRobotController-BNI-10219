@@ -131,8 +131,8 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
     // Build the PPG Pathing
     public void buildPathsPPG() {
         moveToPPG = follower.pathBuilder() //
-                .addPath(new BezierCurve(launch, PPGPose))
-                .setLinearHeadingInterpolation(launch.getHeading(), PPGPose.getHeading())
+                .addPath(new BezierCurve(detectMotif, PPGPose))
+                .setLinearHeadingInterpolation(detectMotif.getHeading(), PPGPose.getHeading())
                 .build();
         grabPPG = follower.pathBuilder()
                 .addPath(new BezierLine(PPGPose, PPGPosePickup))
@@ -147,8 +147,8 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
     // Build the PGP Pathing
     public void buildPathsPGP() {
         moveToPGP = follower.pathBuilder()
-                .addPath(new BezierCurve(launch, PGPPose))
-                .setLinearHeadingInterpolation(launch.getHeading(), PGPPose.getHeading())
+                .addPath(new BezierCurve(detectMotif, PGPPose))
+                .setLinearHeadingInterpolation(detectMotif.getHeading(), PGPPose.getHeading())
                 .build();
         grabPGP = follower.pathBuilder()
                 .addPath(new BezierLine(PGPPose, PGPPosePickup))
@@ -164,8 +164,8 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
     // Build the GPP Pathing
     public void buildPathsGPP() {
         moveToGPP = follower.pathBuilder()
-                .addPath(new BezierCurve(launch, GPPPose))
-                .setLinearHeadingInterpolation(launch.getHeading(), GPPPose.getHeading())
+                .addPath(new BezierCurve(detectMotif, GPPPose))
+                .setLinearHeadingInterpolation(detectMotif.getHeading(), GPPPose.getHeading())
                 .build();
         grabGPP = follower.pathBuilder()
                 .addPath(new BezierLine(GPPPose, GPPPosePickup))
