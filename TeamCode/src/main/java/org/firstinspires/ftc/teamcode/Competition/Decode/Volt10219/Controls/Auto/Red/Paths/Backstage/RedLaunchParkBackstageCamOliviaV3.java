@@ -80,7 +80,17 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
     private final Pose startPose = new Pose(120, 132, Math.toRadians(215));
     private final Pose launch = new Pose(84, 84, Math.toRadians(225));
     protected final Pose park = new Pose(96, 120, Math.toRadians(0));//old pose - near square - 96, 24, 0
+
     protected final Pose detectMotif = new Pose(82, 80, Math.toRadians(270));
+
+    protected final Pose PPGPose = new Pose(96, 84, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
+    protected final Pose PPGPosePickup = new Pose(109, 84, Math.toRadians(0));
+
+    protected final Pose PGPPose = new Pose(96, 57.5, Math.toRadians(0)); // Middle (Second Set) of Artifacts from the Spike Mark.
+    protected final Pose PGPPosePickup = new Pose(112, 57.5, Math.toRadians(0));
+
+    protected final Pose GPPPose = new Pose(96, 34, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    protected final Pose GPPPosePickup = new Pose(107.5, 38, Math.toRadians(0));
 
 
 
@@ -363,7 +373,7 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
         switch(launchState) {
 
             case READY:
-                Bot.ballLaunchV();
+                Bot.ballLaunchMidV();
                 outtakeTimer.resetTimer();
                 intakeTimer.resetTimer();
                 break;
@@ -373,7 +383,7 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
                 outtakeTimer.resetTimer();
 
                 //To change the velocity, change the numbers below
-                Bot.ballLaunchBackField();//VELOCITY for launching 2nd artifact
+                Bot.ballLaunchAutoV();//VELOCITY for launching 2nd artifact
                 // Command + B to change the velocity(while the white line index thing is in the method)
 
 

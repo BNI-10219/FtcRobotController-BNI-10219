@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Blue.BlueAlliance;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
 
-@Disabled
+//@Disabled
 @Autonomous(name = "Blue Launch Park Audience")
 public class BlueLaunchParkAudience extends BlueAlliance {
 

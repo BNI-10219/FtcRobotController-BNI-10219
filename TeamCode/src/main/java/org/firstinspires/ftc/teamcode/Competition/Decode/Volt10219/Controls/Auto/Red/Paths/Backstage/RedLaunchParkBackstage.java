@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.RedAlliance;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
 
-@Disabled
+//@Disabled
 @Autonomous(name = "Red Launch Park Backstage")
 public class RedLaunchParkBackstage extends RedAlliance {
 
