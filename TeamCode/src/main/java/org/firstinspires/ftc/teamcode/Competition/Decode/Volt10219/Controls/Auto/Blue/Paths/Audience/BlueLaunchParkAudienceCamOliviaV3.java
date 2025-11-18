@@ -12,10 +12,8 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Blue.BlueAlliance;
-import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.RedAlliance;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
 
 import java.util.List;
@@ -25,7 +23,7 @@ import java.util.List;
 
 //@Disabled
 @Autonomous(name = "Creeper: Blue Launch Park Audience Cam")
-public class CompBlueLaunchParkAudienceCamOliviaV3 extends BlueAlliance {
+public class BlueLaunchParkAudienceCamOliviaV3 extends BlueAlliance {
 
     //   (0, 144)                          (144, 144)
     //      --------------------------------
@@ -79,7 +77,7 @@ public class CompBlueLaunchParkAudienceCamOliviaV3 extends BlueAlliance {
     //********* Pedro Pathing Poses
 
     protected final Pose startPose = new Pose(48, 8, Math.toRadians(270));
-    protected final Pose launch = new Pose(58, 16, Math.toRadians(297));
+    protected final Pose launch = new Pose(58, 16, Math.toRadians(294));
     protected final Pose park = new Pose(45, 36, Math.toRadians(180));
 
 
@@ -334,7 +332,7 @@ public class CompBlueLaunchParkAudienceCamOliviaV3 extends BlueAlliance {
         switch(launchState) {
 
             case READY:
-                Bot.ballLaunchBackField();
+                Bot.ballLaunchAutoBack();
                 outtakeTimer.resetTimer();
                 intakeTimer.resetTimer();
                 break;

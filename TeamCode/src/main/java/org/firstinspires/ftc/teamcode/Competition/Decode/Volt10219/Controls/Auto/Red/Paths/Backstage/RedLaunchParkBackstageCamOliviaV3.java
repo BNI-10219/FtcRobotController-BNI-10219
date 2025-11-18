@@ -83,14 +83,14 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
 
     protected final Pose detectMotif = new Pose(82, 80, Math.toRadians(270));
 
-    protected final Pose PPGPose = new Pose(96, 84, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
-    protected final Pose PPGPosePickup = new Pose(109, 84, Math.toRadians(0));
+    protected final Pose PPGPose = new Pose(96, 79, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
+    protected final Pose PPGPosePickup = new Pose(109, 79, Math.toRadians(0));
 
-    protected final Pose PGPPose = new Pose(96, 57.5, Math.toRadians(0)); // Middle (Second Set) of Artifacts from the Spike Mark.
-    protected final Pose PGPPosePickup = new Pose(112, 57.5, Math.toRadians(0));
+    protected final Pose PGPPose = new Pose(96, 63, Math.toRadians(0)); // Middle (Second Set) of Artifacts from the Spike Mark.
+    protected final Pose PGPPosePickup = new Pose(100, 48, Math.toRadians(0));
 
     protected final Pose GPPPose = new Pose(96, 34, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    protected final Pose GPPPosePickup = new Pose(107.5, 38, Math.toRadians(0));
+    protected final Pose GPPPosePickup = new Pose(107.5, 34, Math.toRadians(0));
 
 
 
@@ -468,8 +468,8 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
             }
             // Default to GPP
             else {
-                motifID = 21;
-                telemetry.addLine("None detected. Default to 21 GPP");
+                motifID = 23;
+                telemetry.addLine("None detected. Default to 23 PPG");
                 telemetry.addData("FI: ", fr.getFiducialId());
                 telemetry.update();
             }

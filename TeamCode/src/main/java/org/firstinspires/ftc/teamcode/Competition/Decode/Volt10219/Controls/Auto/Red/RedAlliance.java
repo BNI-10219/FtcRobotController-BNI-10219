@@ -15,16 +15,18 @@ public abstract class RedAlliance extends AutoMain {
     protected double creepTargetY;           // field Y we want to hold
     protected double creepTargetHeading;     // heading we want to hold
 
-    protected double creepForwardPower = 0.50;   // slow forward power (tune)
-    protected double creepLatKp = 0.03;          // lateral (Y) correction gain (tune)
-    protected double creepHeadingKp = 1.5;      // heading correction gain (tune)
+    protected double creepForwardPower = 0.5;   // slow forward power (tune)
+    protected double creepLatKp = 0.1;          // lateral (Y) correction gain (tune)
+    protected double creepHeadingKp = 0.1;      // heading correction gain (tune)
 
     protected double creepTargetDistanceIn = 26.5;  // how far to creep (inches)
     protected double creepTimeoutS = 4.0;
 
     // For Testing without Motif
     protected final Pose intake = new Pose(96, 34, Math.toRadians(0));
-    protected final Pose intakePickupEnd = new Pose(112, 34, Math.toRadians(0));
+    protected final Pose intakePickupEnd = new Pose(112, 36, Math.toRadians(0));
+
+
 
     // Preparing for Intake Using Motifs... Not Used Yet.
 
