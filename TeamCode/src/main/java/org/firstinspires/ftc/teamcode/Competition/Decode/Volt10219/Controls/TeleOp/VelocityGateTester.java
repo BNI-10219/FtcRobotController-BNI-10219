@@ -60,7 +60,7 @@ public class VelocityGateTester extends OpMode {
         telemetryOutput();
         flyWheelControl();
         flyWheelStateControl();
-        feedWheelManualControl();
+        //feedWheelManualControl();
     }
 
     //*********  Driver 2 Control Methods *****************
@@ -159,21 +159,21 @@ public class VelocityGateTester extends OpMode {
 
     }
     // ***** Manual Feeder Wheel Controller
-    public void feedWheelManualControl() {
-        if (gamepad2.left_trigger > 0.5) {
-            Bot.ballLaunchOne.setPower(1);
-            Bot.ballLaunchTwo.setPower(1);;
-        }
-        else if (gamepad2.right_trigger > 0.5) {
-            Bot.ballLaunchOne.setPower(-1);
-            Bot.ballLaunchTwo.setPower(-1);
-        }
-        else if(gamepad2.left_stick_button){
-            Bot.ballLaunchOne.setPower(0);
-            Bot.ballLaunchTwo.setPower(0);
-        }
-
-    }
+//    public void feedWheelManualControl() {
+//        if (gamepad2.left_trigger > 0.5) {
+//            Bot.ballLaunchOne.setPower(1);
+//            Bot.ballLaunchTwo.setPower(1);;
+//        }
+//        else if (gamepad2.right_trigger > 0.5) {
+//            Bot.ballLaunchOne.setPower(-1);
+//            Bot.ballLaunchTwo.setPower(-1);
+//        }
+//        else if(gamepad2.left_stick_button){
+//            Bot.ballLaunchOne.setPower(0);
+//            Bot.ballLaunchTwo.setPower(0);
+//        }
+//
+//    }
 
 
     // ***** Helper Method for Telemetry

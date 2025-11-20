@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
 
 //@Disabled
-@Autonomous(name = "Red Launch Park Backstage")
+@Autonomous(name = "Red Backstage - Basic")
 public class RedLaunchParkBackstage extends RedAlliance {
 
     Follower follower;
@@ -55,7 +55,7 @@ public class RedLaunchParkBackstage extends RedAlliance {
     private final Pose intake = new Pose(108, 36, Math.toRadians(0));
     private final Pose intakePickup = new Pose(36, 128, Math.toRadians(90));
     private final Pose launchTwoPull = new Pose(72, 48, Math.toRadians(157));
-    private final Pose park = new Pose(90, 44, Math.toRadians(0));
+    private final Pose park = new Pose(96, 120, Math.toRadians(0));
 
     private Path launchOne;
     private PathChain intakePath, intakePickupPath, launchTwoPath, parkPath;

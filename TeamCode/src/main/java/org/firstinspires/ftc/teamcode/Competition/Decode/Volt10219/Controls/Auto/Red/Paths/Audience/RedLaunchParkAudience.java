@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
 
 //@Disabled
-@Autonomous(name = "Red Launch Park Audience")
+@Autonomous(name = "Red Audience - Basic")
 public class RedLaunchParkAudience extends RedAlliance {
 
     //   (0, 144)                          (144, 144)

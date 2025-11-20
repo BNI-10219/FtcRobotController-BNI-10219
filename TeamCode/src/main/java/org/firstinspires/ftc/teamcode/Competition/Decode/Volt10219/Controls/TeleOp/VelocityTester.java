@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Robot.DecodeBot;
 
-//@Disabled
+@Disabled
 @TeleOp(name = "Velocity Tester", group="Tester")
 
 public class VelocityTester extends OpMode {
