@@ -259,7 +259,7 @@ public class TeleOp extends OpMode {
 //            Bot.ballLaunchV();
 //        }
 
-        if (gamepad2.y) {
+        if (gamepad2.left_trigger > 0.001) {
             Bot.ballLaunchStop();
         }
         if (gamepad2.right_bumper) {
@@ -331,7 +331,7 @@ public class TeleOp extends OpMode {
         if (gamepad2.dpad_left) {
             Bot.ballOuttake();
         }
-        if (gamepad2.b) {
+        if (gamepad2.left_bumper) {
             Bot.intakeStop();
         }
         if (gamepad2.x) {
@@ -340,14 +340,14 @@ public class TeleOp extends OpMode {
     }
 
     public void artifactPushControl() {
-        if (gamepad1.y) {
+        if (gamepad2.y) {
             Bot.artifactPushUps();
         }
 
-        if (gamepad1.a) {
+        if (gamepad2.a) {
             Bot.artifactPushDown();
         }
-        if (gamepad1.b) {
+        if (gamepad2.b) {
             Bot.artifactPushMiddle();
         }
     }
