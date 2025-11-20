@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Robot.DecodeB
 
 import java.util.List;
 
-//@Disabled
+@Disabled
 @TeleOp (name = "Acker TeleOp")
 public class TeleOpAcker extends OpMode {
     double leftStickYVal;
@@ -142,9 +142,9 @@ public class TeleOpAcker extends OpMode {
         // --- Proportional Drive Control parameters  ---
 
         double kP = 0.03;             // Proportional gain for turning
-        double maxTurnSpeed = 0.50;  // Max turn power
-        double minTurnSpeed = 0.25;  // Minimum turn power to overcome friction
-        double tolerance = 1.0;      // Deadband in degrees
+        double maxTurnSpeed = 0.40;  // Max turn power
+        double minTurnSpeed = 0.15;  // Minimum turn power to overcome friction
+        double tolerance = 1.5;      // Deadband in degrees
 
         // If we’re close enough, stop and don’t twitch
         if (Math.abs(tx) < tolerance) {
