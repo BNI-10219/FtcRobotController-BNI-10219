@@ -60,8 +60,8 @@ public class RedLaunchParkAudienceCamAckerV4 extends RedAllianceAcker {
     protected double creepTargetY;           // field Y we want to hold
     protected double creepTargetHeading;     // heading we want to hold
 
-    protected double creepForwardPower = 0.40;   // slow forward power (tune)
-    protected double creepLatKp = 0.1;          // lateral (Y) correction gain (tune)
+    protected double creepForwardPower = 0.50;   // slow forward power (tune)
+    protected double creepLatKp = 0.02;          // lateral (Y) correction gain (tune)
     protected double creepHeadingKp = 0.4;      // heading correction gain (tune)
 
     protected double creepTargetDistanceIn = 26.5;  // how far to creep (inches)
@@ -503,8 +503,7 @@ public class RedLaunchParkAudienceCamAckerV4 extends RedAllianceAcker {
         double headingError = normalizeAngle(creepTargetHeading - curr.getHeading());
 
         double forward = creepForwardPower;
-        double strafe  = 0;
-        //double strafe  = -creepLatKp * yError;
+        double strafe  = -creepLatKp * yError;
         double turn    = -creepHeadingKp * headingError;
 
 
