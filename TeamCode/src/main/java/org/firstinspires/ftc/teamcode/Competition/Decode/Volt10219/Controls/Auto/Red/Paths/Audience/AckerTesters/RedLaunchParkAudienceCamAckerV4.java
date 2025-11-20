@@ -24,7 +24,7 @@ import java.util.List;
 
 @Disabled
 @Autonomous(name = "Creeper Acker Red Launch Park Audience Cam")
-public class RedLaunchParkAudienceCamAckerV4 extends RedAllianceAcker {
+public class RedLaunchParkAudienceCamAckerV4 extends RedAlliance {
 
     //   (0, 144)                          (144, 144)
     //      --------------------------------
@@ -50,22 +50,6 @@ public class RedLaunchParkAudienceCamAckerV4 extends RedAllianceAcker {
     //                     |
     //                     |
     //                180 degrees
-
-    protected static final int PPG_TAG_ID = 23;
-    protected static final int PGP_TAG_ID = 22;
-    protected static final int GPP_TAG_ID = 21;
-
-    // GoBilda Pinpoint-based Creep Control
-    protected Pose creepStartPose;
-    protected double creepTargetY;           // field Y we want to hold
-    protected double creepTargetHeading;     // heading we want to hold
-
-    protected double creepForwardPower = 0.50;   // slow forward power (tune)
-    protected double creepLatKp = 0.02;          // lateral (Y) correction gain (tune)
-    protected double creepHeadingKp = 0.4;      // heading correction gain (tune)
-
-    protected double creepTargetDistanceIn = 26.5;  // how far to creep (inches)
-    protected double creepTimeoutS = 5.0;
 
 
     // Limelight and April Tag Variables
@@ -97,15 +81,6 @@ public class RedLaunchParkAudienceCamAckerV4 extends RedAllianceAcker {
     protected final Pose startPose = new Pose(96, 8, Math.toRadians(270));
     protected final Pose launch = new Pose(86, 12, Math.toRadians(246.5));
     protected final Pose park = new Pose(96, 24, Math.toRadians(0));
-
-    protected final Pose PPGPose = new Pose(96, 79, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
-    protected final Pose PPGPosePickup = new Pose(109, 79, Math.toRadians(0));
-
-    protected final Pose PGPPose = new Pose(96, 57.5, Math.toRadians(0)); // Middle (Second Set) of Artifacts from the Spike Mark.
-    protected final Pose PGPPosePickup = new Pose(112, 57.5, Math.toRadians(0));
-
-    protected final Pose GPPPose = new Pose(96, 34, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    protected final Pose GPPPosePickup = new Pose(107.5, 34, Math.toRadians(0));
 
 
     //************ Building Paths for Pedro
