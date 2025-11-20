@@ -31,7 +31,6 @@ public class TeleOp extends OpMode {
     private static final int ANDREA = 2;
     private int currentProfile = ANDREA;
 
-
     double flSpeed;
     double frSpeed;
     double rlSpeed;
@@ -254,7 +253,6 @@ public class TeleOp extends OpMode {
             Bot.rrMotor.setPower(.5);
         }
     }
-
 
     public void launcherControl() {
 //        if(gamepad2.x){

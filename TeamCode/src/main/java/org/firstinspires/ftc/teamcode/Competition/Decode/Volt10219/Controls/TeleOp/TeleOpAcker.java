@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Robot.DecodeB
 
 import java.util.List;
 
-@Disabled
+//@Disabled
 @TeleOp (name = "Acker TeleOp")
 public class TeleOpAcker extends OpMode {
     double leftStickYVal;
