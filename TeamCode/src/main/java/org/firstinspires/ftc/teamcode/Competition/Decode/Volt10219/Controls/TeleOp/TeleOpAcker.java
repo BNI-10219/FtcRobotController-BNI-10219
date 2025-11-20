@@ -84,7 +84,6 @@ public class TeleOpAcker extends OpMode {
         artifactPushControl();
         telemetryOutput();
         fieldCentricDrive();
-        //autoPositioning();
         autoPositioningV2();
         intakeControlStates();
         timeOuttake();
@@ -102,64 +101,85 @@ public class TeleOpAcker extends OpMode {
 
     public void autoPositioningV2() {
 
-        // Control Parameters
-        double targetVariation = 1.0;
-        double turnSpeed = 0.50;
-        double turnMultiplier = 1.0;
-
-        // This method only runs when bumber is help down
+        // Only run auto-align when holding left bumper
         if (!gamepad1.left_bumper) {
             return;
         }
 
-        //Continually get Limelight Results data
+        // Get latest Limelight result
         result = limelight.getLatestResult();
 
-        //Edge Case Handling if Left Bumber pressed with no April Tag detected
         if (result == null) {
-            telemetry.addData("LL", "No April Tag Detected");
-
-        }
-
-        //Edge Case Handling if Left Bumber pressed with no April Tag detected
-        List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
-        if (fiducialResults == null || fiducialResults.isEmpty() ) {
-            telemetry.addData("LL", "No fiducial results Detected");
+            telemetry.addData("LL", "No result (null)");
             return;
         }
 
-        // Process April Tag 20 or 24
-        for (LLResultTypes.FiducialResult fr : fiducialResults) {
-
-            int id = fr.getFiducialId();
-            double tx = fr.getTargetXDegrees();
-
-            if (id == 20 || id == 24) {
-
-                if (tx < -targetVariation) {
-                    //Turn Left
-                    setMotorPower(Bot.flMotor, -turnSpeed, powerThreshold, turnMultiplier);
-                    setMotorPower(Bot.frMotor, turnSpeed, powerThreshold, turnMultiplier);
-                    setMotorPower(Bot.rlMotor, -turnSpeed, powerThreshold, turnMultiplier);
-                    setMotorPower(Bot.rrMotor, turnSpeed, powerThreshold, turnMultiplier);
-
-                }
-
-                else if (tx > targetVariation) {
-                    //Turn Right
-                    setMotorPower(Bot.flMotor, turnSpeed, 0, 1.0);
-                    setMotorPower(Bot.frMotor, -turnSpeed, 0, 1.0);
-                    setMotorPower(Bot.rlMotor, turnSpeed, 0, 1.0);
-                    setMotorPower(Bot.rrMotor, -turnSpeed, 0, 1.0);
-                }
-                else {
-                    Bot.stopMotors();
-                }
-                telemetry.addData("Fidicual", "ID: %d, X: %.2f", id, tx);
-            }
-
+        List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
+        if (fiducialResults == null || fiducialResults.isEmpty()) {
+            telemetry.addData("LL", "No fiducial targets");
+            return;
         }
 
+        // --- Choose the best tag (ID 20 or 24) closest to center ---
+        LLResultTypes.FiducialResult best = null;
+        for (LLResultTypes.FiducialResult fr : fiducialResults) {
+            int id = fr.getFiducialId();
+            if (id == 20 || id == 24) {
+                if (best == null ||
+                        Math.abs(fr.getTargetXDegrees()) < Math.abs(best.getTargetXDegrees())) {
+                    best = fr;
+                }
+            }
+        }
+
+        if (best == null) {
+            telemetry.addData("LL", "No desired tag (20/24) in view");
+            return;
+        }
+
+        double tx = best.getTargetXDegrees();
+
+        // --- Proportional Drive Control parameters  ---
+
+        double kP = 0.03;             // Proportional gain for turning
+        double maxTurnSpeed = 0.50;  // Max turn power
+        double minTurnSpeed = 0.25;  // Minimum turn power to overcome friction
+        double tolerance = 1.0;      // Deadband in degrees
+
+        // If we’re close enough, stop and don’t twitch
+        if (Math.abs(tx) < tolerance) {
+            Bot.stopMotors();
+            telemetry.addData("Align", "Aligned! tx=%.2f", tx);
+            telemetry.addData("Tag", "ID: %d", best.getFiducialId());
+            return;
+        }
+
+        // Proportional turning power
+        double power = kP * tx;
+
+        // Clip to max speed
+        if (power > maxTurnSpeed) power = maxTurnSpeed;
+        if (power < -maxTurnSpeed) power = -maxTurnSpeed;
+
+        // Enforce a minimum power when we’re still outside tolerance
+        if (power > 0 && Math.abs(power) < minTurnSpeed) power = minTurnSpeed;
+        if (power < 0 && Math.abs(power) < minTurnSpeed) power = -minTurnSpeed;
+
+        // Map sign so that:
+        //  tx < 0 (tag left)  -> turn left (fl -, fr +)
+        //  tx > 0 (tag right) -> turn right (fl +, fr -)
+        double fl =  power;
+        double fr = -power;
+        double rl =  power;
+        double rr = -power;
+
+        setMotorPower(Bot.flMotor, fl, powerThreshold, 1.0);
+        setMotorPower(Bot.frMotor, fr, powerThreshold, 1.0);
+        setMotorPower(Bot.rlMotor, rl, powerThreshold, 1.0);
+        setMotorPower(Bot.rrMotor, rr, powerThreshold, 1.0);
+
+        telemetry.addData("Align", "tx=%.2f, power=%.2f", tx, power);
+        telemetry.addData("Tag", "ID: %d", best.getFiducialId());
     }
 
     // ****** Helper method to set Motor Power
@@ -169,61 +189,6 @@ public class TeleOpAcker extends OpMode {
         } else {
             motor.setPower(speed * multiplier);
         }
-    }
-
-    public void autoPositioning() {
-        result = limelight.getLatestResult();
-        autoPosition = gamepad1.dpad_down;
-        if (!autoPosition) {
-            telemetry.addData("LL Ta:", result.getTa());
-            telemetry.addData("LL Tx: ", result.getTx());
-            return;
-        }
-        double txRedDifference = result.getTx() - targetRedTX;
-        double txBlueDifference = result.getTx() - targetBlueTX;
-        double taDifference = result.getTy() - targetTA;
-
-        if (gamepad1.right_bumper) {
-            if (txRedDifference < 0 - llTolerance) {
-                Bot.strafeRight(1);
-
-            } else if (txRedDifference > 0 + llTolerance) {
-                Bot.strafeLeft(1);
-            } else if ((txRedDifference > 0 - llTolerance) && (txRedDifference < 0 + llTolerance)) {
-                Bot.stopMotors();
-            }
-
-            if (taDifference > 0 + llTolerance) {
-                Bot.driveForward(0.5);
-            } else if (taDifference < 0 + llTolerance) {
-                Bot.stopMotors();
-            }
-
-        }
-        if (gamepad1.left_bumper) {
-            if (txBlueDifference < 0 - llTolerance) {
-                Bot.strafeRight(1);
-
-            } else if (txBlueDifference > 0 + llTolerance) {
-                Bot.strafeLeft(1);
-            } else if ((txBlueDifference > 0 - llTolerance) && (txBlueDifference < 0 + llTolerance)) {
-                Bot.stopMotors();
-            }
-
-            if (taDifference > 0 + llTolerance) {
-                Bot.driveForward(0.5);
-            } else if (taDifference < 0 + llTolerance) {
-                Bot.stopMotors();
-            }
-
-        }
-
-        telemetry.addData("Tx Difference: ", txRedDifference);
-        telemetry.addData("Ta Difference: ", taDifference);
-        telemetry.addData("LL Ta:", result.getTa());
-        telemetry.addData("LL Tx: ", result.getTx());
-        telemetry.update();
-
     }
 
     public void fieldCentricDrive(){
