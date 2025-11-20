@@ -27,16 +27,9 @@ public class TeleOpAcker extends OpMode {
     double powerThreshold = 0;
     double speedMultiply = 1;
 
-
-    double targetRedTX = -2;
-    double targetTA = 0;
-    double targetBlueTX = 25;
-    double llTolerance = 1.5;
-
     private static final int AUDREY = 1;
     private static final int ANDREA = 2;
     private int currentProfile = ANDREA;
-
 
     double flSpeed;
     double frSpeed;
