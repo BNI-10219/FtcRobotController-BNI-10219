@@ -54,8 +54,7 @@ public class TeleOpAcker extends OpMode {
 
     private boolean autoPosition = false;
     private Limelight3A limelight;
-
-    LLResult result;
+    public LLResult result;
 
 
     @Override
@@ -74,11 +73,7 @@ public class TeleOpAcker extends OpMode {
     }
 
 
-    public void start() {
-        limelight.start();
-
-
-    }
+    public void start() {}
 
     @Override
     public void loop() {
@@ -107,39 +102,64 @@ public class TeleOpAcker extends OpMode {
 
     public void autoPositioningV2() {
 
+        // Control Parameters
         double targetVariation = 1.0;
         double turnSpeed = 0.50;
         double turnMultiplier = 1.0;
 
-        if (gamepad1.left_bumper) {
+        // This method only runs when bumber is help down
+        if (!gamepad1.left_bumper) {
+            return;
+        }
 
-            List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
-            for (LLResultTypes.FiducialResult fr : fiducialResults) {
+        //Continually get Limelight Results data
+        result = limelight.getLatestResult();
 
-                if (fr.getFiducialId() == 20 || fr.getFiducialId() == 24) {
+        //Edge Case Handling if Left Bumber pressed with no April Tag detected
+        if (result == null) {
+            telemetry.addData("LL", "No April Tag Detected");
 
-                    if (fr.getTargetXDegrees() < -targetVariation) {
-                        //Turn Left
-                        setMotorPower(Bot.flMotor, -turnSpeed, powerThreshold, turnMultiplier);
-                        setMotorPower(Bot.frMotor, turnSpeed, powerThreshold, turnMultiplier);
-                        setMotorPower(Bot.rlMotor, -turnSpeed, powerThreshold, turnMultiplier);
-                        setMotorPower(Bot.rrMotor, turnSpeed, powerThreshold, turnMultiplier);
+        }
 
-                    }
+        //Edge Case Handling if Left Bumber pressed with no April Tag detected
+        List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
+        if (fiducialResults == null || fiducialResults.isEmpty() ) {
+            telemetry.addData("LL", "No fiducial results Detected");
+            return;
+        }
 
-                    if (fr.getTargetXDegrees() > targetVariation) {
-                        //Turn Right
-                        setMotorPower(Bot.flMotor, turnSpeed, 0, 1.0);
-                        setMotorPower(Bot.frMotor, -turnSpeed, 0, 1.0);
-                        setMotorPower(Bot.rlMotor, turnSpeed, 0, 1.0);
-                        setMotorPower(Bot.rrMotor, -turnSpeed, 0, 1.0);
-                    }
+        // Process April Tag 20 or 24
+        for (LLResultTypes.FiducialResult fr : fiducialResults) {
+
+            int id = fr.getFiducialId();
+            double tx = fr.getTargetXDegrees();
+
+            if (id == 20 || id == 24) {
+
+                if (tx < -targetVariation) {
+                    //Turn Left
+                    setMotorPower(Bot.flMotor, -turnSpeed, powerThreshold, turnMultiplier);
+                    setMotorPower(Bot.frMotor, turnSpeed, powerThreshold, turnMultiplier);
+                    setMotorPower(Bot.rlMotor, -turnSpeed, powerThreshold, turnMultiplier);
+                    setMotorPower(Bot.rrMotor, turnSpeed, powerThreshold, turnMultiplier);
+
                 }
 
-                telemetry.addData("Fiducial2:", "ID: %d, X: %.2f",fr.getFiducialId(), fr.getTargetXDegrees());
-
+                else if (tx > targetVariation) {
+                    //Turn Right
+                    setMotorPower(Bot.flMotor, turnSpeed, 0, 1.0);
+                    setMotorPower(Bot.frMotor, -turnSpeed, 0, 1.0);
+                    setMotorPower(Bot.rlMotor, turnSpeed, 0, 1.0);
+                    setMotorPower(Bot.rrMotor, -turnSpeed, 0, 1.0);
+                }
+                else {
+                    Bot.stopMotors();
+                }
+                telemetry.addData("Fidicual", "ID: %d, X: %.2f", id, tx);
             }
+
         }
+
     }
 
     // ****** Helper method to set Motor Power
