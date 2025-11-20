@@ -168,13 +168,14 @@ public class TeleOpAcker extends OpMode {
         if (power < 0 && Math.abs(power) < minTurnSpeed) power = -minTurnSpeed;
 
         // Map sign so that:
-        //  tx < 0 (tag left)  -> turn left (fl -, fr +)
-        //  tx > 0 (tag right) -> turn right (fl +, fr -)
+        //  tx < 0 (tag left) so robot turns left (fl -, fr +)
+        //  tx > 0 (tag right) so robots turns right (fl +, fr -)
         double fl =  power;
         double fr = -power;
         double rl =  power;
         double rr = -power;
 
+        // Set motor powers
         setMotorPower(Bot.flMotor, fl, powerThreshold, 1.0);
         setMotorPower(Bot.frMotor, fr, powerThreshold, 1.0);
         setMotorPower(Bot.rlMotor, rl, powerThreshold, 1.0);
