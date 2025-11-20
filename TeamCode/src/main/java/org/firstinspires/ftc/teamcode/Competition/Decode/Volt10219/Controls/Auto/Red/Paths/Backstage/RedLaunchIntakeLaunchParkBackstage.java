@@ -97,6 +97,7 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
             case LAUNCH:
                 launchState = LaunchState.OUTTAKE;
                 switch(launchState) {
+
                     case OUTTAKE:
                         Bot.ballLaunchV();
                         if(!follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3){

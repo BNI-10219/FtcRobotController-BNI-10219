@@ -77,22 +77,10 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
 
     //********* Pedro Pathing Poses
 
-    private final Pose startPose = new Pose(120, 132, Math.toRadians(215));
-    private final Pose launch = new Pose(84, 84, Math.toRadians(225));
-    protected final Pose park = new Pose(96, 120, Math.toRadians(0));//old pose - near square - 96, 24, 0
-
+    protected final Pose startPose = new Pose(120, 132, Math.toRadians(215));
     protected final Pose detectMotif = new Pose(82, 80, Math.toRadians(270));
-
-    protected final Pose PPGPose = new Pose(96, 79, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
-    protected final Pose PPGPosePickup = new Pose(109, 79, Math.toRadians(0));
-
-    protected final Pose PGPPose = new Pose(96, 63, Math.toRadians(0)); // Middle (Second Set) of Artifacts from the Spike Mark.
-    protected final Pose PGPPosePickup = new Pose(100, 48, Math.toRadians(0));
-
-    protected final Pose GPPPose = new Pose(96, 34, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    protected final Pose GPPPosePickup = new Pose(107.5, 34, Math.toRadians(0));
-
-
+    protected final Pose launch = new Pose(84, 84, Math.toRadians(225));
+    protected final Pose park = new Pose(96, 120, Math.toRadians(0));//old pose - near square - 96, 24, 0
 
 
     //************ Building Paths for Pedro
@@ -532,7 +520,7 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
 
         double forward = creepForwardPower;
         double strafe  = -creepLatKp * yError;
-        double turn    = creepHeadingKp * headingError;
+        double turn    = -creepHeadingKp * headingError;
 
         double fl = forward + strafe + turn;
         double fr = forward - strafe - turn;

@@ -130,8 +130,4 @@ public void startScoring(LaunchZone zone, int shots, double time, double nowSec)
 
     }
 
-    //autoPositioning(); - call in whichever state I want it to be in
-    public void loop(){
-
-    }
 }

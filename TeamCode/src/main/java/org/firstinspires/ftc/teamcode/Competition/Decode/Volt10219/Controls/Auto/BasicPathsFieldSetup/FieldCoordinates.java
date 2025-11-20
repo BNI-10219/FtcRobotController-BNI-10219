@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.
 public class FieldCoordinates extends BlueAlliance {
 
     Follower follower;
+    Follower slowFollower;
 
     private Timer pathTimer, opmodeTimer;
 
@@ -34,7 +35,7 @@ public class FieldCoordinates extends BlueAlliance {
         ytest.setLinearHeadingInterpolation(startPose.getHeading(), ytestPose.getHeading());
 
 
-        xTest = follower.pathBuilder()
+        xTest = slowFollower.pathBuilder()
                 .addPath(new BezierCurve(ytestPose, xtestPose))
                 .setLinearHeadingInterpolation(ytestPose.getHeading(), xtestPose.getHeading())
                 .build();
@@ -49,7 +50,7 @@ public class FieldCoordinates extends BlueAlliance {
                 break;
             case 1:
                 if(!follower.isBusy()) {
-                    follower.followPath(xTest);
+                    slowFollower.followPath(xTest);
                     setPathState(2);
                     break;
                     // Removed Break
@@ -72,8 +73,10 @@ public class FieldCoordinates extends BlueAlliance {
         opmodeTimer = new Timer();
         opmodeTimer.resetTimer();
         follower = Constants.createFollower(hardwareMap);
+        slowFollower = Constants.slowFollower(hardwareMap);
         buildPaths();
         follower.setStartingPose(startPose);
+        slowFollower.setStartingPose(startPose);
     }
 
     public void init_loop() {}
@@ -87,6 +90,7 @@ public class FieldCoordinates extends BlueAlliance {
     public void loop() {
         // These loop the movements of the robot, these must be called continuously in order to work
         follower.update();
+        slowFollower.update();
         pathStates();
         // Feedback to Driver Hub for debugging
         telemetry.addData("path state", pathState);

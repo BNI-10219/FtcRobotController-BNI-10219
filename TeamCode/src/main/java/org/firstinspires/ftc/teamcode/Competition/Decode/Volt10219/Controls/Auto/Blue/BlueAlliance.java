@@ -16,11 +16,11 @@ public abstract class BlueAlliance extends AutoMain {
     protected double creepTargetHeading;     // heading we want to hold
 
     protected double creepForwardPower = 0.50;   // slow forward power (tune)
-    protected double creepLatKp = 0.03;          // lateral (Y) correction gain (tune)
-    protected double creepHeadingKp = 0.05;      // heading correction gain (tune)
+    protected double creepLatKp = 0.02;          // lateral (Y) correction gain (tune)
+    protected double creepHeadingKp = 0.04;      // heading correction gain (tune)
 
     protected double creepTargetDistanceIn = 26.5;  // how far to creep (inches)
-    protected double creepTimeoutS = 4.0;
+    protected double creepTimeoutS = 5.0;
 
     // For Testing without Motif
     protected final Pose intake = new Pose(48, 34, Math.toRadians(180));
@@ -33,8 +33,8 @@ public abstract class BlueAlliance extends AutoMain {
     protected final Pose PGPPose = new Pose(48, 57.5, Math.toRadians(180)); // Middle (Second Set) of Artifacts from the Spike Mark.
     protected final Pose PGPPosePickup = new Pose(32, 57.5, Math.toRadians(180));
 
-    protected final Pose GPPPose = new Pose(48, 34, Math.toRadians(178)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    protected final Pose GPPPosePickup = new Pose(32, 34, Math.toRadians(178));
+    protected final Pose GPPPose = new Pose(48, 34, Math.toRadians(180)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    protected final Pose GPPPosePickup = new Pose(32, 34, Math.toRadians(180));
 
 
 }

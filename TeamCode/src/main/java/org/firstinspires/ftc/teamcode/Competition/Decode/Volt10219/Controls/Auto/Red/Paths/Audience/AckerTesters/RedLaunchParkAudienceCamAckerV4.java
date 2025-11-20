@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.Paths.Audience;
+package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.Paths.Audience.AckerTesters;
 
 
 import com.pedropathing.follower.Follower;
@@ -12,6 +12,7 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.RedAlliance;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
@@ -21,9 +22,9 @@ import java.util.List;
 
 /**** This Version Uses Creep Foward Controller using Pedro Poses and Pinpoint for Slow Intake ***/
 
-//@Disabled
-@Autonomous(name = "Creeper: Red Launch Park Audience Cam")
-public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
+@Disabled
+@Autonomous(name = "Creeper Acker Red Launch Park Audience Cam")
+public class RedLaunchParkAudienceCamAckerV4 extends RedAllianceAcker {
 
     //   (0, 144)                          (144, 144)
     //      --------------------------------
@@ -49,6 +50,23 @@ public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
     //                     |
     //                     |
     //                180 degrees
+
+    protected static final int PPG_TAG_ID = 23;
+    protected static final int PGP_TAG_ID = 22;
+    protected static final int GPP_TAG_ID = 21;
+
+    // GoBilda Pinpoint-based Creep Control
+    protected Pose creepStartPose;
+    protected double creepTargetY;           // field Y we want to hold
+    protected double creepTargetHeading;     // heading we want to hold
+
+    protected double creepForwardPower = 0.40;   // slow forward power (tune)
+    protected double creepLatKp = 0.1;          // lateral (Y) correction gain (tune)
+    protected double creepHeadingKp = 0.4;      // heading correction gain (tune)
+
+    protected double creepTargetDistanceIn = 26.5;  // how far to creep (inches)
+    protected double creepTimeoutS = 5.0;
+
 
     // Limelight and April Tag Variables
     protected Limelight3A limelight;
@@ -80,15 +98,22 @@ public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
     protected final Pose launch = new Pose(86, 12, Math.toRadians(246.5));
     protected final Pose park = new Pose(96, 24, Math.toRadians(0));
 
+    protected final Pose PPGPose = new Pose(96, 79, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
+    protected final Pose PPGPosePickup = new Pose(109, 79, Math.toRadians(0));
 
+    protected final Pose PGPPose = new Pose(96, 57.5, Math.toRadians(0)); // Middle (Second Set) of Artifacts from the Spike Mark.
+    protected final Pose PGPPosePickup = new Pose(112, 57.5, Math.toRadians(0));
+
+    protected final Pose GPPPose = new Pose(96, 34, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    protected final Pose GPPPosePickup = new Pose(107.5, 34, Math.toRadians(0));
 
 
     //************ Building Paths for Pedro
 
     protected Path launchOne;
     protected PathChain intakePath, intakePickupPath, launchTwoPath, parkPath;
-
     // Preparing for Intaking Motifs... Not Used Yet
+
     protected PathChain moveToPPG, grabPPG, scorePPG;
     protected PathChain moveToPGP, grabPGP, scorePGP;
     protected PathChain moveToGPP, grabGPP, scoreGPP;
@@ -99,20 +124,6 @@ public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
         launchOne = new Path(new BezierCurve(startPose, launch));
         launchOne.setLinearHeadingInterpolation(startPose.getHeading(), launch.getHeading());
 
-        intakePath = follower.pathBuilder()
-                .addPath(new BezierCurve(launch, intake))
-                .setLinearHeadingInterpolation(launch.getHeading(), intake.getHeading())
-                .build();
-
-        intakePickupPath = follower.pathBuilder()
-                .addPath(new BezierCurve(intake, intakePickupEnd))
-                .setLinearHeadingInterpolation(intake.getHeading(), intakePickupEnd.getHeading())
-                .setGlobalDeceleration()
-                .build();
-        launchTwoPath = follower.pathBuilder()
-                .addPath(new BezierCurve(intakePickupEnd, launch))
-                .setLinearHeadingInterpolation(intakePickupEnd.getHeading(), launch.getHeading())
-                .build();
         parkPath = follower.pathBuilder()
                 .addPath(new BezierCurve(launch, park))
                 .setLinearHeadingInterpolation(launch.getHeading(), park.getHeading())
@@ -492,8 +503,10 @@ public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
         double headingError = normalizeAngle(creepTargetHeading - curr.getHeading());
 
         double forward = creepForwardPower;
-        double strafe  = -creepLatKp * yError;
+        double strafe  = 0;
+        //double strafe  = -creepLatKp * yError;
         double turn    = -creepHeadingKp * headingError;
+
 
         double fl = forward + strafe + turn;
         double fr = forward - strafe - turn;
@@ -526,7 +539,13 @@ public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
             return true;    // tell caller method we are done creeping
         }
 
+        telemetry.addData("CREEP headingTarget (deg)", Math.toDegrees(creepTargetHeading));
+        telemetry.addData("CREEP headingCurr   (deg)", Math.toDegrees(curr.getHeading()));
+        telemetry.addData("CREEP headingErr    (deg)", Math.toDegrees(headingError));
+        telemetry.addData("CREEP turnCmd", turn);
+
         return false;       // still creeping
+
     }
 
     // Telemetry Update

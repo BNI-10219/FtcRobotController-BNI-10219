@@ -491,7 +491,7 @@ public class BlueLaunchParkAudienceCamOliviaV3 extends BlueAlliance {
 
         double forward = creepForwardPower;
         double strafe  = -creepLatKp * yError;
-        double turn    = creepHeadingKp * headingError;
+        double turn    = -creepHeadingKp * headingError;
 
         double fl = forward + strafe + turn;
         double fr = forward - strafe - turn;
