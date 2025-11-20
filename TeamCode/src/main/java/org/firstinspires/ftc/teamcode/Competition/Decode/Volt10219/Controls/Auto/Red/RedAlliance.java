@@ -16,25 +16,27 @@ public abstract class RedAlliance extends AutoMain {
     protected double creepTargetHeading;     // heading we want to hold
 
     protected double creepForwardPower = 0.50;   // slow forward power (tune)
-    protected double creepLatKp = 0.03;          // lateral (Y) correction gain (tune)
-    protected double creepHeadingKp = 0.05;      // heading correction gain (tune)
+    protected double creepLatKp = 0.02;          // lateral (Y) correction gain (tune)
+    protected double creepHeadingKp = 0.4;      // heading correction gain (tune)
 
     protected double creepTargetDistanceIn = 26.5;  // how far to creep (inches)
-    protected double creepTimeoutS = 4.0;
+    protected double creepTimeoutS = 5.0;
+
+    // Preparing for Intake Using Motifs
+    protected final Pose PPGPose = new Pose(96, 79, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
+    protected final Pose PPGPosePickup = new Pose(109, 79, Math.toRadians(0));
+
+    protected final Pose PGPPose = new Pose(96, 57.5, Math.toRadians(0)); // Middle (Second Set) of Artifacts from the Spike Mark.
+    protected final Pose PGPPosePickup = new Pose(112, 57.5, Math.toRadians(0));
+
+    protected final Pose GPPPose = new Pose(96, 34, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    protected final Pose GPPPosePickup = new Pose(107.5, 34, Math.toRadians(0));
 
     // For Testing without Motif
     protected final Pose intake = new Pose(96, 34, Math.toRadians(0));
-    protected final Pose intakePickupEnd = new Pose(112, 34, Math.toRadians(0));
+    protected final Pose intakePickupEnd = new Pose(112, 36, Math.toRadians(0));
 
-    // Preparing for Intake Using Motifs... Not Used Yet.
-    protected final Pose PPGPose = new Pose(96, 83, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
-    protected final Pose PPGPosePickup = new Pose(112, 83, Math.toRadians(0));
 
-    protected final Pose PGPPose = new Pose(96, 59, Math.toRadians(0)); // Middle (Second Set) of Artifacts from the Spike Mark.
-    protected final Pose PGPPosePickup = new Pose(112, 59, Math.toRadians(0));
-
-    protected final Pose GPPPose = new Pose(96, 34, Math.toRadians(3.5)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    protected final Pose GPPPosePickup = new Pose(112, 34, Math.toRadians(3.5));
 
 
 }

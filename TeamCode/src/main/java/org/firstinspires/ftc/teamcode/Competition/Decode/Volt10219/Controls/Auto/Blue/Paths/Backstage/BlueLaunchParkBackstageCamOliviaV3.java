@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.Paths.Audience;
+package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Blue.Paths.Backstage;
 
 
 import com.pedropathing.follower.Follower;
@@ -12,7 +12,10 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
+import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Blue.BlueAlliance;
+import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.Paths.Backstage.RedLaunchParkBackstageCamOliviaV3;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.RedAlliance;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
 
@@ -22,8 +25,8 @@ import java.util.List;
 /**** This Version Uses Creep Foward Controller using Pedro Poses and Pinpoint for Slow Intake ***/
 
 //@Disabled
-@Autonomous(name = "Creeper: Red Launch Park Audience Cam")
-public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
+@Autonomous(name = "Creeper: Blue Launch Park Backstage Cam")
+public class BlueLaunchParkBackstageCamOliviaV3 extends BlueAlliance {
 
     //   (0, 144)                          (144, 144)
     //      --------------------------------
@@ -64,7 +67,7 @@ public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
     protected LaunchState launchState = LaunchState.READY;
 
     // State Machine for Auto Pathing
-    protected enum PathState{DRIVETOLAUNCH, LAUNCH, INTAKE_START, INTAKE_CREEP, LAUNCHPOSTWO, LAUNCHTWO, PARK, READY, WAIT;}
+    protected enum PathState{DRIVETOLAUNCH, LAUNCH, INTAKE_START, INTAKE_CREEP, WAITDETECT, DETECTMOTIF, LAUNCHPOSTWO, LAUNCHTWO, PARK, READY, WAIT;}
     protected PathState pathState = PathState.READY;
 
 
@@ -76,17 +79,17 @@ public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
 
     //********* Pedro Pathing Poses
 
-    protected final Pose startPose = new Pose(96, 8, Math.toRadians(270));
-    protected final Pose launch = new Pose(86, 12, Math.toRadians(246.5));
-    protected final Pose park = new Pose(96, 24, Math.toRadians(0));
-
+    private final Pose startPose = new Pose(24, 132, Math.toRadians(315));
+    private final Pose launch = new Pose(50, 76, Math.toRadians(303));
+    protected final Pose park = new Pose(48, 120, Math.toRadians(180));//old pose - near square - 96, 24, 0
+    protected final Pose detectMotif = new Pose(49, 73, Math.toRadians(260));
 
 
 
     //************ Building Paths for Pedro
 
     protected Path launchOne;
-    protected PathChain intakePath, intakePickupPath, launchTwoPath, parkPath;
+    protected PathChain intakePath, intakePickupPath, launchTwoPath, parkPath, detectMotifPath;
 
     // Preparing for Intaking Motifs... Not Used Yet
     protected PathChain moveToPPG, grabPPG, scorePPG;
@@ -98,6 +101,11 @@ public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
     protected void buildPaths() {
         launchOne = new Path(new BezierCurve(startPose, launch));
         launchOne.setLinearHeadingInterpolation(startPose.getHeading(), launch.getHeading());
+
+        detectMotifPath = follower.pathBuilder()
+                .addPath(new BezierCurve(launch, detectMotif))
+                .setLinearHeadingInterpolation(launch.getHeading(), detectMotif.getHeading())
+                .build();
 
         intakePath = follower.pathBuilder()
                 .addPath(new BezierCurve(launch, intake))
@@ -252,26 +260,46 @@ public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
                 break;
 
             case LAUNCH:
+                detectMotif();
+                detectMotif();
                 if (!follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
                     if (launchState == LaunchState.READY && !scoringDone ) {
                          launchState = LaunchState.OUTTAKE;
+                         pathTimer.resetTimer();
                     }
                 }
                 if (scoringDone) {
                     Bot.artifactPushUps();
-                    Bot.ballIntake();
+                    if(pathTimer.getElapsedTimeSeconds() > 2){
+                        waitTimer.resetTimer();
+                        follower.followPath(detectMotifPath);
+                        pathState = PathState.DETECTMOTIF;
+                        pathTimer.resetTimer();
+                    }
 
-                    // Path Detection using April Tag
-                    if (motifID == PPG_TAG_ID) { chosenMoveToPath = moveToPPG;} // Path for 23
-                    else if (motifID == PGP_TAG_ID) {chosenMoveToPath = moveToPGP;} // Path for 22
-                    else { chosenMoveToPath = moveToGPP;}   // Path f
-                    follower.followPath(chosenMoveToPath);
-
-                    // Transition to Next State
+                }
+                break;
+            case DETECTMOTIF:
+                if(!follower.isBusy()|| pathTimer.getElapsedTimeSeconds() > 3){
+                    pathState = PathState.WAITDETECT;
                     waitTimer.resetTimer();
+                }
+                break;
+            case WAITDETECT:
+                detectMotif();
+                if(waitTimer.getElapsedTimeSeconds() > 2.5) {
+                    if (motifID == PPG_TAG_ID) {
+                        chosenMoveToPath = moveToPPG;
+                    } // Path for 23
+                    else if (motifID == PGP_TAG_ID) {
+                        chosenMoveToPath = moveToPGP;
+                    } // Path for 22
+                    else {
+                        chosenMoveToPath = moveToGPP;
+                    }   // Path f
+                    follower.followPath(chosenMoveToPath);
                     pathState = PathState.INTAKE_START;
                     pathTimer.resetTimer();
-
                 }
                 break;
 
@@ -408,14 +436,14 @@ public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
             }
             // PGP Detection
             else if (fr.getFiducialId() == 22) {
-                motifID = 22;//CHANGE BACK AFTER 2ND MEET
+                motifID = 22;
                 telemetry.addLine("Detected PGP - 22");
                 telemetry.addData("FI: ", fr.getFiducialId());
 
             }
             // PPG Detection
             else if (fr.getFiducialId() == 23) {
-                motifID = 23;//CHANGE BACK AFTER 2ND MEET
+                motifID = 23;
                 telemetry.addLine("Detected PPG - 23");
                 telemetry.addData("FI: ", fr.getFiducialId());
 

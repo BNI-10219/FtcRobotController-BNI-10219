@@ -12,9 +12,8 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.RedAlliance;
+import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Blue.BlueAlliance;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
 
 import java.util.List;
@@ -22,9 +21,9 @@ import java.util.List;
 
 /**** This Version Uses Creep Foward Controller using Pedro Poses and Pinpoint for Slow Intake ***/
 
-@Disabled
+//@Disabled
 @Autonomous(name = "Creeper: Blue Launch Park Audience Cam")
-public class BlueLaunchParkAudienceCamOliviaV3 extends RedAlliance {
+public class BlueLaunchParkAudienceCamOliviaV3 extends BlueAlliance {
 
     //   (0, 144)                          (144, 144)
     //      --------------------------------
@@ -77,11 +76,9 @@ public class BlueLaunchParkAudienceCamOliviaV3 extends RedAlliance {
 
     //********* Pedro Pathing Poses
 
-    protected final Pose startPose = new Pose(96, 8, Math.toRadians(270));
-    protected final Pose launch = new Pose(86, 12, Math.toRadians(246));
-    protected final Pose park = new Pose(96, 24, Math.toRadians(0));
-
-
+    protected final Pose startPose = new Pose(48, 8, Math.toRadians(270));
+    protected final Pose launch = new Pose(58, 16, Math.toRadians(294));
+    protected final Pose park = new Pose(45, 36, Math.toRadians(180));
 
 
     //************ Building Paths for Pedro
@@ -335,7 +332,7 @@ public class BlueLaunchParkAudienceCamOliviaV3 extends RedAlliance {
         switch(launchState) {
 
             case READY:
-                Bot.ballLaunchBackField();
+                Bot.ballLaunchAutoBack();
                 outtakeTimer.resetTimer();
                 intakeTimer.resetTimer();
                 break;
@@ -409,14 +406,14 @@ public class BlueLaunchParkAudienceCamOliviaV3 extends RedAlliance {
             }
             // PGP Detection
             else if (fr.getFiducialId() == 22) {
-                motifID = 22;
+                motifID = 22;//CHANGE BACK AFTER 2ND MEET
                 telemetry.addLine("Detected PGP - 22");
                 telemetry.addData("FI: ", fr.getFiducialId());
 
             }
             // PPG Detection
             else if (fr.getFiducialId() == 23) {
-                motifID = 23;
+                motifID = 23;//CHANGE BACK AFTER 2ND MEET
                 telemetry.addLine("Detected PPG - 23");
                 telemetry.addData("FI: ", fr.getFiducialId());
 
@@ -494,7 +491,7 @@ public class BlueLaunchParkAudienceCamOliviaV3 extends RedAlliance {
 
         double forward = creepForwardPower;
         double strafe  = -creepLatKp * yError;
-        double turn    = creepHeadingKp * headingError;
+        double turn    = -creepHeadingKp * headingError;
 
         double fl = forward + strafe + turn;
         double fr = forward - strafe - turn;

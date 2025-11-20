@@ -12,6 +12,7 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.RedAlliance;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
@@ -21,6 +22,7 @@ import java.util.List;
 
 /**** This Version Uses Creep Foward Controller using Pedro Poses and Pinpoint for Slow Intake ***/
 
+//@Disabled
 @Autonomous(name = "Creeper: Red Launch Park Backstage Cam")
 public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
 
@@ -63,7 +65,7 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
     protected LaunchState launchState = LaunchState.READY;
 
     // State Machine for Auto Pathing
-    protected enum PathState{DRIVETOLAUNCH, LAUNCH, INTAKE_START, INTAKE_CREEP, LAUNCHPOSTWO, LAUNCHTWO, PARK, READY, WAIT;}
+    protected enum PathState{DRIVETOLAUNCH, LAUNCH, INTAKE_START, INTAKE_CREEP, WAITDETECT, DETECTMOTIF, LAUNCHPOSTWO, LAUNCHTWO, PARK, READY, WAIT;}
     protected PathState pathState = PathState.READY;
 
 
@@ -75,17 +77,16 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
 
     //********* Pedro Pathing Poses
 
-    private final Pose startPose = new Pose(120, 132, Math.toRadians(215));
-    private final Pose launch = new Pose(84, 84, Math.toRadians(225));
+    protected final Pose startPose = new Pose(120, 132, Math.toRadians(215));
+    protected final Pose detectMotif = new Pose(82, 80, Math.toRadians(270));
+    protected final Pose launch = new Pose(84, 84, Math.toRadians(225));
     protected final Pose park = new Pose(96, 120, Math.toRadians(0));//old pose - near square - 96, 24, 0
-
-
 
 
     //************ Building Paths for Pedro
 
     protected Path launchOne;
-    protected PathChain intakePath, intakePickupPath, launchTwoPath, parkPath;
+    protected PathChain intakePath, intakePickupPath, launchTwoPath, parkPath, detectMotifPath;
 
     // Preparing for Intaking Motifs... Not Used Yet
     protected PathChain moveToPPG, grabPPG, scorePPG;
@@ -98,6 +99,11 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
         launchOne = new Path(new BezierCurve(startPose, launch));
         launchOne.setLinearHeadingInterpolation(startPose.getHeading(), launch.getHeading());
 
+        detectMotifPath = follower.pathBuilder()
+                .addPath(new BezierCurve(launch, detectMotif))
+                .setLinearHeadingInterpolation(launch.getHeading(), detectMotif.getHeading())
+                .build();
+
         intakePath = follower.pathBuilder()
                 .addPath(new BezierCurve(launch, intake))
                 .setLinearHeadingInterpolation(launch.getHeading(), intake.getHeading())
@@ -108,6 +114,8 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
                 .setLinearHeadingInterpolation(intake.getHeading(), intakePickupEnd.getHeading())
                 .setGlobalDeceleration()
                 .build();
+
+
         launchTwoPath = follower.pathBuilder()
                 .addPath(new BezierCurve(intakePickupEnd, launch))
                 .setLinearHeadingInterpolation(intakePickupEnd.getHeading(), launch.getHeading())
@@ -121,8 +129,8 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
     // Build the PPG Pathing
     public void buildPathsPPG() {
         moveToPPG = follower.pathBuilder() //
-                .addPath(new BezierCurve(launch, PPGPose))
-                .setLinearHeadingInterpolation(launch.getHeading(), PPGPose.getHeading())
+                .addPath(new BezierCurve(detectMotif, PPGPose))
+                .setLinearHeadingInterpolation(detectMotif.getHeading(), PPGPose.getHeading())
                 .build();
         grabPPG = follower.pathBuilder()
                 .addPath(new BezierLine(PPGPose, PPGPosePickup))
@@ -137,8 +145,8 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
     // Build the PGP Pathing
     public void buildPathsPGP() {
         moveToPGP = follower.pathBuilder()
-                .addPath(new BezierCurve(launch, PGPPose))
-                .setLinearHeadingInterpolation(launch.getHeading(), PGPPose.getHeading())
+                .addPath(new BezierCurve(detectMotif, PGPPose))
+                .setLinearHeadingInterpolation(detectMotif.getHeading(), PGPPose.getHeading())
                 .build();
         grabPGP = follower.pathBuilder()
                 .addPath(new BezierLine(PGPPose, PGPPosePickup))
@@ -154,8 +162,8 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
     // Build the GPP Pathing
     public void buildPathsGPP() {
         moveToGPP = follower.pathBuilder()
-                .addPath(new BezierCurve(launch, GPPPose))
-                .setLinearHeadingInterpolation(launch.getHeading(), GPPPose.getHeading())
+                .addPath(new BezierCurve(detectMotif, GPPPose))
+                .setLinearHeadingInterpolation(detectMotif.getHeading(), GPPPose.getHeading())
                 .build();
         grabGPP = follower.pathBuilder()
                 .addPath(new BezierLine(GPPPose, GPPPosePickup))
@@ -254,27 +262,47 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
                 if (!follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
                     if (launchState == LaunchState.READY && !scoringDone ) {
                          launchState = LaunchState.OUTTAKE;
+                         pathTimer.resetTimer();
                     }
                 }
                 if (scoringDone) {
                     Bot.artifactPushUps();
-                    Bot.ballIntake();
-
-                    // Path Detection using April Tag
-                    if (motifID == PPG_TAG_ID) { chosenMoveToPath = moveToPPG;} // Path for 23
-                    else if (motifID == PGP_TAG_ID) {chosenMoveToPath = moveToPGP;} // Path for 22
-                    else { chosenMoveToPath = moveToGPP;}   // Path f
-                    follower.followPath(chosenMoveToPath);
-
-                    // Transition to Next State
-                    waitTimer.resetTimer();
-                    pathState = PathState.INTAKE_START;
-                    pathTimer.resetTimer();
+                    if(pathTimer.getElapsedTimeSeconds() > 2){
+                        waitTimer.resetTimer();
+                        follower.followPath(detectMotifPath);
+                        pathState = PathState.DETECTMOTIF;
+                        pathTimer.resetTimer();
+                    }
+                    //Bot.ballIntake();
 
                 }
                 break;
+            case DETECTMOTIF:
+                if(!follower.isBusy()|| pathTimer.getElapsedTimeSeconds() > 3){
+                    pathState = PathState.WAITDETECT;
+                    waitTimer.resetTimer();
+                }
+                break;
 
+            case WAITDETECT:
+                detectMotif();
+                if(waitTimer.getElapsedTimeSeconds() > 2.5) {
+                    if (motifID == PPG_TAG_ID) {
+                        chosenMoveToPath = moveToPPG;
+                    } // Path for 23
+                    else if (motifID == PGP_TAG_ID) {
+                        chosenMoveToPath = moveToPGP;
+                    } // Path for 22
+                    else {
+                        chosenMoveToPath = moveToGPP;
+                    }   // Path f
+                    follower.followPath(chosenMoveToPath);
+                    pathState = PathState.INTAKE_START;
+                    pathTimer.resetTimer();
+                }
+                break;
             case INTAKE_START:
+                Bot.ballIntake();
                 if (!follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
                     creepTimer.resetTimer();
 
@@ -333,7 +361,7 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
         switch(launchState) {
 
             case READY:
-                Bot.ballLaunchBackField();
+                Bot.ballLaunchMidV();
                 outtakeTimer.resetTimer();
                 intakeTimer.resetTimer();
                 break;
@@ -343,7 +371,7 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
                 outtakeTimer.resetTimer();
 
                 //To change the velocity, change the numbers below
-                Bot.ballLaunchBackField();//VELOCITY for launching 2nd artifact
+                Bot.ballLaunchAutoV();//VELOCITY for launching 2nd artifact
                 // Command + B to change the velocity(while the white line index thing is in the method)
 
 
@@ -428,8 +456,8 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
             }
             // Default to GPP
             else {
-                motifID = 21;
-                telemetry.addLine("None detected. Default to 21 GPP");
+                motifID = 23;
+                telemetry.addLine("None detected. Default to 23 PPG");
                 telemetry.addData("FI: ", fr.getFiducialId());
                 telemetry.update();
             }
@@ -492,7 +520,7 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
 
         double forward = creepForwardPower;
         double strafe  = -creepLatKp * yError;
-        double turn    = creepHeadingKp * headingError;
+        double turn    = -creepHeadingKp * headingError;
 
         double fl = forward + strafe + turn;
         double fr = forward - strafe - turn;

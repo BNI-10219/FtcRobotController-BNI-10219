@@ -2,17 +2,23 @@ package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Tel
 
 import com.pedropathing.util.Timer;
 import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Robot.DecodeBot;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Volt TeleOp")
-public class TeleOp extends OpMode {
+import java.util.List;
+
+//@Disabled
+@TeleOp (name = "Acker TeleOp")
+public class TeleOpAcker extends OpMode {
     double leftStickYVal;
     double leftStickXVal;
     double rightStickYVal;
@@ -20,12 +26,6 @@ public class TeleOp extends OpMode {
 
     double powerThreshold = 0;
     double speedMultiply = 1;
-
-
-    double targetRedTX = -2;
-    double targetTA = 0;
-    double targetBlueTX = 25;
-    double llTolerance = 1.5;
 
     private static final int AUDREY = 1;
     private static final int ANDREA = 2;
@@ -45,10 +45,8 @@ public class TeleOp extends OpMode {
 
     private Timer outtakeTimer = new Timer();
 
-    private boolean autoPosition = false;
     private Limelight3A limelight;
-
-    LLResult result;
+    public LLResult result;
 
 
     @Override
@@ -67,11 +65,7 @@ public class TeleOp extends OpMode {
     }
 
 
-    public void start() {
-        limelight.start();
-
-
-    }
+    public void start() {}
 
     @Override
     public void loop() {
@@ -82,7 +76,7 @@ public class TeleOp extends OpMode {
         artifactPushControl();
         telemetryOutput();
         fieldCentricDrive();
-        autoPositioning();
+        autoPositioningV2();
         intakeControlStates();
         timeOuttake();
     }
@@ -97,59 +91,99 @@ public class TeleOp extends OpMode {
 
     }
 
-    public void autoPositioning() {
-        result = limelight.getLatestResult();
-        autoPosition = gamepad1.dpad_down;
-        if (!autoPosition) {
-            telemetry.addData("LL Ta:", result.getTa());
-            telemetry.addData("LL Tx: ", result.getTx());
+    public void autoPositioningV2() {
+
+        // Only run auto-align when holding left bumper
+        if (!gamepad1.left_bumper) {
             return;
         }
-        double txRedDifference = result.getTx() - targetRedTX;
-        double txBlueDifference = result.getTx() - targetBlueTX;
-        double taDifference = result.getTy() - targetTA;
 
-        if (gamepad1.right_bumper) {
-            if (txRedDifference < 0 - llTolerance) {
-                Bot.strafeRight(1);
+        // Get latest Limelight result
+        result = limelight.getLatestResult();
 
-            } else if (txRedDifference > 0 + llTolerance) {
-                Bot.strafeLeft(1);
-            } else if ((txRedDifference > 0 - llTolerance) && (txRedDifference < 0 + llTolerance)) {
-                Bot.stopMotors();
-            }
-
-            if (taDifference > 0 + llTolerance) {
-                Bot.driveForward(0.5);
-            } else if (taDifference < 0 + llTolerance) {
-                Bot.stopMotors();
-            }
-
+        // Edge Case Handling in Case No Limelight Results
+        if (result == null) {
+            telemetry.addData("LL", "No result (null)");
+            return;
         }
-        if (gamepad1.left_bumper) {
-            if (txBlueDifference < 0 - llTolerance) {
-                Bot.strafeRight(1);
-
-            } else if (txBlueDifference > 0 + llTolerance) {
-                Bot.strafeLeft(1);
-            } else if ((txBlueDifference > 0 - llTolerance) && (txBlueDifference < 0 + llTolerance)) {
-                Bot.stopMotors();
-            }
-
-            if (taDifference > 0 + llTolerance) {
-                Bot.driveForward(0.5);
-            } else if (taDifference < 0 + llTolerance) {
-                Bot.stopMotors();
-            }
-
+        // Edge Case Handling in Case No Fiducial Results
+        List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
+        if (fiducialResults == null || fiducialResults.isEmpty()) {
+            telemetry.addData("LL", "No fiducial targets");
+            return;
         }
 
-        telemetry.addData("Tx Difference: ", txRedDifference);
-        telemetry.addData("Ta Difference: ", taDifference);
-        telemetry.addData("LL Ta:", result.getTa());
-        telemetry.addData("LL Tx: ", result.getTx());
-        telemetry.update();
+        // --- Choose the best tag (ID 20 or 24) closest to center ---
+        LLResultTypes.FiducialResult best = null;
+        for (LLResultTypes.FiducialResult fr : fiducialResults) {
+            int id = fr.getFiducialId();
+            if (id == 20 || id == 24) {
+                if (best == null ||
+                        Math.abs(fr.getTargetXDegrees()) < Math.abs(best.getTargetXDegrees())) {
+                    best = fr;
+                }
+            }
+        }
 
+        // Edge Case Handling in for some reason you detect Motif APril Tags
+        if (best == null) {
+            telemetry.addData("LL", "No desired tag (20/24) in view");
+            return;
+        }
+
+        // Get target degrees of April Tag if no edge cases
+        double tx = best.getTargetXDegrees();
+
+        // --- Proportional Drive Control parameters  ---
+        double kP = 0.03;             // Proportional gain for turning and oscillation
+        double maxTurnSpeed = 0.50;  // Max turn power
+        double minTurnSpeed = 0.25;  // Minimum turn power to overcome friction
+        double tolerance = 1.5;      // Deadband in degrees that controls oscillation
+
+        // If we’re close enough, stop and don’t oscillate
+        if (Math.abs(tx) < tolerance) {
+            Bot.stopMotors();
+            telemetry.addData("Align", "Aligned! tx=%.2f", tx);
+            telemetry.addData("Tag", "ID: %d", best.getFiducialId());
+            return;
+        }
+
+        // Proportional turning power
+        double power = kP * tx;
+
+        // Clip to max speed
+        if (power > maxTurnSpeed) power = maxTurnSpeed;
+        if (power < -maxTurnSpeed) power = -maxTurnSpeed;
+
+        // Enforce a minimum power when we’re still outside tolerance
+        if (power > 0 && Math.abs(power) < minTurnSpeed) power = minTurnSpeed;
+        if (power < 0 && Math.abs(power) < minTurnSpeed) power = -minTurnSpeed;
+
+        // Map sign so that:
+        //  tx < 0 (tag left) so robot turns left (fl -, fr +)
+        //  tx > 0 (tag right) so robots turns right (fl +, fr -)
+        double fl =  power;
+        double fr = -power;
+        double rl =  power;
+        double rr = -power;
+
+        // Set motor powers
+        setMotorPower(Bot.flMotor, fl, powerThreshold, 1.0);
+        setMotorPower(Bot.frMotor, fr, powerThreshold, 1.0);
+        setMotorPower(Bot.rlMotor, rl, powerThreshold, 1.0);
+        setMotorPower(Bot.rrMotor, rr, powerThreshold, 1.0);
+
+        telemetry.addData("Align", "tx=%.2f, power=%.2f", tx, power);
+        telemetry.addData("Tag", "ID: %d", best.getFiducialId());
+    }
+
+    // ****** Helper method to set Motor Power
+    public void setMotorPower(DcMotor motor, double speed, double threshold, double multiplier) {
+        if (speed <= threshold && speed >= -threshold) {
+            motor.setPower(0);
+        } else {
+            motor.setPower(speed * multiplier);
+        }
     }
 
     public void fieldCentricDrive(){
@@ -254,12 +288,13 @@ public class TeleOp extends OpMode {
         }
     }
 
+
     public void launcherControl() {
 //        if(gamepad2.x){
 //            Bot.ballLaunchV();
 //        }
 
-        if (gamepad2.left_trigger > 0.001) {
+        if (gamepad2.y) {
             Bot.ballLaunchStop();
         }
         if (gamepad2.right_bumper) {
@@ -331,7 +366,7 @@ public class TeleOp extends OpMode {
         if (gamepad2.dpad_left) {
             Bot.ballOuttake();
         }
-        if (gamepad2.left_bumper) {
+        if (gamepad2.b) {
             Bot.intakeStop();
         }
         if (gamepad2.x) {
@@ -340,14 +375,14 @@ public class TeleOp extends OpMode {
     }
 
     public void artifactPushControl() {
-        if (gamepad2.y) {
+        if (gamepad1.y) {
             Bot.artifactPushUps();
         }
 
-        if (gamepad2.a) {
+        if (gamepad1.a) {
             Bot.artifactPushDown();
         }
-        if (gamepad2.b) {
+        if (gamepad1.b) {
             Bot.artifactPushMiddle();
         }
     }

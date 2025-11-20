@@ -8,10 +8,12 @@ import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Blue.BlueAlliance;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
 
+//@Disabled
 @Autonomous(name = "Blue Launch Park Audience")
 public class BlueLaunchParkAudience extends BlueAlliance {
 
