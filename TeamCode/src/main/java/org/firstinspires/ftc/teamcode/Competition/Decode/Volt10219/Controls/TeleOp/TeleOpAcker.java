@@ -45,7 +45,6 @@ public class TeleOpAcker extends OpMode {
 
     private Timer outtakeTimer = new Timer();
 
-    private boolean autoPosition = false;
     private Limelight3A limelight;
     public LLResult result;
 
