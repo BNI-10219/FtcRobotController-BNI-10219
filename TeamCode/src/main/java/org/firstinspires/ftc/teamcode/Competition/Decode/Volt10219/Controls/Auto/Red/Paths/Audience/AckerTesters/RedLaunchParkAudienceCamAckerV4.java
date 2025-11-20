@@ -513,11 +513,6 @@ public class RedLaunchParkAudienceCamAckerV4 extends RedAlliance {
             return true;    // tell caller method we are done creeping
         }
 
-        telemetry.addData("CREEP headingTarget (deg)", Math.toDegrees(creepTargetHeading));
-        telemetry.addData("CREEP headingCurr   (deg)", Math.toDegrees(curr.getHeading()));
-        telemetry.addData("CREEP headingErr    (deg)", Math.toDegrees(headingError));
-        telemetry.addData("CREEP turnCmd", turn);
-
         return false;       // still creeping
 
     }
