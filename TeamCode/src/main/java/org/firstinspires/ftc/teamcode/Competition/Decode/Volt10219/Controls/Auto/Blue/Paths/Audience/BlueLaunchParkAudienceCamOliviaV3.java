@@ -78,7 +78,16 @@ public class BlueLaunchParkAudienceCamOliviaV3 extends BlueAlliance {
 
     protected final Pose startPose = new Pose(48, 8, Math.toRadians(270));
     protected final Pose launch = new Pose(58, 16, Math.toRadians(294));
-    protected final Pose park = new Pose(45, 12, Math.toRadians(180));
+    protected final Pose park = new Pose(40, 12, Math.toRadians(180));
+
+    protected final Pose PPGPose = new Pose(48, 81, Math.toRadians(180)); // Highest (First Set) of Artifacts from the Spike Mark.
+    protected final Pose PPGPosePickup = new Pose(32, 81, Math.toRadians(180));
+
+    protected final Pose PGPPose = new Pose(48, 57.5, Math.toRadians(180)); // Middle (Second Set) of Artifacts from the Spike Mark.
+    protected final Pose PGPPosePickup = new Pose(32, 57.5, Math.toRadians(180));
+
+    protected final Pose GPPPose = new Pose(48, 34, Math.toRadians(175)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    protected final Pose GPPPosePickup = new Pose(32, 34, Math.toRadians(178));
 
 
     //************ Building Paths for Pedro
@@ -250,7 +259,7 @@ public class BlueLaunchParkAudienceCamOliviaV3 extends BlueAlliance {
                 break;
 
             case LAUNCH:
-                if (!follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
+                if (!follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 4.5) {
                     if (launchState == LaunchState.READY && !scoringDone ) {
                          launchState = LaunchState.OUTTAKE;
                     }
@@ -292,8 +301,9 @@ public class BlueLaunchParkAudienceCamOliviaV3 extends BlueAlliance {
                 break;
 
             case LAUNCHPOSTWO:
-                if ( !follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
+                if ( !follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 4) {
                     if (launchState == LaunchState.READY && !scoringDone ) {
+                        Bot.ballLaunchBackField();
                         Bot.intakeStop();
                         launchState = LaunchState.OUTTAKE;
                     }
@@ -406,15 +416,15 @@ public class BlueLaunchParkAudienceCamOliviaV3 extends BlueAlliance {
             }
             // PGP Detection
             else if (fr.getFiducialId() == 22) {
-                motifID = 22;//CHANGE BACK AFTER 2ND MEET
+                motifID = 21;//CHANGE BACK AFTER 2ND MEET
                 telemetry.addLine("Detected PGP - 22");
                 telemetry.addData("FI: ", fr.getFiducialId());
 
             }
             // PPG Detection
             else if (fr.getFiducialId() == 23) {
-                motifID = 23;//CHANGE BACK AFTER 2ND MEET
-                telemetry.addLine("Detected PPG - 23");
+                motifID = 21;//CHANGE BACK AFTER 2ND MEET
+                telemetry.addLine("Detected PPG - 23, Going with 21");
                 telemetry.addData("FI: ", fr.getFiducialId());
 
             }

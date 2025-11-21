@@ -77,10 +77,21 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
 
     //********* Pedro Pathing Poses
 
-    protected final Pose startPose = new Pose(120, 132, Math.toRadians(215));
+    protected final Pose startPose = new Pose(120, 132, Math.toRadians(215));//132
     protected final Pose detectMotif = new Pose(82, 80, Math.toRadians(270));
     protected final Pose launch = new Pose(84, 84, Math.toRadians(225));
-    protected final Pose park = new Pose(96, 120, Math.toRadians(0));//old pose - near square - 96, 24, 0
+    protected final Pose park = new Pose(96, 130, Math.toRadians(0));//near back wall
+    //protected final Pose park = new Pose(122, 105, Math.toRadians(0));//near right wall
+
+
+    protected final Pose PPGPose = new Pose(95, 88, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
+    protected final Pose PPGPosePickup = new Pose(98, 88, Math.toRadians(0));
+
+    protected final Pose PGPPose = new Pose(96, 57.5, Math.toRadians(0)); // Middle (Second Set) of Artifacts from the Spike Mark.
+    protected final Pose PGPPosePickup = new Pose(112, 57.5, Math.toRadians(0));
+
+    protected final Pose GPPPose = new Pose(96, 34, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    protected final Pose GPPPosePickup = new Pose(107.5, 34, Math.toRadians(0));
 
 
     //************ Building Paths for Pedro
@@ -364,35 +375,24 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
                 Bot.ballLaunchMidV();
                 outtakeTimer.resetTimer();
                 intakeTimer.resetTimer();
+
                 break;
 
             case OUTTAKE:
+                Bot.ballLaunchAutoV();//VELOCITY for launching 2nd artifact
                 Bot.ballIntake();
+                Bot.artifactPushAuto();
                 outtakeTimer.resetTimer();
 
-                //To change the velocity, change the numbers below
-                Bot.ballLaunchAutoV();//VELOCITY for launching 2nd artifact
-                // Command + B to change the velocity(while the white line index thing is in the method)
 
 
-                Bot.artifactPushAuto();
-                Bot.artifactPushDown();
                 waitTimer.resetTimer();
                 intakeTimer.resetTimer();
+
                 launchState = LaunchState.WAIT;
                 break;
-//                Bot.ballLaunchAutoBack();
-//                if (outtakeTimer.getElapsedTimeSeconds() > 2.5) {
-//                    Bot.artifactPushDown();
-//                    waitTimer.resetTimer();
-//                    intakeTimer.resetTimer();
-//                    launchState = LaunchState.WAIT;
-//                    Bot.intakeStop();
-//                }
-//                break;
-
             case WAIT:
-                Bot.ballIntake();//intake sooner
+                Bot.ballIntake();
                 if (waitTimer.getElapsedTimeSeconds() > 1) {
                     intakeTimer.resetTimer();
                     scoringDone = true;
@@ -427,15 +427,15 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
 
            // GPP
             if(fr.getFiducialId() == 21) {
-                motifID = 21;
-                telemetry.addLine("21");
+                motifID = 23;
+                telemetry.addLine("21 - Going to 23");
                 telemetry.addData("FI: ", fr.getFiducialId());
 
 
             }
             // PGP Detection
             else if (fr.getFiducialId() == 22) {
-                motifID = 22;
+                motifID = 23;
                 telemetry.addLine("Detected PGP - 22");
                 telemetry.addData("FI: ", fr.getFiducialId());
 
@@ -449,7 +449,7 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
             }
             // GPP Detection
             else if (fr.getFiducialId() == 21) {
-                motifID = 21;
+                motifID = 23;
                 telemetry.addLine("Detected GPP - 21");
                 telemetry.addData("FI: ", fr.getFiducialId());
 

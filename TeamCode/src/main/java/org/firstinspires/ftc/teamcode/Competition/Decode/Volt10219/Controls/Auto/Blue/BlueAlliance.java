@@ -27,14 +27,7 @@ public abstract class BlueAlliance extends AutoMain {
     protected final Pose intakePickupEnd = new Pose(32, 34, Math.toRadians(180));
 
     // Preparing for Intake Using Motifs... Not Used Yet.
-    protected final Pose PPGPose = new Pose(48, 81, Math.toRadians(180)); // Highest (First Set) of Artifacts from the Spike Mark.
-    protected final Pose PPGPosePickup = new Pose(32, 81, Math.toRadians(180));
 
-    protected final Pose PGPPose = new Pose(48, 57.5, Math.toRadians(180)); // Middle (Second Set) of Artifacts from the Spike Mark.
-    protected final Pose PGPPosePickup = new Pose(32, 57.5, Math.toRadians(180));
-
-    protected final Pose GPPPose = new Pose(48, 34, Math.toRadians(180)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    protected final Pose GPPPosePickup = new Pose(32, 34, Math.toRadians(180));
 
 
 }

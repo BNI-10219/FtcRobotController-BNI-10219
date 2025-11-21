@@ -82,6 +82,15 @@ public class RedLaunchParkAudienceCamAckerV4 extends RedAlliance {
     protected final Pose launch = new Pose(86, 12, Math.toRadians(246.5));
     protected final Pose park = new Pose(96, 24, Math.toRadians(0));
 
+    protected final Pose PPGPose = new Pose(96, 79, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
+    protected final Pose PPGPosePickup = new Pose(109, 79, Math.toRadians(0));
+
+    protected final Pose PGPPose = new Pose(96, 57.5, Math.toRadians(0)); // Middle (Second Set) of Artifacts from the Spike Mark.
+    protected final Pose PGPPosePickup = new Pose(112, 57.5, Math.toRadians(0));
+
+    protected final Pose GPPPose = new Pose(96, 34, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    protected final Pose GPPPosePickup = new Pose(107.5, 34, Math.toRadians(0));
+
 
     //************ Building Paths for Pedro
 

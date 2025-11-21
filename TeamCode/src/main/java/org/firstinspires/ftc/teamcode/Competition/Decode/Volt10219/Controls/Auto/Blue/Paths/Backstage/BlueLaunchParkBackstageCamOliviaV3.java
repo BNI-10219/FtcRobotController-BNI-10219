@@ -24,7 +24,7 @@ import java.util.List;
 
 /**** This Version Uses Creep Foward Controller using Pedro Poses and Pinpoint for Slow Intake ***/
 
-//@Disabled
+@Disabled
 @Autonomous(name = "Blue Backstage - Cam, Complex")
 public class BlueLaunchParkBackstageCamOliviaV3 extends BlueAlliance {
 
@@ -81,8 +81,18 @@ public class BlueLaunchParkBackstageCamOliviaV3 extends BlueAlliance {
 
     private final Pose startPose = new Pose(24, 132, Math.toRadians(315));
     private final Pose launch = new Pose(50, 76, Math.toRadians(303));
-    protected final Pose park = new Pose(48, 120, Math.toRadians(180));//old pose - near square - 96, 24, 0
+    //protected final Pose park = new Pose(42, 130, Math.toRadians(180));//near back wall
+    protected final Pose park = new Pose(24, 105, Math.toRadians(180));//near left wall
     protected final Pose detectMotif = new Pose(49, 73, Math.toRadians(260));
+
+    protected final Pose PPGPose = new Pose(48, 81, Math.toRadians(270)); // Highest (First Set) of Artifacts from the Spike Mark.
+    protected final Pose PPGPosePickup = new Pose(32, 81, Math.toRadians(270));
+
+    protected final Pose PGPPose = new Pose(48, 57.5, Math.toRadians(180)); // Middle (Second Set) of Artifacts from the Spike Mark.
+    protected final Pose PGPPosePickup = new Pose(32, 57.5, Math.toRadians(180));
+
+    protected final Pose GPPPose = new Pose(48, 34, Math.toRadians(175)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    protected final Pose GPPPosePickup = new Pose(32, 34, Math.toRadians(178));
 
 
 
@@ -260,8 +270,6 @@ public class BlueLaunchParkBackstageCamOliviaV3 extends BlueAlliance {
                 break;
 
             case LAUNCH:
-                detectMotif();
-                detectMotif();
                 if (!follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
                     if (launchState == LaunchState.READY && !scoringDone ) {
                          launchState = LaunchState.OUTTAKE;
@@ -296,7 +304,7 @@ public class BlueLaunchParkBackstageCamOliviaV3 extends BlueAlliance {
                     } // Path for 22
                     else {
                         chosenMoveToPath = moveToGPP;
-                    }   // Path f
+                    }   // Path for 21
                     follower.followPath(chosenMoveToPath);
                     pathState = PathState.INTAKE_START;
                     pathTimer.resetTimer();
@@ -304,6 +312,7 @@ public class BlueLaunchParkBackstageCamOliviaV3 extends BlueAlliance {
                 break;
 
             case INTAKE_START:
+                Bot.ballIntake();
                 if (!follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
                     creepTimer.resetTimer();
 
@@ -362,7 +371,7 @@ public class BlueLaunchParkBackstageCamOliviaV3 extends BlueAlliance {
         switch(launchState) {
 
             case READY:
-                Bot.ballLaunchBackField();
+                Bot.ballLaunchMidV();
                 outtakeTimer.resetTimer();
                 intakeTimer.resetTimer();
                 break;
@@ -428,7 +437,7 @@ public class BlueLaunchParkBackstageCamOliviaV3 extends BlueAlliance {
 
            // GPP
             if(fr.getFiducialId() == 21) {
-                motifID = 21;
+                motifID = 23;
                 telemetry.addLine("21");
                 telemetry.addData("FI: ", fr.getFiducialId());
 
@@ -436,7 +445,7 @@ public class BlueLaunchParkBackstageCamOliviaV3 extends BlueAlliance {
             }
             // PGP Detection
             else if (fr.getFiducialId() == 22) {
-                motifID = 22;
+                motifID = 23;
                 telemetry.addLine("Detected PGP - 22");
                 telemetry.addData("FI: ", fr.getFiducialId());
 
@@ -450,14 +459,14 @@ public class BlueLaunchParkBackstageCamOliviaV3 extends BlueAlliance {
             }
             // GPP Detection
             else if (fr.getFiducialId() == 21) {
-                motifID = 21;
+                motifID = 23;
                 telemetry.addLine("Detected GPP - 21");
                 telemetry.addData("FI: ", fr.getFiducialId());
 
             }
             // Default to GPP
             else {
-                motifID = 21;
+                motifID = 23;
                 telemetry.addLine("None detected. Default to 21 GPP");
                 telemetry.addData("FI: ", fr.getFiducialId());
                 telemetry.update();

@@ -307,7 +307,8 @@ public class TeleOp extends OpMode {
             Bot.ballLaunchStop();
         }
         if (gamepad2.right_bumper) {
-            Bot.ballLaunchMidV();
+           // Bot.ballLaunchMidV();
+            Bot.ballLaunchV();
         }
         if (gamepad2.right_trigger > 0.001) {
             Bot.ballLaunchBackField();

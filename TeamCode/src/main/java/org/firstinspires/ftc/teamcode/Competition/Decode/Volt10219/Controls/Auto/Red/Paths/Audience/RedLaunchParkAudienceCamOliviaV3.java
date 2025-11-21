@@ -78,9 +78,16 @@ public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
 
     protected final Pose startPose = new Pose(96, 8, Math.toRadians(270));
     protected final Pose launch = new Pose(86, 12, Math.toRadians(246.5));
-    protected final Pose park = new Pose(110, 12, Math.toRadians(0));
+    protected final Pose park = new Pose(110, 12, Math.toRadians(0));//close to back wall
 
+    protected final Pose PPGPose = new Pose(96, 79, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
+    protected final Pose PPGPosePickup = new Pose(109, 79, Math.toRadians(0));
 
+    protected final Pose PGPPose = new Pose(96, 57.5, Math.toRadians(0)); // Middle (Second Set) of Artifacts from the Spike Mark.
+    protected final Pose PGPPosePickup = new Pose(112, 57.5, Math.toRadians(0));
+
+    protected final Pose GPPPose = new Pose(96, 34, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    protected final Pose GPPPosePickup = new Pose(107.5, 34, Math.toRadians(0));
 
 
     //************ Building Paths for Pedro
@@ -260,11 +267,18 @@ public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
                 if (scoringDone) {
                     Bot.artifactPushUps();
                     Bot.ballIntake();
+                    waitTimer.resetTimer();
 
                     // Path Detection using April Tag
-                    if (motifID == PPG_TAG_ID) { chosenMoveToPath = moveToPPG;} // Path for 23
-                    else if (motifID == PGP_TAG_ID) {chosenMoveToPath = moveToPGP;} // Path for 22
-                    else { chosenMoveToPath = moveToGPP;}   // Path f
+                    if (motifID == PPG_TAG_ID) {
+                        chosenMoveToPath = moveToPPG;
+                    } // Path for 23
+                    else if (motifID == PGP_TAG_ID) {
+                        chosenMoveToPath = moveToPGP;
+                    } // Path for 22
+                    else {
+                        chosenMoveToPath = moveToGPP;
+                    }   // Path f
                     follower.followPath(chosenMoveToPath);
 
                     // Transition to Next State
@@ -408,15 +422,15 @@ public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
             }
             // PGP Detection
             else if (fr.getFiducialId() == 22) {
-                motifID = 22;//CHANGE BACK AFTER 2ND MEET
+                motifID = 21;//CHANGE BACK AFTER 2ND MEET
                 telemetry.addLine("Detected PGP - 22");
                 telemetry.addData("FI: ", fr.getFiducialId());
 
             }
             // PPG Detection
             else if (fr.getFiducialId() == 23) {
-                motifID = 23;//CHANGE BACK AFTER 2ND MEET
-                telemetry.addLine("Detected PPG - 23");
+                motifID = 21;//CHANGE BACK AFTER 2ND MEET
+                telemetry.addLine("Detected PPG - 23, Going with 21");
                 telemetry.addData("FI: ", fr.getFiducialId());
 
             }
