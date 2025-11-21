@@ -23,7 +23,7 @@ import java.util.List;
 /**** This Version Uses Creep Foward Controller using Pedro Poses and Pinpoint for Slow Intake ***/
 
 //@Disabled
-@Autonomous(name = "Creeper: Red Launch Park Backstage Cam")
+@Autonomous(name = "Red Backstage - Cam, Complex")
 public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
 
     //   (0, 144)                          (144, 144)

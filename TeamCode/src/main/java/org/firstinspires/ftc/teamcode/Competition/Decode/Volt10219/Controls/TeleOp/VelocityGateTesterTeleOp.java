@@ -9,14 +9,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Robot.DecodeBot;
 
 import java.util.List;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Volt TeleOp")
-public class TeleOp extends OpMode {
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Velocity Gate Tester TeleOp")
+public class VelocityGateTesterTeleOp extends OpMode {
     double leftStickYVal;
     double leftStickXVal;
     double rightStickYVal;
