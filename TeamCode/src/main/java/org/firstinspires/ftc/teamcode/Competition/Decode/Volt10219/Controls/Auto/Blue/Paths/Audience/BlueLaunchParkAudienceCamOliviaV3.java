@@ -78,7 +78,7 @@ public class BlueLaunchParkAudienceCamOliviaV3 extends BlueAlliance {
 
     protected final Pose startPose = new Pose(48, 8, Math.toRadians(270));
     protected final Pose launch = new Pose(58, 16, Math.toRadians(294));
-    protected final Pose park = new Pose(45, 36, Math.toRadians(180));
+    protected final Pose park = new Pose(45, 12, Math.toRadians(180));
 
 
     //************ Building Paths for Pedro

@@ -78,7 +78,7 @@ public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
 
     protected final Pose startPose = new Pose(96, 8, Math.toRadians(270));
     protected final Pose launch = new Pose(86, 12, Math.toRadians(246.5));
-    protected final Pose park = new Pose(96, 24, Math.toRadians(0));
+    protected final Pose park = new Pose(110, 12, Math.toRadians(0));
 
 
 
