@@ -195,7 +195,7 @@ public class BlueLaunchParkAudience extends BlueAlliance {
 
 
 
-                Bot.artifactPushAuto();//pushing the artifact into the launcher
+                //Bot.artifactPushAuto();//pushing the artifact into the launcher
                 waitTimer.resetTimer();
                 intakeTimer.resetTimer();
                 launchState = LaunchState.WAIT;
@@ -211,7 +211,7 @@ public class BlueLaunchParkAudience extends BlueAlliance {
             case INTAKEONE:
                 Bot.ballIntake();
                 Bot.ballLaunchAutoBack();
-                Bot.artifactPushDown();
+                //Bot.artifactPushDown();
                 if (intakeTimer.getElapsedTimeSeconds() > 2) {
                     Bot.intakeStop();
                     waitTimer.resetTimer();

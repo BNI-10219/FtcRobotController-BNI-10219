@@ -148,7 +148,7 @@ public class RedLaunchIntakeLaunchParkBackstageAcker extends RedAlliance {
 
             case OUTTAKE:
                 Bot.ballIntake();
-                Bot.artifactPushDown();
+                //Bot.artifactPushDown();
                 waitTimer.resetTimer();
                 intakeTimer.resetTimer();
                 launchState = LaunchState.WAIT;

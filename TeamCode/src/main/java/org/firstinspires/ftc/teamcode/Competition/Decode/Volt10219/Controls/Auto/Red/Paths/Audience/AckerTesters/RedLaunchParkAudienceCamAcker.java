@@ -174,7 +174,7 @@ public class RedLaunchParkAudienceCamAcker extends RedAlliance {
                     }
                 }
                 if (scoringDone) {
-                    Bot.artifactPushUps();
+                    //Bot.artifactPushUps();
                     Bot.ballIntake();
                     follower.followPath(intakePath);
                     waitTimer.resetTimer();
@@ -228,7 +228,7 @@ public class RedLaunchParkAudienceCamAcker extends RedAlliance {
                 }
 
                 if (scoringDone) {
-                    Bot.artifactPushUps();
+                    //Bot.artifactPushUps();
                     Bot.ballIntake();
                     follower.followPath(parkPath);
                     waitTimer.resetTimer();
@@ -268,9 +268,9 @@ public class RedLaunchParkAudienceCamAcker extends RedAlliance {
             case OUTTAKE:
                 //Bot.ballOuttake();
                 Bot.ballLaunchAutoBack();
-                Bot.artifactPushDown();
+                //Bot.artifactPushDown();
                 if (outtakeTimer.getElapsedTimeSeconds() > 1.5) {
-                    Bot.artifactPushDown();
+                    //Bot.artifactPushDown();
                     waitTimer.resetTimer();
                     intakeTimer.resetTimer();
                     launchState = LaunchState.WAIT;
@@ -285,7 +285,7 @@ public class RedLaunchParkAudienceCamAcker extends RedAlliance {
                     scoringDone = true;
                     shotCount ++;
                     launchState = LaunchState.IDLE;
-                    Bot.artifactPushUps();
+                    //Bot.artifactPushUps();
                 }
                 break;
 

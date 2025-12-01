@@ -272,7 +272,7 @@ public class RedLaunchParkAudienceCamAckerV2 extends RedAlliance {
                     }
                 }
                 if (scoringDone) {
-                    Bot.artifactPushUps();
+                    //Bot.artifactPushUps();
                     Bot.ballIntake();
 
                     // Path Detection using April Tag
@@ -339,7 +339,7 @@ public class RedLaunchParkAudienceCamAckerV2 extends RedAlliance {
                 }
 
                 if (scoringDone) {
-                    Bot.artifactPushUps();
+                    //Bot.artifactPushUps();
                     Bot.ballIntake();
 
                     activeFollower.followPath(parkPath);
@@ -379,7 +379,7 @@ public class RedLaunchParkAudienceCamAckerV2 extends RedAlliance {
             case OUTTAKE:
                 Bot.ballLaunchAutoBack();
                 if (outtakeTimer.getElapsedTimeSeconds() > 2.5) {
-                    Bot.artifactPushDown();
+                    //Bot.artifactPushDown();
                     waitTimer.resetTimer();
                     intakeTimer.resetTimer();
                     launchState = LaunchState.WAIT;
@@ -394,7 +394,7 @@ public class RedLaunchParkAudienceCamAckerV2 extends RedAlliance {
                     scoringDone = true;
                     shotCount ++;
                     launchState = LaunchState.IDLE;
-                    Bot.artifactPushUps();
+                    //Bot.artifactPushUps();
                 }
                 break;
 

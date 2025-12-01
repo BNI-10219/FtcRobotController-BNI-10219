@@ -83,11 +83,11 @@ public class TeleOp extends OpMode {
         launcherControl();
         //changeDriverProfile();
         intakeControl();
-        artifactPushControl();
         telemetryOutput();
         fieldCentricDrive();
         autoPositioning();
         intakeControlStates();
+        intakeHoldControl();
         timeOuttake();
     }
 
@@ -298,16 +298,20 @@ public class TeleOp extends OpMode {
         }
     }
 
-    public void launcherControl() {
-//        if(gamepad2.x){
-//            Bot.ballLaunchV();
-//        }
+    public void intakeHoldControl(){
+        if(gamepad2.a){
+            Bot.intakeHoldStart();
+        }
+        else{
+            Bot.intakeHoldStop();
+        }
+    }
 
+    public void launcherControl() {
         if (gamepad2.left_trigger > 0.001) {
             Bot.ballLaunchStop();
         }
         if (gamepad2.right_bumper) {
-           // Bot.ballLaunchMidV();
             Bot.ballLaunchV();
         }
         if (gamepad2.right_trigger > 0.001) {
@@ -381,19 +385,6 @@ public class TeleOp extends OpMode {
         }
         if (gamepad2.x) {
             outtakeState = OuttakeState.START;
-        }
-    }
-
-    public void artifactPushControl() {
-        if (gamepad2.y) {
-            Bot.artifactPushUps();
-        }
-
-        if (gamepad2.a) {
-            Bot.artifactPushDown();
-        }
-        if (gamepad2.b) {
-            Bot.artifactPushMiddle();
         }
     }
 

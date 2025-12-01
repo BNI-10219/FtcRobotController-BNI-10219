@@ -185,7 +185,7 @@ public class BlueLaunchParkBackstage extends BlueAlliance {
                     Bot.intakeStop();
                     Bot.ballIntake();
                 }
-                Bot.artifactPushAuto();
+                //Bot.artifactPushAuto();
                 waitTimer.resetTimer();
                 intakeTimer.resetTimer();
                 launchState = LaunchState.WAIT;
@@ -203,7 +203,7 @@ public class BlueLaunchParkBackstage extends BlueAlliance {
                 break;
             case INTAKEONE:
                 Bot.ballIntake();
-                Bot.artifactPushDown();//pushing the artifact into the launcher
+               // Bot.artifactPushDown();//pushing the artifact into the launcher
                 if (intakeTimer.getElapsedTimeSeconds() > 2) {
                     Bot.intakeStop();
                     waitTimer.resetTimer();

@@ -265,7 +265,7 @@ public class BlueLaunchParkAudienceCamOliviaV3 extends BlueAlliance {
                     }
                 }
                 if (scoringDone) {
-                    Bot.artifactPushUps();
+                    //Bot.artifactPushUps();
                     Bot.ballIntake();
 
                     // Path Detection using April Tag
@@ -310,7 +310,7 @@ public class BlueLaunchParkAudienceCamOliviaV3 extends BlueAlliance {
                 }
 
                 if (scoringDone) {
-                    Bot.artifactPushUps();
+                    //Bot.artifactPushUps();
                     Bot.ballIntake();
 
                     follower.followPath(parkPath);
@@ -356,8 +356,8 @@ public class BlueLaunchParkAudienceCamOliviaV3 extends BlueAlliance {
                 // Command + B to change the velocity(while the white line index thing is in the method)
 
 
-                Bot.artifactPushAuto();
-                Bot.artifactPushDown();
+                //Bot.artifactPushAuto();
+                //Bot.artifactPushDown();
                 waitTimer.resetTimer();
                 intakeTimer.resetTimer();
                 launchState = LaunchState.WAIT;
@@ -379,7 +379,7 @@ public class BlueLaunchParkAudienceCamOliviaV3 extends BlueAlliance {
                     scoringDone = true;
                     shotCount ++;
                     launchState = LaunchState.IDLE;
-                    Bot.artifactPushUps();
+                    //Bot.artifactPushUps();
                 }
                 break;
 

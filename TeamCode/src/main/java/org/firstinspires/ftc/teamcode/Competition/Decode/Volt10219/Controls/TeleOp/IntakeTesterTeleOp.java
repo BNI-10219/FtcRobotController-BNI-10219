@@ -61,16 +61,16 @@ public class IntakeTesterTeleOp extends OpMode {
 
     public void intakeControl(){
         if(gamepad2.dpad_right) {
-            Bot.ballIntakeOne.setPower(-1);
+            Bot.ballIntake.setPower(-1);
             //Bot.ballIntakeTwo.setPower(-1);
         }
         if(gamepad2.dpad_left){
-            Bot.ballIntakeOne.setPower(1);
+            Bot.ballIntake.setPower(1);
             //Bot.ballIntakeTwo.setPower(1);
         }
         if(gamepad2.b){
-            Bot.ballIntakeOne.setPower(0);
-            Bot.ballIntakeTwo.setPower(0);
+            Bot.ballIntake.setPower(0);
+            //Bot.ballIntakeTwo.setPower(0);
         }
     }
 

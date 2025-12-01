@@ -192,7 +192,7 @@ public class RedLaunchParkAudience extends RedAlliance {
                 Bot.ballLaunchAutoBack();//VELOCITY for launching 2nd artifact
                 // Command + B to change the velocity(while the white line index thing is in the method)
 
-                Bot.artifactPushAuto();
+                //Bot.artifactPushAuto();
                 waitTimer.resetTimer();
                 intakeTimer.resetTimer();
                 launchState = LaunchState.WAIT;
@@ -208,7 +208,7 @@ public class RedLaunchParkAudience extends RedAlliance {
             case INTAKEONE:
                 Bot.ballIntake();
                 Bot.ballLaunchAutoBack();
-                Bot.artifactPushDown();
+                //Bot.artifactPushDown();
                 if (intakeTimer.getElapsedTimeSeconds() > 2) {
                     Bot.intakeStop();
                     waitTimer.resetTimer();

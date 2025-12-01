@@ -284,7 +284,7 @@ public class RedLaunchParkAudienceCamAckerV3 extends RedAlliance {
                     }
                 }
                 if (scoringDone) {
-                    Bot.artifactPushUps();
+                    //Bot.artifactPushUps();
                     Bot.ballIntake();
 
                     // Path Detection using April Tag
@@ -327,7 +327,7 @@ public class RedLaunchParkAudienceCamAckerV3 extends RedAlliance {
                 }
 
                 if (scoringDone) {
-                    Bot.artifactPushUps();
+                    //Bot.artifactPushUps();
                     Bot.ballIntake();
 
                     follower.followPath(parkPath);
@@ -377,7 +377,7 @@ public class RedLaunchParkAudienceCamAckerV3 extends RedAlliance {
                 Bot.ballLaunchAutoBack();//VELOCITY for launching 2nd artifact
                 // Command + B to change the velocity(while the white line index thing is in the method)
 
-                Bot.artifactPushAuto();
+                //Bot.artifactPushAuto();
                 waitTimer.resetTimer();
                 intakeTimer.resetTimer();
                 launchState = LaunchState.WAIT;
@@ -399,7 +399,7 @@ public class RedLaunchParkAudienceCamAckerV3 extends RedAlliance {
                     scoringDone = true;
                     shotCount ++;
                     launchState = LaunchState.IDLE;
-                    Bot.artifactPushUps();
+                    //Bot.artifactPushUps();
                 }
                 break;
 

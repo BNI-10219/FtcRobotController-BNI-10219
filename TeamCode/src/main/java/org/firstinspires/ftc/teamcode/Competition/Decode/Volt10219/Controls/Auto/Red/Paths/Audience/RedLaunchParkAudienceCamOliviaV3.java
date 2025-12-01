@@ -265,7 +265,7 @@ public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
                     }
                 }
                 if (scoringDone) {
-                    Bot.artifactPushUps();
+                    //Bot.artifactPushUps();
                     Bot.ballIntake();
                     waitTimer.resetTimer();
 
@@ -316,7 +316,7 @@ public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
                 }
 
                 if (scoringDone) {
-                    Bot.artifactPushUps();
+                    //Bot.artifactPushUps();
                     Bot.ballIntake();
 
                     follower.followPath(parkPath);
@@ -362,8 +362,8 @@ public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
                 // Command + B to change the velocity(while the white line index thing is in the method)
 
 
-                Bot.artifactPushAuto();
-                Bot.artifactPushDown();
+                //Bot.artifactPushAuto();
+                //Bot.artifactPushDown();
                 waitTimer.resetTimer();
                 intakeTimer.resetTimer();
                 launchState = LaunchState.WAIT;
@@ -385,7 +385,7 @@ public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
                     scoringDone = true;
                     shotCount ++;
                     launchState = LaunchState.IDLE;
-                    Bot.artifactPushUps();
+                    //Bot.artifactPushUps();
                 }
                 break;
 

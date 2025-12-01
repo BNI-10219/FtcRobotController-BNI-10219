@@ -102,7 +102,7 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
                         Bot.ballLaunchV();
                         if(!follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3){
                             Bot.ballIntake();
-                            Bot.artifactPushDown();
+                            //Bot.artifactPushDown();
                             intakeTimer.resetTimer();
                             launchState = LaunchState.WAIT;
                         }
@@ -149,7 +149,7 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
                         break;
                     case INTAKETHREE:
                         Bot.ballOuttake();
-                        Bot.artifactPushMiddle();
+                        //Bot.artifactPushMiddle();
                         if (intakeTimer.getElapsedTimeSeconds() > 1) {
                             Bot.intakeStop();
                             waitTimer.resetTimer();
@@ -207,7 +207,7 @@ public class RedLaunchIntakeLaunchParkBackstage extends RedAlliance {
                     Bot.ballOuttake();
                     intakeTimer.resetTimer();
                     if(intakeTimer.getElapsedTimeSeconds() > .1){
-                        Bot.artifactPushDown();
+                        //Bot.artifactPushDown();
                     }
                     pathState = PathState.PARK;
                 }

@@ -186,7 +186,7 @@ public class RedLaunchParkBackstage extends RedAlliance {
                     Bot.intakeStop();
                     Bot.ballIntake();
                 }
-                Bot.artifactPushAuto();
+                //Bot.artifactPushAuto();
                 waitTimer.resetTimer();
                 intakeTimer.resetTimer();
                 launchState = LaunchState.WAIT;
@@ -206,7 +206,7 @@ public class RedLaunchParkBackstage extends RedAlliance {
                 break;
             case INTAKEONE:
                 Bot.ballIntake();
-                Bot.artifactPushDown();
+                //Bot.artifactPushDown();
                 if (intakeTimer.getElapsedTimeSeconds() > 2) {
                     Bot.intakeStop();
                     waitTimer.resetTimer();

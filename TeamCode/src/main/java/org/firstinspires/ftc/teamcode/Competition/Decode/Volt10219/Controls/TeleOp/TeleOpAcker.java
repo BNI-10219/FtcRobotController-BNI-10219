@@ -73,7 +73,6 @@ public class TeleOpAcker extends OpMode {
         launcherControl();
         //changeDriverProfile();
         intakeControl();
-        artifactPushControl();
         telemetryOutput();
         fieldCentricDrive();
         autoPositioningV2();
@@ -374,18 +373,6 @@ public class TeleOpAcker extends OpMode {
         }
     }
 
-    public void artifactPushControl() {
-        if (gamepad1.y) {
-            Bot.artifactPushUps();
-        }
-
-        if (gamepad1.a) {
-            Bot.artifactPushDown();
-        }
-        if (gamepad1.b) {
-            Bot.artifactPushMiddle();
-        }
-    }
 
         public void speedControl () {
             if (gamepad1.left_bumper) {

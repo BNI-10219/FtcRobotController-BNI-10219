@@ -277,7 +277,7 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
                     }
                 }
                 if (scoringDone) {
-                    Bot.artifactPushUps();
+                    //Bot.artifactPushUps();
                     if(pathTimer.getElapsedTimeSeconds() > 2){
                         waitTimer.resetTimer();
                         follower.followPath(detectMotifPath);
@@ -340,7 +340,7 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
                 }
 
                 if (scoringDone) {
-                    Bot.artifactPushUps();
+                    //Bot.artifactPushUps();
                     Bot.ballIntake();
 
                     follower.followPath(parkPath);
@@ -381,7 +381,7 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
             case OUTTAKE:
                 Bot.ballLaunchAutoV();//VELOCITY for launching 2nd artifact
                 Bot.ballIntake();
-                Bot.artifactPushAuto();
+                //Bot.artifactPushAuto();
                 outtakeTimer.resetTimer();
 
 
@@ -398,7 +398,7 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
                     scoringDone = true;
                     shotCount ++;
                     launchState = LaunchState.IDLE;
-                    Bot.artifactPushUps();
+                    //Bot.artifactPushUps();
                 }
                 break;
 
