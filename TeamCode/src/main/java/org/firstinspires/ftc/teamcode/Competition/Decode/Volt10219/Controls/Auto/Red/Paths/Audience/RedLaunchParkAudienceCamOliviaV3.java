@@ -260,7 +260,7 @@ public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
                 break;
 
             case LAUNCH:
-                if (!follower.isBusy() && pathTimer.getElapsedTimeSeconds() > 5) {
+                if (!follower.isBusy() && pathTimer.getElapsedTimeSeconds() > 3) {
                     if (launchState == LaunchState.READY && !scoringDone ) {
                          launchState = LaunchState.OUTTAKE;
                     }
@@ -357,11 +357,14 @@ public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
 
             case OUTTAKE:
                 Bot.ballIntake();
+
+                double shotTimer = 2.0;
+                double waitShotTimer = 0.5;
+                double waitToStartTimer = 2.0;
 //                Launch ball one.
                 if (!timerReset) {
                     outtakeTimer.resetTimer();
                     timerReset = true;
-                    Bot.intakeHoldStart();
 
                 }
 
@@ -374,23 +377,32 @@ public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
                 //Bot.artifactPushAuto();
                 //Bot.artifactPushDown();
 //                outtakeTimer.resetTimer();
-                if(outtakeTimer.getElapsedTimeSeconds() > .5 && shotCount == 0){
+                if (outtakeTimer.getElapsedTimeSeconds() > shotTimer * shotCount + waitToStartTimer && shotCount == 0) {
+                    Bot.intakeHoldStart();
+
+
+                }
+//              stop after launching ball 1
+                if(outtakeTimer.getElapsedTimeSeconds() > waitToStartTimer + waitShotTimer && shotCount == 0){
                     Bot.intakeHoldStop();
                     shotCount++;
 //                    outtakeTimer.resetTimer();
                 }
-//                launch ball 2
-                if(outtakeTimer.getElapsedTimeSeconds() > 3 && shotCount == 1){
+//                launch ball 2 // 3 & 3.5
+                if(outtakeTimer.getElapsedTimeSeconds() >  shotTimer * shotCount + waitToStartTimer && shotCount == 1){
                     Bot.intakeHoldStart();
                 }
-                if (outtakeTimer.getElapsedTimeSeconds() > 3.5 && shotCount == 1) {
+//                stop after launching ball 2
+                if (outtakeTimer.getElapsedTimeSeconds() > shotTimer * shotCount + waitShotTimer + waitToStartTimer && shotCount == 1) {
                     Bot.intakeHoldStop();
                     shotCount++;
                 }
-                if (outtakeTimer.getElapsedTimeSeconds() > 6 && shotCount == 2) {
+//                launch ball 3 // 6 & 6.5
+                if (outtakeTimer.getElapsedTimeSeconds() >  shotTimer * shotCount + waitToStartTimer && shotCount == 2) {
                     Bot.intakeHoldStart();
                 }
-                if (outtakeTimer.getElapsedTimeSeconds() > 6.5 && shotCount == 2) {
+//                stop after launching ball 3 and go to next steps.
+                if (outtakeTimer.getElapsedTimeSeconds() > shotTimer * shotCount + waitShotTimer + waitToStartTimer && shotCount == 2) {
                     intakeTimer.resetTimer();
                     scoringDone = true;
                     shotCount ++;
@@ -422,6 +434,7 @@ public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
                 Bot.ballLaunchOne.setPower(0);
                 Bot.ballLaunchTwo.setPower(0);
                 shotCount = 0;
+                timerReset = false;
                 break;
 
 
