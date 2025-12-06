@@ -382,6 +382,7 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
                 Bot.ballLaunchAutoV();//VELOCITY for launching 2nd artifact
                 Bot.ballIntake();
                 //Bot.artifactPushAuto();
+                Bot.intakeHoldStart();
                 outtakeTimer.resetTimer();
 
 
@@ -398,6 +399,7 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
                     scoringDone = true;
                     shotCount ++;
                     launchState = LaunchState.IDLE;
+                    Bot.intakeHoldStop();
                     //Bot.artifactPushUps();
                 }
                 break;

@@ -377,7 +377,7 @@ public class RedLaunchParkAudienceCamAckerV2 extends RedAlliance {
                 break;
 
             case OUTTAKE:
-                Bot.ballLaunchAutoBack();
+                Bot.ballLaunchAutoBackFirst();
                 if (outtakeTimer.getElapsedTimeSeconds() > 2.5) {
                     //Bot.artifactPushDown();
                     waitTimer.resetTimer();

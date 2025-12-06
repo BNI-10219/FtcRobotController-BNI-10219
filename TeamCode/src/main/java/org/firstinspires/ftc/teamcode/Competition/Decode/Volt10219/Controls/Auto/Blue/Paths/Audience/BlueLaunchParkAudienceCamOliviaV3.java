@@ -342,7 +342,7 @@ public class BlueLaunchParkAudienceCamOliviaV3 extends BlueAlliance {
         switch(launchState) {
 
             case READY:
-                Bot.ballLaunchAutoBack();
+                Bot.ballLaunchAutoBackFirst();
                 outtakeTimer.resetTimer();
                 intakeTimer.resetTimer();
                 break;
@@ -358,6 +358,7 @@ public class BlueLaunchParkAudienceCamOliviaV3 extends BlueAlliance {
 
                 //Bot.artifactPushAuto();
                 //Bot.artifactPushDown();
+                Bot.intakeHoldStart();
                 waitTimer.resetTimer();
                 intakeTimer.resetTimer();
                 launchState = LaunchState.WAIT;
@@ -379,6 +380,7 @@ public class BlueLaunchParkAudienceCamOliviaV3 extends BlueAlliance {
                     scoringDone = true;
                     shotCount ++;
                     launchState = LaunchState.IDLE;
+                    Bot.intakeHoldStop();
                     //Bot.artifactPushUps();
                 }
                 break;

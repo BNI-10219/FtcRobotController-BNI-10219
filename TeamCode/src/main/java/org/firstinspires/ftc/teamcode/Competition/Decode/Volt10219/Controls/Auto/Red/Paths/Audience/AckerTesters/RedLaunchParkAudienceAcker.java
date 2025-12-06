@@ -243,7 +243,7 @@ public class RedLaunchParkAudienceAcker extends RedAlliance {
                 }
 
                 //To change the velocity, change the numbers below
-                Bot.ballLaunchAutoBack();//VELOCITY for launching 2nd artifact
+                Bot.ballLaunchAutoBackFirst();//VELOCITY for launching 2nd artifact
                 // Command + B to change the velocity(while the white line index thing is in the method)
 
                 //Bot.artifactPushAuto();
@@ -261,7 +261,7 @@ public class RedLaunchParkAudienceAcker extends RedAlliance {
                 break;
             case INTAKEONE:
                 Bot.ballIntake();
-                Bot.ballLaunchAutoBack();
+                Bot.ballLaunchAutoBackFirst();
                 //Bot.artifactPushDown();
                 if (intakeTimer.getElapsedTimeSeconds() > 2) {
                     Bot.intakeStop();

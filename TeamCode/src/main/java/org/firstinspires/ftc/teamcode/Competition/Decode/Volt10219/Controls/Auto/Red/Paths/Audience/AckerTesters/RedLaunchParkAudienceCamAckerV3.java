@@ -374,7 +374,7 @@ public class RedLaunchParkAudienceCamAckerV3 extends RedAlliance {
                 }
 
                 //To change the velocity, change the numbers below
-                Bot.ballLaunchAutoBack();//VELOCITY for launching 2nd artifact
+                Bot.ballLaunchAutoBackFirst();//VELOCITY for launching 2nd artifact
                 // Command + B to change the velocity(while the white line index thing is in the method)
 
                 //Bot.artifactPushAuto();

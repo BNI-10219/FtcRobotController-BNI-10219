@@ -8,7 +8,6 @@ import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Blue.BlueAlliance;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
@@ -190,7 +189,7 @@ public class BlueLaunchParkAudience extends BlueAlliance {
                 }
 
                 //To change the velocity, change the numbers below
-                Bot.ballLaunchAutoBack();//VELOCITY for launching 2nd artifact
+                Bot.ballLaunchAutoBackFirst();//VELOCITY for launching 2nd artifact
                 // Command + B to change the velocity(while the white line index thing is in the method)
 
 
@@ -210,7 +209,7 @@ public class BlueLaunchParkAudience extends BlueAlliance {
                 break;
             case INTAKEONE:
                 Bot.ballIntake();
-                Bot.ballLaunchAutoBack();
+                Bot.ballLaunchAutoBackFirst();
                 //Bot.artifactPushDown();
                 if (intakeTimer.getElapsedTimeSeconds() > 2) {
                     Bot.intakeStop();

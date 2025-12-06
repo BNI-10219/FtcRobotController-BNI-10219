@@ -387,6 +387,7 @@ public class BlueLaunchParkBackstageCamOliviaV3 extends BlueAlliance {
 
 //                Bot.artifactPushAuto();
 //                Bot.artifactPushDown();
+                Bot.intakeHoldStart();
                 waitTimer.resetTimer();
                 intakeTimer.resetTimer();
                 launchState = LaunchState.WAIT;
@@ -408,6 +409,7 @@ public class BlueLaunchParkBackstageCamOliviaV3 extends BlueAlliance {
                     scoringDone = true;
                     shotCount ++;
                     launchState = LaunchState.IDLE;
+                    Bot.intakeHoldStop();
                     //Bot.artifactPushUps();
                 }
                 break;

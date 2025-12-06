@@ -73,6 +73,7 @@ public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
     protected Timer opmodeTimer, intakeTimer, waitTimer, pathTimer, outtakeTimer;
     protected int shotCount = 0;
     protected boolean scoringDone = false;
+    boolean timerReset = false;
 
     //********* Pedro Pathing Poses
 
@@ -87,7 +88,7 @@ public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
     protected final Pose PGPPosePickup = new Pose(112, 57.5, Math.toRadians(0));
 
     protected final Pose GPPPose = new Pose(96, 34, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    protected final Pose GPPPosePickup = new Pose(107.5, 34, Math.toRadians(0));
+    protected final Pose GPPPosePickup = new Pose(110, 34, Math.toRadians(0));
 
 
     //************ Building Paths for Pedro
@@ -259,7 +260,7 @@ public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
                 break;
 
             case LAUNCH:
-                if (!follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
+                if (!follower.isBusy() && pathTimer.getElapsedTimeSeconds() > 5) {
                     if (launchState == LaunchState.READY && !scoringDone ) {
                          launchState = LaunchState.OUTTAKE;
                     }
@@ -290,7 +291,7 @@ public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
                 break;
 
             case INTAKE_START:
-                if (!follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
+                if (!follower.isBusy() && pathTimer.getElapsedTimeSeconds() > 2) {
                     creepTimer.resetTimer();
 
                     // Transition to Creep Forward Control and State
@@ -303,6 +304,7 @@ public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
                 break;
 
             case INTAKE_CREEP:
+                Bot.ballLaunchAutoBackSecond();
                 // Creep Forwards Controlled by outside of state machine for looping
                 // State Transition happens in creepController()
                 break;
@@ -348,43 +350,70 @@ public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
         switch(launchState) {
 
             case READY:
-                Bot.ballLaunchBackField();
-                outtakeTimer.resetTimer();
+                Bot.ballLaunchAutoBackFirst();
+                //outtakeTimer.resetTimer();
                 intakeTimer.resetTimer();
                 break;
 
             case OUTTAKE:
                 Bot.ballIntake();
-                outtakeTimer.resetTimer();
+//                Launch ball one.
+                if (!timerReset) {
+                    outtakeTimer.resetTimer();
+                    timerReset = true;
+                    Bot.intakeHoldStart();
+
+                }
+
 
                 //To change the velocity, change the numbers below
-                Bot.ballLaunchBackField();//VELOCITY for launching 2nd artifact
+                Bot.ballLaunchAutoBackFirst();//VELOCITY for launching 2nd artifact
                 // Command + B to change the velocity(while the white line index thing is in the method)
 
 
                 //Bot.artifactPushAuto();
                 //Bot.artifactPushDown();
-                waitTimer.resetTimer();
-                intakeTimer.resetTimer();
-                launchState = LaunchState.WAIT;
-                break;
-//                Bot.ballLaunchAutoBack();
-//                if (outtakeTimer.getElapsedTimeSeconds() > 2.5) {
-//                    Bot.artifactPushDown();
-//                    waitTimer.resetTimer();
-//                    intakeTimer.resetTimer();
-//                    launchState = LaunchState.WAIT;
-//                    Bot.intakeStop();
-//                }
-//                break;
-
-            case WAIT:
-                Bot.ballIntake();//intake sooner
-                if (waitTimer.getElapsedTimeSeconds() > 1) {
+//                outtakeTimer.resetTimer();
+                if(outtakeTimer.getElapsedTimeSeconds() > .5 && shotCount == 0){
+                    Bot.intakeHoldStop();
+                    shotCount++;
+//                    outtakeTimer.resetTimer();
+                }
+//                launch ball 2
+                if(outtakeTimer.getElapsedTimeSeconds() > 3 && shotCount == 1){
+                    Bot.intakeHoldStart();
+                }
+                if (outtakeTimer.getElapsedTimeSeconds() > 3.5 && shotCount == 1) {
+                    Bot.intakeHoldStop();
+                    shotCount++;
+                }
+                if (outtakeTimer.getElapsedTimeSeconds() > 6 && shotCount == 2) {
+                    Bot.intakeHoldStart();
+                }
+                if (outtakeTimer.getElapsedTimeSeconds() > 6.5 && shotCount == 2) {
                     intakeTimer.resetTimer();
                     scoringDone = true;
                     shotCount ++;
                     launchState = LaunchState.IDLE;
+                    Bot.intakeHoldStop();
+                    waitTimer.resetTimer();
+                    intakeTimer.resetTimer();
+                }
+
+//                outtakeTimer.resetTimer();
+//                waitTimer.resetTimer();
+//                intakeTimer.resetTimer();
+//                launchState = LaunchState.WAIT;
+                break;
+
+            case WAIT:
+                Bot.ballIntake();//intake sooner
+                if (waitTimer.getElapsedTimeSeconds() > 3) {
+                    intakeTimer.resetTimer();
+                    scoringDone = true;
+                    shotCount ++;
+                    launchState = LaunchState.IDLE;
+                    Bot.intakeHoldStop();
                     //Bot.artifactPushUps();
                 }
                 break;
@@ -392,6 +421,7 @@ public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
             case IDLE:
                 Bot.ballLaunchOne.setPower(0);
                 Bot.ballLaunchTwo.setPower(0);
+                shotCount = 0;
                 break;
 
 
@@ -552,6 +582,7 @@ public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
         telemetry.addData("heading", follower.getPose().getHeading());
         telemetry.addData("Is Busy: ", follower.isBusy());
         telemetry.addData("Motif ID: ", motifID);
+        telemetry.addData("Outtake Timer ", outtakeTimer.getElapsedTimeSeconds());
         telemetry.update();
     }
 
