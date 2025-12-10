@@ -14,6 +14,7 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
+import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.Paths.Audience.RedLaunchParkAudienceCamOliviaV3;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.RedAlliance;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
 
@@ -74,18 +75,19 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
     protected Timer opmodeTimer, intakeTimer, waitTimer, pathTimer, outtakeTimer;
     protected int shotCount = 0;
     protected boolean scoringDone = false;
+    boolean timerReset = false;
 
     //********* Pedro Pathing Poses
 
     protected final Pose startPose = new Pose(120, 132, Math.toRadians(215));//132
     protected final Pose detectMotif = new Pose(82, 80, Math.toRadians(270));
-    protected final Pose launch = new Pose(84, 84, Math.toRadians(225));
+    protected final Pose launch = new Pose(83, 84, Math.toRadians(225));
     protected final Pose park = new Pose(96, 130, Math.toRadians(0));//near back wall
     //protected final Pose park = new Pose(122, 105, Math.toRadians(0));//near right wall
 
 
     protected final Pose PPGPose = new Pose(95, 88, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
-    protected final Pose PPGPosePickup = new Pose(98, 88, Math.toRadians(0));
+    protected final Pose PPGPosePickup = new Pose(97, 88, Math.toRadians(0));
 
     protected final Pose PGPPose = new Pose(96, 57.5, Math.toRadians(0)); // Middle (Second Set) of Artifacts from the Spike Mark.
     protected final Pose PGPPosePickup = new Pose(112, 57.5, Math.toRadians(0));
@@ -273,7 +275,7 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
                 if (!follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
                     if (launchState == LaunchState.READY && !scoringDone ) {
                          launchState = LaunchState.OUTTAKE;
-                         pathTimer.resetTimer();
+                         //pathTimer.resetTimer();
                     }
                 }
                 if (scoringDone) {
@@ -372,29 +374,74 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
         switch(launchState) {
 
             case READY:
-                Bot.ballLaunchMidV();
-                outtakeTimer.resetTimer();
+                Bot.ballLaunchAutoBackFirst();
+                //outtakeTimer.resetTimer();
                 intakeTimer.resetTimer();
-
                 break;
 
             case OUTTAKE:
-                Bot.ballLaunchAutoV();//VELOCITY for launching 2nd artifact
                 Bot.ballIntake();
-                //Bot.artifactPushAuto();
-                Bot.intakeHoldStart();
-                outtakeTimer.resetTimer();
 
+                double shotTimer = 1.5;
+                double waitShotTimer = .75;
+                double waitToStartTimer = 2.0;
+//                Launch ball one.
+                if (!timerReset) {
+                    outtakeTimer.resetTimer();
+                    timerReset = true;
 
+                }
 
-                waitTimer.resetTimer();
-                intakeTimer.resetTimer();
+                Bot.ballLaunchAutoV();
 
-                launchState = LaunchState.WAIT;
+                if (outtakeTimer.getElapsedTimeSeconds() > shotTimer * shotCount + waitToStartTimer && shotCount == 0) {
+                    Bot.intakeHoldStart();
+                    Bot.ballLaunchV();
+
+                }
+
+//              stop after launching ball 1
+                if(outtakeTimer.getElapsedTimeSeconds() > waitToStartTimer + waitShotTimer && shotCount == 0){
+                    Bot.intakeHoldStop();
+                    Bot.ballLaunchV();
+                    shotCount++;
+//                    outtakeTimer.resetTimer();
+                }
+//                launch ball 2 // 3 & 3.5
+                if(outtakeTimer.getElapsedTimeSeconds() >  shotTimer * shotCount + waitToStartTimer && shotCount == 1){
+                    Bot.intakeHoldStart();
+                    Bot.ballLaunchV();
+                }
+//                stop after launching ball 2
+                if (outtakeTimer.getElapsedTimeSeconds() > shotTimer * shotCount + waitShotTimer + waitToStartTimer && shotCount == 1) {
+                    Bot.intakeHoldStop();
+                    shotCount++;
+                }
+//                launch ball 3 // 6 & 6.5
+                if (outtakeTimer.getElapsedTimeSeconds() >  shotTimer * shotCount + waitToStartTimer && shotCount == 2) {
+                    Bot.intakeHoldStart();
+                    Bot.ballLaunchV();
+                }
+//                stop after launching ball 3 and go to next steps.
+                if (outtakeTimer.getElapsedTimeSeconds() > shotTimer * shotCount + waitShotTimer + waitToStartTimer && shotCount == 2) {
+                    intakeTimer.resetTimer();
+                    scoringDone = true;
+                    shotCount ++;
+                    launchState = LaunchState.IDLE;
+                    Bot.intakeHoldStop();
+                    waitTimer.resetTimer();
+                    intakeTimer.resetTimer();
+                }
+
+//                outtakeTimer.resetTimer();
+//                waitTimer.resetTimer();
+//                intakeTimer.resetTimer();
+//                launchState = LaunchState.WAIT;
                 break;
+
             case WAIT:
-                Bot.ballIntake();
-                if (waitTimer.getElapsedTimeSeconds() > 1) {
+                Bot.ballIntake();//intake sooner
+                if (waitTimer.getElapsedTimeSeconds() > 3) {
                     intakeTimer.resetTimer();
                     scoringDone = true;
                     shotCount ++;
@@ -407,6 +454,8 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
             case IDLE:
                 Bot.ballLaunchOne.setPower(0);
                 Bot.ballLaunchTwo.setPower(0);
+                shotCount = 0;
+                timerReset = false;
                 break;
 
 

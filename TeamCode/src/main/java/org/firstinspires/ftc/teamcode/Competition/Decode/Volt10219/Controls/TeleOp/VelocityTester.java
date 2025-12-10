@@ -80,14 +80,14 @@ public class VelocityTester extends OpMode {
 
     public void artifactPushControl(){
 
-        if(gamepad1.y){
+        if(gamepad1.a){
             ballStop.setPower(-1);
         }
-        if(gamepad1.a){
+        if(gamepad1.y){
             ballStop.setPower(0);
         }
 
-        if(gamepad1.dpad_up){
+        if(gamepad1.dpad_right){
             ballIntake.setPower(-1);
         }
         if(gamepad1.dpad_down){

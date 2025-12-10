@@ -358,8 +358,8 @@ public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
             case OUTTAKE:
                 Bot.ballIntake();
 
-                double shotTimer = 2.0;
-                double waitShotTimer = 0.5;
+                double shotTimer = 1.125;
+                double waitShotTimer = 1;
                 double waitToStartTimer = 2.0;
 //                Launch ball one.
                 if (!timerReset) {
@@ -368,29 +368,25 @@ public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
 
                 }
 
+                Bot.ballLaunchAutoBackFirst();
 
-                //To change the velocity, change the numbers below
-                Bot.ballLaunchAutoBackFirst();//VELOCITY for launching 2nd artifact
-                // Command + B to change the velocity(while the white line index thing is in the method)
-
-
-                //Bot.artifactPushAuto();
-                //Bot.artifactPushDown();
-//                outtakeTimer.resetTimer();
                 if (outtakeTimer.getElapsedTimeSeconds() > shotTimer * shotCount + waitToStartTimer && shotCount == 0) {
                     Bot.intakeHoldStart();
-
+                    Bot.ballLaunchAutoBackFirst();
 
                 }
+
 //              stop after launching ball 1
                 if(outtakeTimer.getElapsedTimeSeconds() > waitToStartTimer + waitShotTimer && shotCount == 0){
                     Bot.intakeHoldStop();
+                    Bot.ballLaunchAutoBackSecond();
                     shotCount++;
 //                    outtakeTimer.resetTimer();
                 }
 //                launch ball 2 // 3 & 3.5
                 if(outtakeTimer.getElapsedTimeSeconds() >  shotTimer * shotCount + waitToStartTimer && shotCount == 1){
                     Bot.intakeHoldStart();
+                    Bot.ballLaunchAutoBackSecond();
                 }
 //                stop after launching ball 2
                 if (outtakeTimer.getElapsedTimeSeconds() > shotTimer * shotCount + waitShotTimer + waitToStartTimer && shotCount == 1) {
@@ -400,6 +396,7 @@ public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
 //                launch ball 3 // 6 & 6.5
                 if (outtakeTimer.getElapsedTimeSeconds() >  shotTimer * shotCount + waitToStartTimer && shotCount == 2) {
                     Bot.intakeHoldStart();
+                    Bot.ballLaunchAutoBackSecond();
                 }
 //                stop after launching ball 3 and go to next steps.
                 if (outtakeTimer.getElapsedTimeSeconds() > shotTimer * shotCount + waitShotTimer + waitToStartTimer && shotCount == 2) {
