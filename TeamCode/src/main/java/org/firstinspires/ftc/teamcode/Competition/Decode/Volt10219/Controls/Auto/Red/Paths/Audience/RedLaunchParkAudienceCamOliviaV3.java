@@ -25,31 +25,6 @@ import java.util.List;
 @Autonomous(name = "Red Audience - Cam, Complex")
 public class RedLaunchParkAudienceCamOliviaV3 extends RedAlliance {
 
-    //   (0, 144)                          (144, 144)
-    //      --------------------------------
-    //      |                               |
-    //      |                               |
-    //      |                               |
-    //      |                               |
-    //      |                               |
-    //      |                               |
-    //      |                               |
-    //      |                               |
-    //      |                               |
-    //      |                               |
-    //      |                               |
-    //      ---------------------------------
-    //   (0,0)                              (144, 0)
-
-
-    //                90 degrees
-    //                     |
-    //                     |
-    //  180 degrees  --------------   0 degrees
-    //                     |
-    //                     |
-    //                180 degrees
-
     // Limelight and April Tag Variables
     protected Limelight3A limelight;
     protected int motifID;

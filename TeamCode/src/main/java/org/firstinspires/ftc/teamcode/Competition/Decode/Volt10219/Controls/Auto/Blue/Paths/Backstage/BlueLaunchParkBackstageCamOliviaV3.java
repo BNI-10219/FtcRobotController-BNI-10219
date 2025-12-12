@@ -24,7 +24,6 @@ import java.util.List;
 
 /**** This Version Uses Creep Foward Controller using Pedro Poses and Pinpoint for Slow Intake ***/
 
-@Disabled
 @Autonomous(name = "Blue Backstage - Cam, Complex")
 public class BlueLaunchParkBackstageCamOliviaV3 extends BlueAlliance {
 

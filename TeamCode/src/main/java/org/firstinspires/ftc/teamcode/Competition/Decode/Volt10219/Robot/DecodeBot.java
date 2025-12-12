@@ -7,23 +7,27 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.DriveTrain.Mecanum;
 
 public class DecodeBot extends Mecanum {
     public HardwareMap hwBot = null;
 
-
-    public double velocity = 500;
-    public double velocity_low = 825;
-    public double velocity_med = 1120; //936   d//1025
-    public double velocity_high = 1250; //2300//1016 d//1050
+    //don't change "velocity"
+    public double velocity = 1230;
+    public double velocity_low = 1000;
+    public double velocity_med = 1230; //936   d//1025
+    public double velocity_high = 1400; //2300//1016 d//1050
+    public Servo LED;
 
 
     public DecodeBot() {
     }
-
+    public void LEDCon(int color) {
+        float n = new float []{0, 0.279f, 0.333f, 0.388f, 0.5f, 0.611f, 0.722f}[color];
+        LED.setPosition(n);
+    }
     public void initRobot(HardwareMap hwBot) {
 
         flMotor = hwBot.dcMotor.get("front_Left_motor"); // CH Port 0
@@ -54,6 +58,7 @@ public class DecodeBot extends Mecanum {
         ballStop = hwBot.get(CRServo.class, "ball_stop");
         ballStop.setDirection(CRServo.Direction.FORWARD);
 
+        LED = hwBot.servo.get("LED");
 
         ballLaunchOne = hwBot.get(DcMotorEx.class, "ball_launch_one");
         ballLaunchOne.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -82,6 +87,10 @@ public class DecodeBot extends Mecanum {
         ballIntake.setPower(-1);
     }
 
+    public void ballIntakeAuto(){
+        ballIntake.setPower(-0.75);
+    }
+
     public void ballOuttake() {
         ballIntake.setPower(1);
     }
@@ -96,13 +105,17 @@ public class DecodeBot extends Mecanum {
     public void intakeHoldStart(){
         ballStop.setPower(-1);
     }
+    public void intakeHoldReverse(){
+        ballStop.setPower(1);
+    }
 
-
+//right bumper
     public void ballLaunchV() {
         //velocity = velocity_med;
         //velocity = Range.clip(velocity, 0, 5000);
-        ballLaunchOne.setVelocity(velocity_med);
-        ballLaunchTwo.setVelocity(velocity_med);
+
+        ballLaunchOne.setVelocity(velocity);
+        ballLaunchTwo.setVelocity(velocity);
 
 //        ballLaunchTwo.setPower(0.425);
 //        ballLaunchOne.setPower(0.425);
@@ -113,34 +126,42 @@ public class DecodeBot extends Mecanum {
         ballLaunchTwo.setVelocity(1165);
     }
     public void ballLaunchAutoBackFirst(){
-        ballLaunchOne.setVelocity(1120);
-        ballLaunchTwo.setVelocity(1120);
+        ballLaunchOne.setVelocity(1120);//1120
+        ballLaunchTwo.setVelocity(1120);//1120
     }
     public void ballLaunchAutoBackSecond(){
         ballLaunchOne.setVelocity(1215);
         ballLaunchTwo.setVelocity(1215);
     }
 
+    //
     public void ballLaunchMidV(){
-        velocity = velocity_low;
-        velocity = Range.clip(velocity, 0, 1500);
-        ballLaunchOne.setVelocity(velocity);
-        ballLaunchTwo.setVelocity(velocity);
+//        velocity = velocity_low;
+//        velocity = Range.clip(velocity, 0, 1500);
+        ballLaunchOne.setVelocity(velocity_med);
+        ballLaunchTwo.setVelocity(velocity_med);
 
 //        ballLaunchTwo.setPower(0.225);
 //        ballLaunchOne.setPower(0.225);
     }
 
+    //
     public void ballLaunchBackField(){
         //ballLaunchOne.setVelocity(1051);
         //ballLaunchTwo.setVelocity(1051);
-        velocity = velocity_high;
-        velocity = Range.clip(velocity, 0, 1500);
-        ballLaunchOne.setVelocity(velocity);
-        ballLaunchTwo.setVelocity(velocity);
+//        velocity = velocity_high;
+//        velocity = Range.clip(velocity, 0, 1500);
+        ballLaunchOne.setVelocity(velocity_high);
+        ballLaunchTwo.setVelocity(velocity_high);
 
 //        ballLaunchTwo.setPower(0.625);
 //        ballLaunchOne.setPower(0.625);
+    }
+
+    //left bumper
+    public void ballLaunchFrontField() {
+        ballLaunchOne.setVelocity(velocity_low);
+        ballLaunchTwo.setVelocity(velocity_low);
     }
 
     public void ballLaunchStop(){

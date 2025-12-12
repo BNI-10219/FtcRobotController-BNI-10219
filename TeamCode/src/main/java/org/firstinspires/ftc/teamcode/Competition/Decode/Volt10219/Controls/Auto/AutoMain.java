@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto;
 
+import com.pedropathing.util.Timer;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.Paths.Audience.RedLaunchParkAudienceCamDuValV3;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Robot.DecodeBot;
 
 
@@ -25,6 +27,10 @@ public abstract class AutoMain extends OpMode {
     double targetTX = 23;
     double targetTA = 3;
     double llTolerance = 1.25;
+
+
+
+
 
     public void autoStartUp(){
         Bot.initRobot(hardwareMap);
@@ -122,6 +128,8 @@ public void startScoring(LaunchZone zone, int shots, double time, double nowSec)
 
         }
 
+
+
         telemetry.addData("Tx Difference: ", txDifference);
         telemetry.addData("Ta Difference: ", taDifference);
         telemetry.addData("LL Ta:", result.getTa() );
@@ -129,5 +137,6 @@ public void startScoring(LaunchZone zone, int shots, double time, double nowSec)
         telemetry.update();
 
     }
+
 
 }

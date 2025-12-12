@@ -89,6 +89,7 @@ public class TeleOp extends OpMode {
         intakeControlStates();
         intakeHoldControl();
         timeOuttake();
+        LEDDriver();
     }
 
     public void changeDriverProfile() {
@@ -308,14 +309,20 @@ public class TeleOp extends OpMode {
     }
 
     public void launcherControl() {
-        if (gamepad2.left_trigger > 0.001) {
+        if (gamepad2.y) {
             Bot.ballLaunchStop();
         }
         if (gamepad2.right_bumper) {
-            Bot.ballLaunchV();
+            Bot.ballLaunchMidV();
         }
         if (gamepad2.right_trigger > 0.001) {
             Bot.ballLaunchBackField();
+        }
+        if (gamepad2.left_trigger > 0.001) {
+            Bot.ballLaunchBackField();
+        }
+        if (gamepad2.left_bumper) {
+            Bot.ballLaunchFrontField();
         }
     }
 
@@ -380,11 +387,11 @@ public class TeleOp extends OpMode {
         if (gamepad2.dpad_left) {
             Bot.ballOuttake();
         }
-        if (gamepad2.left_bumper) {
+        if (gamepad2.b) {
             Bot.intakeStop();
         }
         if (gamepad2.x) {
-            outtakeState = OuttakeState.START;
+            Bot.intakeHoldReverse();
         }
     }
 
@@ -402,7 +409,57 @@ public class TeleOp extends OpMode {
             telemetry.addData("Launcher Two: ", Bot.ballLaunchTwo.getVelocity());
 
 
+
             //telemetry.addData("Limelight AT: ", result.getFiducialResults());
             telemetry.update();
+        }
+
+        //LED Controller
+        public void LEDDriver() {
+//            double targetVelocity = 0;
+//            double vOne = Bot.ballLaunchOne.getVelocity();
+//            double vTwo = Bot.ballLaunchTwo.getVelocity();
+//            boolean motorsEqual = false;
+//            boolean motorOneReady = false;
+//            boolean motorTwoReady = false;
+//
+//            if (gamepad2.right_bumper) {
+//                targetVelocity = 1230;
+//            } else if (gamepad2.right_trigger > 0.001) {
+//                targetVelocity = 1200;
+//            } else if (gamepad2.left_trigger > 0.001) {
+//                targetVelocity = 1200;
+//            } else if (gamepad2.left_bumper) {
+//                targetVelocity = 1000;
+//            } else {
+//                targetVelocity = 0;
+//            }
+//
+//            double percentMotor = ((Math.abs(vOne-vTwo))/((vOne+vTwo)/2)) * 100;
+//            double percentTargetOne = ((Math.abs(vOne-Bot.velocity))/((vOne+Bot.velocity)/2)) * 100;
+//            double percentTargetTwo = ((Math.abs(vTwo-Bot.velocity))/((vTwo+Bot.velocity)/2)) * 100;
+//            telemetry.addData("percentMotor Difference", percentMotor);
+//            telemetry.addData("percentTargetOne", percentTargetOne);
+//            telemetry.addData("percentTargetTwo", percentTargetTwo);
+//
+//            if (percentMotor <= 11) {
+//                motorsEqual = true;
+//            }
+//            if (percentTargetOne <= 11) {
+//                motorOneReady = true;
+//            }
+//            if (percentTargetTwo <= 11) {
+//                motorTwoReady = true;
+//            }
+//
+//            if (targetVelocity == 0) {
+//                Bot.LEDCon(0);
+//            } else if (motorsEqual && motorOneReady && motorTwoReady) {
+//                Bot.LEDCon(4);
+//            } else if (!motorsEqual || !motorOneReady || !motorTwoReady) {
+//                Bot.LEDCon(1);
+//            } else {
+//                Bot.LEDCon(0);
+//            }
         }
     }

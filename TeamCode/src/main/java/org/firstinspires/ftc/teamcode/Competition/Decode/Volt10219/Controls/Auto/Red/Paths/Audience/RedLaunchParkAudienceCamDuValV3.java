@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.Paths.Backstage;
+package org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.Paths.Audience;
 
 
 import com.pedropathing.follower.Follower;
@@ -12,10 +12,7 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.Paths.Audience.RedLaunchParkAudienceCamDuValV3;
-import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.Paths.Audience.RedLaunchParkAudienceCamOliviaV3;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.Controls.Auto.Red.RedAlliance;
 import org.firstinspires.ftc.teamcode.Competition.Decode.Volt10219.pedroPathing.Constants;
 
@@ -25,33 +22,8 @@ import java.util.List;
 /**** This Version Uses Creep Foward Controller using Pedro Poses and Pinpoint for Slow Intake ***/
 
 //@Disabled
-@Autonomous(name = "Red Backstage - Cam, Complex, TEST")
-public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
-
-    //   (0, 144)                          (144, 144)
-    //      --------------------------------
-    //      |                               |
-    //      |                               |
-    //      |                               |
-    //      |                               |
-    //      |                               |
-    //      |                               |
-    //      |                               |
-    //      |                               |
-    //      |                               |
-    //      |                               |
-    //      |                               |
-    //      ---------------------------------
-    //   (0,0)                              (144, 0)
-
-
-    //                90 degrees
-    //                     |
-    //                     |
-    //  180 degrees  --------------   0 degrees
-    //                     |
-    //                     |
-    //                180 degrees
+@Autonomous(name = "Red Audience - Cam, Complex, TEST")
+public class RedLaunchParkAudienceCamDuValV3 extends RedAlliance {
 
     // Limelight and April Tag Variables
     protected Limelight3A limelight;
@@ -67,22 +39,13 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
     protected LaunchState launchState = LaunchState.READY;
 
     // State Machine for Auto Pathing
-    protected enum PathState{DRIVETOLAUNCH, LAUNCH, INTAKE_START, INTAKE_CREEP, WAITDETECT, DETECTMOTIF, LAUNCHPOSTWO, LAUNCHTWO, PARK, READY, WAIT;}
+    protected enum PathState{DRIVETOLAUNCH, LAUNCH, INTAKE_START, INTAKE_CREEP, LAUNCHPOSTWO, LAUNCHTWO, PARK, READY, WAIT;}
     protected PathState pathState = PathState.READY;
-
-
-    //******** Timers and Counters and Boolean Controllers
-    protected Timer creepTimer;
-    protected Timer opmodeTimer, intakeTimer, waitTimer, pathTimer, outtakeTimer;
-    protected int shotCount = 0;
-    protected boolean scoringDone = false;
-    boolean timerReset = false;
-
 
     protected enum LaunchNumber {PREP, FIRST_ROLLER_START, FIRST_ROLLER_STOP, SECOND_ROLLER_START, SECOND_ROLLER_STOP, THIRD_ROLLER_START, THIRD_ROLLER_STOP, FAILSAFE_ROLLER_START, FAILSAFE_ROLLER_STOP, STOP_LAUNCHING}
     protected enum LaunchPosition {FAR, CLOSE, MEDIUM}
     protected LaunchNumber launchNumber = LaunchNumber.PREP;
-    protected LaunchPosition launchPosition = LaunchPosition.MEDIUM;
+    protected LaunchPosition launchPosition = LaunchPosition.FAR;
 
     double waitToStartTimer = 2.0;
     double launchRollerTimeEngaged_ONE = 0.5;
@@ -93,32 +56,37 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
     double launchRollerStopTimer_THREE = 2.0;
     double launchRollerTimeEngaged_FAILSAFE = 0.5;
     double launchRollerStopTimer_FAILSAFE = 2.0;
+    boolean timerReset = false;
 
+
+
+    //******** Timers and Counters and Boolean Controllers
+    protected Timer creepTimer;
+    protected Timer opmodeTimer, intakeTimer, waitTimer, pathTimer, outtakeTimer;
+    protected int shotCount = 0;
+    protected boolean scoringDone = false;
 
 
     //********* Pedro Pathing Poses
 
-    protected final Pose startPose = new Pose(120, 132, Math.toRadians(215));//132
-    protected final Pose detectMotif = new Pose(82, 80, Math.toRadians(270));
-    protected final Pose launch = new Pose(83, 84, Math.toRadians(225));
-    protected final Pose park = new Pose(96, 130, Math.toRadians(0));//near back wall
-    //protected final Pose park = new Pose(122, 105, Math.toRadians(0));//near right wall
+    protected final Pose startPose = new Pose(96, 8, Math.toRadians(270));
+    protected final Pose launch = new Pose(88, 11.25, Math.toRadians(246.5));
+    protected final Pose park = new Pose(110, 12, Math.toRadians(0));//close to back wall
 
-
-    protected final Pose PPGPose = new Pose(95, 88, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
-    protected final Pose PPGPosePickup = new Pose(97, 88, Math.toRadians(0));
+    protected final Pose PPGPose = new Pose(96, 79, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
+    protected final Pose PPGPosePickup = new Pose(109, 79, Math.toRadians(0));
 
     protected final Pose PGPPose = new Pose(96, 57.5, Math.toRadians(0)); // Middle (Second Set) of Artifacts from the Spike Mark.
     protected final Pose PGPPosePickup = new Pose(112, 57.5, Math.toRadians(0));
 
     protected final Pose GPPPose = new Pose(96, 34, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    protected final Pose GPPPosePickup = new Pose(107.5, 34, Math.toRadians(0));
+    protected final Pose GPPPosePickup = new Pose(110, 34, Math.toRadians(0));
 
 
     //************ Building Paths for Pedro
 
     protected Path launchOne;
-    protected PathChain intakePath, intakePickupPath, launchTwoPath, parkPath, detectMotifPath;
+    protected PathChain intakePath, intakePickupPath, launchTwoPath, parkPath;
 
     // Preparing for Intaking Motifs... Not Used Yet
     protected PathChain moveToPPG, grabPPG, scorePPG;
@@ -131,11 +99,6 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
         launchOne = new Path(new BezierCurve(startPose, launch));
         launchOne.setLinearHeadingInterpolation(startPose.getHeading(), launch.getHeading());
 
-        detectMotifPath = follower.pathBuilder()
-                .addPath(new BezierCurve(launch, detectMotif))
-                .setLinearHeadingInterpolation(launch.getHeading(), detectMotif.getHeading())
-                .build();
-
         intakePath = follower.pathBuilder()
                 .addPath(new BezierCurve(launch, intake))
                 .setLinearHeadingInterpolation(launch.getHeading(), intake.getHeading())
@@ -146,8 +109,6 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
                 .setLinearHeadingInterpolation(intake.getHeading(), intakePickupEnd.getHeading())
                 .setGlobalDeceleration()
                 .build();
-
-
         launchTwoPath = follower.pathBuilder()
                 .addPath(new BezierCurve(intakePickupEnd, launch))
                 .setLinearHeadingInterpolation(intakePickupEnd.getHeading(), launch.getHeading())
@@ -161,8 +122,8 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
     // Build the PPG Pathing
     public void buildPathsPPG() {
         moveToPPG = follower.pathBuilder() //
-                .addPath(new BezierCurve(detectMotif, PPGPose))
-                .setLinearHeadingInterpolation(detectMotif.getHeading(), PPGPose.getHeading())
+                .addPath(new BezierCurve(launch, PPGPose))
+                .setLinearHeadingInterpolation(launch.getHeading(), PPGPose.getHeading())
                 .build();
         grabPPG = follower.pathBuilder()
                 .addPath(new BezierLine(PPGPose, PPGPosePickup))
@@ -177,8 +138,8 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
     // Build the PGP Pathing
     public void buildPathsPGP() {
         moveToPGP = follower.pathBuilder()
-                .addPath(new BezierCurve(detectMotif, PGPPose))
-                .setLinearHeadingInterpolation(detectMotif.getHeading(), PGPPose.getHeading())
+                .addPath(new BezierCurve(launch, PGPPose))
+                .setLinearHeadingInterpolation(launch.getHeading(), PGPPose.getHeading())
                 .build();
         grabPGP = follower.pathBuilder()
                 .addPath(new BezierLine(PGPPose, PGPPosePickup))
@@ -194,8 +155,8 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
     // Build the GPP Pathing
     public void buildPathsGPP() {
         moveToGPP = follower.pathBuilder()
-                .addPath(new BezierCurve(detectMotif, GPPPose))
-                .setLinearHeadingInterpolation(detectMotif.getHeading(), GPPPose.getHeading())
+                .addPath(new BezierCurve(launch, GPPPose))
+                .setLinearHeadingInterpolation(launch.getHeading(), GPPPose.getHeading())
                 .build();
         grabGPP = follower.pathBuilder()
                 .addPath(new BezierLine(GPPPose, GPPPosePickup))
@@ -284,6 +245,7 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
         switch(pathState){
             case DRIVETOLAUNCH:
 
+                Bot.ballLaunchAutoBackFirst();
                 follower.followPath(launchOne, true);
                 pathState = PathState.LAUNCH;
                 launchState = LaunchState.READY;
@@ -291,36 +253,18 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
                 break;
 
             case LAUNCH:
-                if (!follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
+                if (!follower.isBusy() && pathTimer.getElapsedTimeSeconds() > 2) {
                     if (launchState == LaunchState.READY && !scoringDone ) {
                          launchState = LaunchState.OUTTAKE;
-                         //pathTimer.resetTimer();
                         launchNumber = LaunchNumber.PREP;
-
                     }
                 }
                 if (scoringDone) {
                     //Bot.artifactPushUps();
-                    if(pathTimer.getElapsedTimeSeconds() > 2){
-                        waitTimer.resetTimer();
-                        follower.followPath(detectMotifPath);
-                        pathState = PathState.DETECTMOTIF;
-                        pathTimer.resetTimer();
-                    }
-                    //Bot.ballIntake();
+                    Bot.ballIntakeAuto();
+                    //waitTimer.resetTimer();
 
-                }
-                break;
-            case DETECTMOTIF:
-                if(!follower.isBusy()|| pathTimer.getElapsedTimeSeconds() > 3){
-                    pathState = PathState.WAITDETECT;
-                    waitTimer.resetTimer();
-                }
-                break;
-
-            case WAITDETECT:
-                detectMotif();
-                if(waitTimer.getElapsedTimeSeconds() > 2.5) {
+                    // Path Detection using April Tag
                     if (motifID == PPG_TAG_ID) {
                         chosenMoveToPath = moveToPPG;
                     } // Path for 23
@@ -331,42 +275,50 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
                         chosenMoveToPath = moveToGPP;
                     }   // Path f
                     follower.followPath(chosenMoveToPath);
+
+                    // Transition to Next State
+                    waitTimer.resetTimer();
                     pathState = PathState.INTAKE_START;
                     pathTimer.resetTimer();
+
                 }
                 break;
+
             case INTAKE_START:
-                Bot.ballIntake();
-                if (!follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
+                //Bot.ballIntakeAuto();
+                if (!follower.isBusy() && pathTimer.getElapsedTimeSeconds() > 2) {
                     creepTimer.resetTimer();
 
                     // Transition to Creep Forward Control and State
                     startPinpointCreep();
                     pathState = PathState.INTAKE_CREEP;
-                    Bot.ballIntake();
+                    Bot.ballIntakeAuto();
                     pathTimer.resetTimer();
                     scoringDone = false;
                 }
                 break;
 
             case INTAKE_CREEP:
+                //Bot.ballLaunchAutoBackSecond();
                 // Creep Forwards Controlled by outside of state machine for looping
                 // State Transition happens in creepController()
                 break;
 
             case LAUNCHPOSTWO:
+                //Bot.intakeStop();
                 if ( !follower.isBusy() || pathTimer.getElapsedTimeSeconds() > 3) {
                     if (launchState == LaunchState.READY && !scoringDone ) {
+                        Bot.ballLaunchBackField();
                         Bot.intakeStop();
                         launchState = LaunchState.OUTTAKE;
+                        // I AM NOT SURE IF THIS IS IN CORRECT LOCATION - JD
                         launchNumber = LaunchNumber.PREP;
-
                     }
                 }
 
                 if (scoringDone) {
                     //Bot.artifactPushUps();
-                    Bot.ballIntake();
+                    Bot.ballIntakeAuto();
 
                     follower.followPath(parkPath);
                     waitTimer.resetTimer();
@@ -406,18 +358,15 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
 
                 switch (launchNumber) {
                     case PREP:
-                        Bot.ballIntake();
 
-
-                        // SET LAUNCH POWER
-                        if (launchPosition == LaunchPosition.CLOSE) {
-                            Bot.ballLaunchV();
-                        }
-                        else if (launchPosition == LaunchPosition.MEDIUM) {
+//                        if (launchPosition == LaunchPosition.CLOSE) {
+//                            Bot.ballLaunchV();
+//                        }
+                        if (launchPosition == LaunchPosition.MEDIUM) {
                             Bot.ballLaunchV();
                         }
                         else if (launchPosition == LaunchPosition.FAR) {
-                            Bot.ballLaunchV();
+                            Bot.ballLaunchAutoBackFirst();
                         }
                         else {
                             Bot.ballLaunchV();
@@ -437,14 +386,14 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
 
                     case FIRST_ROLLER_START:
                         Bot.intakeHoldStart();
-                        if (launchPosition == LaunchPosition.CLOSE) {
-                            Bot.ballLaunchV();
-                        }
+//                        if (launchPosition == LaunchPosition.CLOSE) {
+//                            Bot.ballLaunchV();
+//                        }
                         if (launchPosition == LaunchPosition.MEDIUM) {
                             Bot.ballLaunchV();
                         }
-                        if (launchPosition == LaunchPosition.FAR) {
-                            Bot.ballLaunchV();
+                        else if (launchPosition == LaunchPosition.FAR) {
+                            Bot.ballLaunchAutoBackFirst();
                         }
                         else {
                             Bot.ballLaunchV();
@@ -454,18 +403,19 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
                             launchNumber = LaunchNumber.FIRST_ROLLER_STOP;
                             outtakeTimer.resetTimer();
                         }
+                        Bot.ballIntakeAuto();
                         break;
 
                     case FIRST_ROLLER_STOP:
                         Bot.intakeHoldStop();
-                        if (launchPosition == LaunchPosition.CLOSE) {
-                            Bot.ballLaunchV();
-                        }
-                        else if (launchPosition == LaunchPosition.MEDIUM) {
+//                        if (launchPosition == LaunchPosition.CLOSE) {
+//                            Bot.ballLaunchV();
+//                        }
+                        if (launchPosition == LaunchPosition.MEDIUM) {
                             Bot.ballLaunchV();
                         }
                         else if (launchPosition == LaunchPosition.FAR) {
-                            Bot.ballLaunchV();
+                            Bot.ballLaunchAutoBackFirst();
                         }
                         else {
                             Bot.ballLaunchV();
@@ -479,14 +429,14 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
                         break;
                     case SECOND_ROLLER_START:
                         Bot.intakeHoldStart();
-                        if (launchPosition == LaunchPosition.CLOSE) {
-                            Bot.ballLaunchV();
-                        }
-                        else if (launchPosition == LaunchPosition.MEDIUM) {
+//                        if (launchPosition == LaunchPosition.CLOSE) {
+//                            Bot.ballLaunchV();
+//                        }
+                        if (launchPosition == LaunchPosition.MEDIUM) {
                             Bot.ballLaunchV();
                         }
                         else if (launchPosition == LaunchPosition.FAR) {
-                            Bot.ballLaunchV();
+                            Bot.ballLaunchAutoBackFirst();
                         }
                         else {
                             Bot.ballLaunchV();
@@ -500,14 +450,14 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
                         break;
                     case SECOND_ROLLER_STOP:
                         Bot.intakeHoldStop();
-                        if (launchPosition == LaunchPosition.CLOSE) {
-                            Bot.ballLaunchV();
-                        }
-                        else if (launchPosition == LaunchPosition.MEDIUM) {
+//                        if (launchPosition == LaunchPosition.CLOSE) {
+//                            Bot.ballLaunchV();
+//                        }
+                        if (launchPosition == LaunchPosition.MEDIUM) {
                             Bot.ballLaunchV();
                         }
                         else if (launchPosition == LaunchPosition.FAR) {
-                            Bot.ballLaunchV();
+                            Bot.ballLaunchAutoBackFirst();
                         }
                         else {
                             Bot.ballLaunchV();
@@ -522,14 +472,14 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
 
                     case THIRD_ROLLER_START:
                         Bot.intakeHoldStart();
-                        if (launchPosition == LaunchPosition.CLOSE) {
-                            Bot.ballLaunchV();
-                        }
-                        else if (launchPosition == LaunchPosition.MEDIUM) {
+//                        if (launchPosition == LaunchPosition.CLOSE) {
+//                            Bot.ballLaunchV();
+//                        }
+                        if (launchPosition == LaunchPosition.MEDIUM) {
                             Bot.ballLaunchV();
                         }
                         else if (launchPosition == LaunchPosition.FAR) {
-                            Bot.ballLaunchV();
+                            Bot.ballLaunchAutoBackFirst();
                         }
                         else {
                             Bot.ballLaunchV();
@@ -543,14 +493,14 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
                         break;
                     case THIRD_ROLLER_STOP:
                         Bot.intakeHoldStop();
-                        if (launchPosition == LaunchPosition.CLOSE) {
-                            Bot.ballLaunchV();
-                        }
-                        else if (launchPosition == LaunchPosition.MEDIUM) {
+//                        if (launchPosition == LaunchPosition.CLOSE) {
+//                            Bot.ballLaunchV();
+//                        }
+                        if (launchPosition == LaunchPosition.MEDIUM) {
                             Bot.ballLaunchV();
                         }
                         else if (launchPosition == LaunchPosition.FAR) {
-                            Bot.ballLaunchV();
+                            Bot.ballLaunchAutoBackFirst();
                         }
                         else {
                             Bot.ballLaunchV();
@@ -566,15 +516,15 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
                         break;
 
                     case FAILSAFE_ROLLER_START:
-                        Bot.intakeHoldStart();
-                        if (launchPosition == LaunchPosition.CLOSE) {
-                            Bot.ballLaunchV();
-                        }
-                        else if (launchPosition == LaunchPosition.MEDIUM) {
+                        Bot.intakeHoldStop();
+//                        if (launchPosition == LaunchPosition.CLOSE) {
+//                            Bot.ballLaunchV();
+//                        }
+                        if (launchPosition == LaunchPosition.MEDIUM) {
                             Bot.ballLaunchV();
                         }
                         else if (launchPosition == LaunchPosition.FAR) {
-                            Bot.ballLaunchV();
+                            Bot.ballLaunchAutoBackFirst();
                         }
                         else {
                             Bot.ballLaunchV();
@@ -588,14 +538,14 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
                         break;
                     case FAILSAFE_ROLLER_STOP:
                         Bot.intakeHoldStop();
-                        if (launchPosition == LaunchPosition.CLOSE) {
-                            Bot.ballLaunchV();
-                        }
-                        else if (launchPosition == LaunchPosition.MEDIUM) {
+//                        if (launchPosition == LaunchPosition.CLOSE) {
+//                            Bot.ballLaunchV();
+//                        }
+                        if (launchPosition == LaunchPosition.MEDIUM) {
                             Bot.ballLaunchV();
                         }
                         else if (launchPosition == LaunchPosition.FAR) {
-                            Bot.ballLaunchV();
+                            Bot.ballLaunchAutoBackFirst();
                         }
                         else {
                             Bot.ballLaunchV();
@@ -621,7 +571,7 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
                 break;
 
             case WAIT:
-                Bot.ballIntake();//intake sooner
+                Bot.ballIntakeAuto();//intake sooner
                 if (waitTimer.getElapsedTimeSeconds() > 3) {
                     intakeTimer.resetTimer();
                     scoringDone = true;
@@ -659,37 +609,37 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
 
            // GPP
             if(fr.getFiducialId() == 21) {
-                motifID = 23;
-                telemetry.addLine("21 - Going to 23");
+                motifID = 21;
+                telemetry.addLine("21");
                 telemetry.addData("FI: ", fr.getFiducialId());
 
 
             }
             // PGP Detection
             else if (fr.getFiducialId() == 22) {
-                motifID = 23;
+                motifID = 21;//CHANGE BACK AFTER 2ND MEET
                 telemetry.addLine("Detected PGP - 22");
                 telemetry.addData("FI: ", fr.getFiducialId());
 
             }
             // PPG Detection
             else if (fr.getFiducialId() == 23) {
-                motifID = 23;
-                telemetry.addLine("Detected PPG - 23");
+                motifID = 21;//CHANGE BACK AFTER 2ND MEET
+                telemetry.addLine("Detected PPG - 23, Going with 21");
                 telemetry.addData("FI: ", fr.getFiducialId());
 
             }
             // GPP Detection
             else if (fr.getFiducialId() == 21) {
-                motifID = 23;
+                motifID = 21;
                 telemetry.addLine("Detected GPP - 21");
                 telemetry.addData("FI: ", fr.getFiducialId());
 
             }
             // Default to GPP
             else {
-                motifID = 23;
-                telemetry.addLine("None detected. Default to 23 PPG");
+                motifID = 21;
+                telemetry.addLine("None detected. Default to 21 GPP");
                 telemetry.addData("FI: ", fr.getFiducialId());
                 telemetry.update();
             }
@@ -797,6 +747,9 @@ public class RedLaunchParkBackstageCamOliviaV3 extends RedAlliance {
         telemetry.addData("heading", follower.getPose().getHeading());
         telemetry.addData("Is Busy: ", follower.isBusy());
         telemetry.addData("Motif ID: ", motifID);
+        telemetry.addData("Outtake Timer ", outtakeTimer.getElapsedTimeSeconds());
+        telemetry.addData("Velocity 1: ", Bot.ballLaunchTwo.getVelocity());
+        telemetry.addData("Velocity 2: ", Bot.ballLaunchOne.getVelocity());
         telemetry.update();
     }
 
